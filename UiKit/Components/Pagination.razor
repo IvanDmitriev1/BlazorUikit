@@ -1,0 +1,78 @@
+﻿@inherits UiKitComponentBase
+
+<div class="@ComponentCss">
+    <IconButton Icon="@TablerSvgIcon.ChevronLeft"
+                Color="Color.PrimaryAlternative"
+                Filled="true"
+                Disabled="Selected == 1"
+                Size="Size.Large"
+                OnClick="() => CurrentSelected--" />
+
+    <Stack Class="gap-2.5" AlignItems="AlignItems.Center">
+        <NumericField T="int"
+                      InputCss="w-24 !p-2 text-center !text-[24px]"
+                      Min="1"
+                      Max="Count"
+                      MaxLength="@_maxLength"
+                      Value="@Selected"
+                      ValueChanged="value => CurrentSelected = value"/>
+    
+        <UiText Class="!text-[25px]">/ @Count</UiText>
+    </Stack>            
+
+    <IconButton Icon="@TablerSvgIcon.ChevronRight"
+                Color="Color.PrimaryAlternative"
+                Filled="true"
+                Disabled="Selected >= Count"
+                Size="Size.Large"
+                OnClick="() => CurrentSelected++" />
+</div>
+
+
+@code {
+
+    [Parameter]
+    public int Count { get; set; } = 1;
+
+    [Parameter]
+    public int Selected { get; set; } = 1;
+
+    [Parameter]
+    public EventCallback<int> SelectedChanged { get; set; }
+
+    protected int CurrentSelected
+    {
+        get => Selected;
+        set
+        {
+            if (value < 1)
+            {
+                value = 1;
+            }
+
+            if (value > Count)
+            {
+                value = Count;
+            }
+
+            var hasValueChanged = !EqualityComparer<int>.Default.Equals(value, Selected);
+            if (!hasValueChanged)
+                return;
+
+            Selected = value;
+            _ = SelectedChanged.InvokeAsync(value);
+        }
+    }
+
+    int _maxLength;
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass("flex gap-3");
+    }
+
+    protected override void OnInitialized()
+    {
+        _maxLength = Count.GetDigitsCount();
+    }
+}

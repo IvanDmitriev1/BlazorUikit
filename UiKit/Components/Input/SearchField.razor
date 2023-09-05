@@ -1,0 +1,30 @@
+﻿@namespace UiKit.Components
+@inherits UiKitComponentBase
+
+<TextField FullWidth="true" InputClass="@ComponentCss"
+           Placeholder="@Placeholder"
+           AdornmentIcon="TablerSvgIcon.Search"
+           Adornment="Adornment.End"
+           AdornmentClick="OnSearchButtonClick"/>
+
+@code {
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass("border-4");
+        cssBuilder.AddClass(Color.Primary.ToBorderCss());
+    }
+
+    protected override void OnInitialized()
+    {
+        IncludeClassCss = false;
+    }
+
+    private void OnSearchButtonClick()
+    {
+        
+    }
+}

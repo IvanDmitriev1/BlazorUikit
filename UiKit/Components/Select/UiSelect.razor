@@ -1,0 +1,113 @@
+﻿@namespace UiKit.Components
+@typeparam T where T : notnull
+@inherits ValueInputBase<T?>
+
+<Field FullWidth="true" Disabled="false" Class="@ComponentCss">
+    <input type="checkbox"
+           class="absolute opacity-0 cursor-pointer h-full w-full has-text"
+           @ref="_element"
+           @bind="IsOpen"
+           @onblur="OnBlur" />
+    @if (!string.IsNullOrEmpty(Label) && _selectedListItem is not null)
+    {
+        <label class="input-control-label">@Label</label>
+    }
+
+    <Stack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" FullWidth="true">
+        <div class="py-4 pl-3.5 mr-3.5">
+            @if (_selectedListItem is null)
+            {
+                <UiText Color="Color.Custom" Class="@($"{Color.Primary.ToTextPlaceholderCss()}")">@Label</UiText>
+            }
+            else
+            {
+                @_selectedListItem?.ChildContent
+            }
+        </div>
+
+        <div class="@ChevronDownCss">
+            <UiKitIcon Icon="@TablerSvgIcon.ChevronDown" Class="h-full"/>
+        </div>
+    </Stack>
+
+    <CascadingValue Value="this" IsFixed="true">
+        <div class="@BuildListCss()">
+            <UiList T="T"
+                    @bind-SelectedValue="CurrentValue"
+                    @bind-SelectedItem="_selectedListItem"
+                    @onmouseover="() => _isMouseOverList = true"
+                    @onmouseout="() => _isMouseOverList = false"
+                    @onclick="() => IsOpen = false">
+                @ChildContent
+            </UiList>
+        </div>
+    </CascadingValue>
+</Field>
+
+
+@code {
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private bool IsOpen
+    {
+        get => _isOpen;
+        set
+        {
+            _isOpen = value;
+            ToggleRender();
+        }
+    }
+
+    private bool _isOpen;
+    private bool _isMouseOverList;
+    private IUiListItem<T>? _selectedListItem;
+    private string _listCss = string.Empty;
+    private ElementReference _element;
+    private static readonly string ChevronDownCss = $"{ColorExtensions.FullBorderColor} border-l h-full p-1.5";
+
+    public UiSelect() : base(default) { }
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass("cursor-pointer");
+        cssBuilder.AddClass(_isOpen ? "z-20" : string.Empty);
+
+        if (!string.IsNullOrEmpty(Label))
+        {
+            cssBuilder.AddClass("mt-3.5");
+        }
+    }
+
+    private string BuildListCss()
+    {
+        using var cssBuilder = new CssBuilder(stackalloc char[124]);
+        cssBuilder.AddClass(_isOpen ? "display" : "hidden");
+        cssBuilder.AddClass(ColorExtensions.MainBackgroundColor);
+        cssBuilder.AddClass("absolute top-12");
+        cssBuilder.AddClass("w-full");
+        cssBuilder.AddClass("drop-shadow-lg");
+        cssBuilder.AddClass("mt-2.5");
+
+        return cssBuilder.ToString();
+    }
+
+    private void OnBlur(FocusEventArgs args)
+    {
+        if (_isMouseOverList)
+            return;
+
+        IsOpen = false;
+    }
+
+    protected override void OnValueChanged()
+    {
+        IsOpen = false;
+    }
+
+    protected override void RefreshValueOrText() { }
+    protected override string ConvertValueToString() => string.Empty;
+
+    internal ValueTask Focus() => _element.FocusAsync();
+}

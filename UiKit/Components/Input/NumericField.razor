@@ -1,0 +1,200 @@
+﻿@namespace UiKit.Components
+@typeparam T where T : System.Numerics.INumber<T>, System.Numerics.IMinMaxValue<T>
+@using System.Globalization
+@inherits ValueInputBase<T>
+
+@inject IJSRuntime JsRuntime
+
+<div class="@(string.IsNullOrEmpty(Label) ? string.Empty : "my-3.5") @Class">
+    <Field Disabled="@Disabled" FullWidth="@FullWidth" Class="@ErrorCss">
+        <UiInput @ref="@_input"
+                 Class="@($"{InputCss} px-3.5")"
+                 Label="@Label"
+                 Disabled="@Disabled"
+                 ReadOnly="@ReadOnly"
+                 Placeholder="@Placeholder"
+                 MaxLength="@MaxLength"
+                 Lines="@Lines"
+                 InputMode="@InputMode.Numeric"
+                 InputType="@InputType.Text"
+                 id="@_id"
+
+                 max="@Max"
+                 min="@Min"
+                 step="@Step"
+
+                 Text="@Text"
+                 TextChanged="OnTextChangedCallback" />
+        
+        @if (ShowArrows)
+        {
+            <Stack Direction="Direction.Column" Justify="Justify.SpaceBetween" Class="absolute top-0 right-0 mr-1.5 h-full">
+                <IconButton Class="!p-0 m-0 mt-1" Size="Size.Small" Icon="@TablerSvgIcon.ArrowUp" OnClick="OnUpButtonCallback" />
+                <IconButton Class="!p-0 m-0 mb-1" Size="Size.Small" Icon="@TablerSvgIcon.ArrowDown" OnClick="OnDownCallback" />
+            </Stack>
+        }
+    </Field>
+    
+    @DisplayValidationErrors.DisplayValidationErrorsFragment(Errors)
+</div>
+
+@code
+{
+    [Parameter]
+    public T Min { get; set; } = T.MinValue;
+
+    [Parameter]
+    public T Max { get; set; } = T.MaxValue;
+
+    [Parameter]
+    public T Step { get; set; } = T.One;
+
+    [Parameter]
+    public bool FullWidth { get; set; }
+
+    [Parameter]
+    public bool ShowArrows { get; set; }
+
+    [Parameter]
+    public string? InputCss { get; set; }
+
+    UiInput? _input;
+    readonly string _id = Guid.NewGuid().ToString();
+    DotNetObjectReference<NumericField<T>>? _objRef;
+
+    public NumericField() : base(T.Zero) { }
+
+    protected override async ValueTask OnDispose()
+    {
+        if (_objRef is null)
+            return;
+
+        try
+        {
+            await JsRuntime.InvokeVoidAsync("UnRegisterInputEvent", _id);
+        }
+        catch (JSDisconnectedException)
+        {
+            //
+        }
+        finally
+        {
+            _objRef.Dispose();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (_input is null || _input.Text == Text)
+            return;
+
+        _input.Text = Text;
+        ToggleRender();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        _objRef = DotNetObjectReference.Create(this);
+        await JsRuntime.InvokeVoidAsync("RegisterInputEvent", _id, _objRef);
+    }
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) { }
+
+    protected override void RefreshValueOrText()
+    {
+        bool hasText = !string.IsNullOrWhiteSpace(Text);
+        bool hasValue = Value == T.Zero;
+
+        // Refresh Text from Value
+        if (Value.ToString(null, NumberFormatInfo.InvariantInfo) is { } convertedText)
+        {
+            CurrentText = convertedText;
+        }
+
+        // Refresh Value from Text
+        if (hasText && !hasValue && T.TryParse(Text, CultureInfo.InvariantCulture, out var convertedToValue))
+        {
+            CurrentValue = convertedToValue;
+        }
+    }
+
+    protected override string? ConvertValueToString()
+    {
+        if (Value.ToString(null, NumberFormatInfo.InvariantInfo) is { } convertedText)
+            return convertedText;
+
+        return CurrentText;
+    }
+
+    private void OnTextChangedCallback(string? newText)
+    {
+        if (string.IsNullOrWhiteSpace(newText))
+        {
+            CurrentValue = T.Zero;
+            CurrentText = CurrentValue.ToString();
+            ToggleRender();
+
+            return;
+        }
+
+        if (_input is null)
+            return;
+
+        if (newText.Length > 1)
+        {
+            newText = newText.StartsWith('0') ? newText[1..] : newText;
+        }
+
+        if (!T.TryParse(newText, CultureInfo.InvariantCulture, out var convertedToValue))
+        {
+        }
+        else if (convertedToValue < Min)
+        {
+            CurrentValue = Min;
+            CurrentText = Min.ToString(null, NumberFormatInfo.InvariantInfo);
+        }
+        else if (convertedToValue > Max)
+        {
+            CurrentValue = Max;
+            CurrentText = Max.ToString(null, NumberFormatInfo.InvariantInfo);
+        }
+        else
+        {
+            CurrentValue = convertedToValue;
+            CurrentText = newText;
+        }
+
+        ToggleRender();
+    }
+
+    private void OnUpButtonCallback()
+    {
+        var value = CurrentValue + Step;
+        if (value > Max)
+            return;
+
+        CurrentValue = value;
+        ToggleRender();
+    }
+
+    private void OnDownCallback()
+    {
+        var value = CurrentValue - Step;
+        if (value < Min)
+            return;
+
+        CurrentValue = value;
+        ToggleRender();
+    }
+
+    [JSInvokable]
+    public void UpdateTextFromJs(string text)
+    {
+        CurrentText = text;
+    }
+}

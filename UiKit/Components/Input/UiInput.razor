@@ -1,0 +1,123 @@
+﻿@namespace UiKit.Components
+@inherits TextInputBase<string>
+
+@if (Lines > 1)
+{
+    <textarea
+            class="@_inputCss @ComponentCss resize-none outline-none"
+            @ref="_elementReference"
+            @attributes="UserAttributes"
+            type="@InputType.ToHtml()"
+            placeholder="@Placeholder"
+            value="@_internalText"
+            rows="@Lines"
+            disabled="@Disabled"
+            readonly="@ReadOnly"
+            inputmode="@InputMode.ToHtml()"
+            maxlength="@MaxLength"
+
+            @oninput="OnInput"
+            @onchange="OnChange">
+    @Text
+</textarea>
+}
+else
+{
+    <input class="@_inputCss @ComponentCss"
+           @ref="_elementReference"
+           @attributes="UserAttributes"
+           type="@InputType.ToHtml()"
+           placeholder="@Placeholder"
+           value="@_internalText"
+           disabled="@Disabled"
+           readonly="@ReadOnly"
+           inputmode="@InputMode.ToHtml()"
+           maxlength="@MaxLength"
+
+           @oninput="OnInput"
+           @onchange="OnChange" />
+}
+
+@if (!string.IsNullOrEmpty(Label))
+{
+    <label class="input-control-label">@Label</label>
+}
+
+@code {
+
+    [Parameter]
+    public InputType InputType { get; set; } = InputType.Text;
+
+    [Parameter]
+    public bool Immediate { get; set; }
+
+    ElementReference _elementReference;
+    string? _internalText;
+    bool _isFocused;
+    string _inputCss = string.Empty;
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass("flex-auto");
+        cssBuilder.AddClass("py-4");
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (_internalText == Text)
+            return;
+
+        UpdateInputCss();
+
+        if (RuntimeLocation.IsServerSide && !_isFocused)
+        {
+            _internalText = Text;
+        }
+        else
+        {
+            _internalText = Text;
+        }
+
+        ToggleRender();
+    }
+
+    private void OnInput(ChangeEventArgs obj)
+    {
+        if (!Immediate)
+            return;
+
+        _isFocused = true;
+        CurrentText = obj.Value as string;
+    }
+
+    private void OnChange(ChangeEventArgs obj)
+    {
+        _internalText = obj.Value as string;
+
+        if (!Immediate)
+            CurrentText = obj.Value as string;
+    }
+
+    protected override void OnTextChanged()
+    {
+        base.OnTextChanged();
+
+        UpdateInputCss();
+    }
+
+    private void UpdateInputCss()
+    {
+        if (string.IsNullOrEmpty(Text))
+        {
+            _inputCss = string.Empty;
+            ToggleRender();
+        }
+        else if (string.IsNullOrEmpty(_inputCss))
+        {
+            _inputCss = "has-text";
+            ToggleRender();
+        }
+    }
+}

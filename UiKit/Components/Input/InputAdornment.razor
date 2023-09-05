@@ -1,0 +1,44 @@
+﻿@namespace UiKit.Components
+
+@if (AdornmentClick.HasDelegate)
+{
+    <IconButton Filled="false" Class="@Class" Icon="@Icon" Size="@Size" Color="@Color" OnClick="@AdornmentClick"/>
+}
+else
+{
+    <UiKitIcon Class="@Class" Icon="@Icon" Size="@Size" Color="@Color" />
+}
+
+@code
+{
+    [Parameter, EditorRequired]
+    public IconData Icon { get; set; }
+
+    [Parameter]
+    public string? Class { get; set; }
+
+    [Parameter]
+    public Color Color { get; set; } = Color.Primary;
+
+    [Parameter]
+    public Size Size { get; set; } = Size.Medium;
+
+    [Parameter]
+    public EventCallback AdornmentClick { get; set; }
+
+    private bool _firstRendered;
+
+    protected override bool ShouldRender()
+    {
+        if (!_firstRendered)
+            return true;
+
+        return false;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+            _firstRendered = true;
+    }
+}

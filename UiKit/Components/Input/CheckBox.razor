@@ -1,0 +1,88 @@
+﻿@namespace UiKit.Components
+@inherits ValidationComponentBase<bool>
+
+<div class="@Class">
+    <label class="inline-flex items-center cursor-pointer">
+        <span class="@ComponentCss">
+            <input type="checkbox" class="absolute opacity-0 cursor-pointer" @bind="CurrentChecked" />
+            @if (Checked)
+            {
+                <UiKitIcon Icon="@TablerSvgIcon.Check" />
+            }
+            else
+            {
+                <div class="w-[2em] h-[2em]"></div>
+            }
+        </span>
+    
+        <UiText Class="ml-2.5">@Label</UiText>
+    </label>
+
+    @DisplayValidationErrors.DisplayValidationErrorsFragment(Errors)
+</div>
+
+@code
+{
+    [Parameter]
+    public bool Checked { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> CheckedChanged { get; set; }
+
+    /// <summary>
+    /// Gets or sets an expression that identifies the bound value.
+    /// </summary>
+    [Parameter]
+    public Expression<Func<bool>>? CheckedExpression { get; set; }
+
+    protected bool CurrentChecked
+    {
+        get => Checked;
+        set
+        {
+            var hasChanged = !EqualityComparer<bool>.Default.Equals(value, Checked);
+            if (!hasChanged)
+                return;
+
+            Checked = value;
+            _ = CheckedChanged.InvokeAsync(value);
+            NotifyEditContext();
+
+            ToggleRender();
+        }
+    }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    protected override void OnInitialized()
+    {
+        IncludeClassCss = false;
+    }
+
+    protected override void OnParametersSet()
+    {
+        For = CheckedExpression;
+
+        base.OnParametersSet();
+    }
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass(ErrorCss);
+        cssBuilder.AddClass("p-1.5 my-1.5");
+        cssBuilder.AddClass("inline-flex rounded");
+        cssBuilder.AddClass("relative");
+        cssBuilder.AddClass("transition duration-300");
+        cssBuilder.AddClass("justify-center items-center overflow-hidden");
+
+        cssBuilder.AddClass(Color.Primary.ToBackgroundCss());
+        cssBuilder.AddClass(ColorExtensions.BackgroundPrimaryHoverButtonColor);
+        cssBuilder.AddClass(ColorExtensions.BackgroundPrimaryActiveButtonColor);
+        cssBuilder.AddClass("focus:ring focus:outline-none");
+        cssBuilder.AddClass(Color.Primary.ToRingFocusCss());
+        cssBuilder.AddClass(Color.Primary.ToTextCss());
+        cssBuilder.AddClass(Color.Primary.ToTextHoverCss());
+        cssBuilder.AddClass(Color.Primary.ToTextActiveCss());
+    }
+}

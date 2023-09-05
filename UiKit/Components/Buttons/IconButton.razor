@@ -1,0 +1,34 @@
+﻿@namespace UiKit.Components
+@inherits ButtonBase
+
+<Element Class="@ComponentCss"
+         HtmlTag="@HtmlTag"
+         type="@Type.ToHtml()"
+         href="@Href"
+         disabled="@Disabled"
+         @onclick="OnClick">
+    <UiKitIcon Icon="Icon" Size="Size"/>
+</Element>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public IconData Icon { get; set; }
+
+    [Parameter]
+    public bool Filled { get; set; } = true;
+
+    [Parameter]
+    public Size Size { get; set; } = Size.Medium;
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass("w-fit");
+
+        if (!Filled)
+            return;
+
+        base.AddComponentCssClasses(ref cssBuilder);
+        cssBuilder.AddClass("p-1.5");
+    }
+}

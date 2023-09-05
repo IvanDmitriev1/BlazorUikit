@@ -1,0 +1,57 @@
+﻿@namespace UiKit.Components
+@inherits UiKitComponentBase
+
+<svg class="@ComponentCss"
+     focusable="false"
+     viewBox="@ViewBox"
+     aria-hidden="true"
+     fill="none"
+     stroke="currentColor"
+     stroke-width="@Icon.StrokeWidth"
+     stroke-linecap="@Icon.StrokeLineCap"
+     stroke-linejoin="@Icon.StrokeLineJoin">
+    @((MarkupString)Icon.SvgContent)
+</svg>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public IconData Icon { get; set; }
+
+    [Parameter]
+    public Size Size { get; set; } = Size.Medium;
+
+    [Parameter]
+    public string ViewBox { get; set; } = "0 0 24 24";
+
+    [Parameter]
+    public Color Color { get; set; } = Color.Inherit;
+
+    private bool _firstRendered;
+
+    protected override bool ShouldRender()
+    {
+        if (!_firstRendered)
+            return true;
+
+        return false;
+    }
+
+    protected override void OnInitialized()
+    {
+        CacheCss = true;
+    }
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass(Size.ToTailwindCssIcon());
+        cssBuilder.AddClass(Color.ToTextCss());
+        cssBuilder.AddClass("w-[1em] h-[1em]");
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+            _firstRendered = true;
+    }
+}

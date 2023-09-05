@@ -1,0 +1,29 @@
+﻿@namespace UiKit.Components
+@inherits ButtonBase
+
+<Element Class="@ComponentCss"
+         HtmlTag="@HtmlTag"
+
+         type="@Type.ToHtml()"
+         href="@Href"
+         disabled="@Disabled"
+
+         @onclick="OnClick">
+    @ChildContent
+</Element>
+
+@code
+{
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public Size Size { get; set; } = Size.Medium;
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        base.AddComponentCssClasses(ref cssBuilder);
+
+        cssBuilder.AddClass(Size.ToTailwindCss());
+    }
+}

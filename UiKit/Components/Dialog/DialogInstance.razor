@@ -1,0 +1,64 @@
+﻿@namespace UiKit.Components
+@inherits UiKitRenderComponentBase
+
+@if (DialogReference.DisplayOptions.DismissOnBackdropClick)
+{
+    <div class="@ComponentCss" @onclick="Cancel">
+        @ContentRenderFragment(DialogReference)
+    </div>
+}
+else
+{
+    <div class="@ComponentCss">
+        @ContentRenderFragment(DialogReference)
+    </div>
+}
+
+@code
+{
+    static readonly RenderFragment<IDialogReferenceBase> ContentRenderFragment = dialogReference =>
+        @<div role="dialog"
+              class="@BuildCss(dialogReference.DisplayOptions.Breakpoint)"
+              @onclick:stopPropagation="true">
+            <DynamicComponent Type="@dialogReference.DialogType" Parameters="dialogReference.Parameters"/>
+        </div>;
+
+
+    [CascadingParameter]
+    IDialogReferenceBase DialogReference { get; set; } = null!;
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        var options = DialogReference.DisplayOptions;
+
+        cssBuilder.AddClass("bg-main-dark-background/60");
+        cssBuilder.AddClass("flex items-center");
+        cssBuilder.AddClass("z-[1000]");
+        cssBuilder.AddClass("fixed top-0 left-0");
+        cssBuilder.AddClass("w-full h-full");
+
+        cssBuilder.AddClass("cursor-pointer", options.DismissOnBackdropClick);
+    }
+
+    private static string BuildCss(Breakpoint breakpoint)
+    {
+        using var cssBuilder = new CssBuilder(stackalloc char[256]);
+
+        cssBuilder.AddClass("container mx-auto p-5 w-full");
+        cssBuilder.AddClass("cursor-default animate-zoom");
+        cssBuilder.AddClass("rounded border-2");
+        cssBuilder.AddClass(ColorExtensions.FullBorderColor);
+        cssBuilder.AddClass("drop-shadow-md");
+        cssBuilder.AddClass(ColorExtensions.MainBackgroundColor);
+        cssBuilder.AddClass(breakpoint.ToTailwindCssMaxWidth());
+
+        return cssBuilder.ToString();
+    }
+
+    protected override void OnInitialized()
+    {
+        CacheCss = true;
+    }
+
+    public void Cancel() => DialogReference.Cancel();
+}

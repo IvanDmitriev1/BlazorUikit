@@ -1,0 +1,73 @@
+﻿@namespace UiKit.Components
+
+@inherits UiKitRenderComponentBase
+
+@inject IDialogService DialogService
+@inject IJSRuntime JsRuntime
+
+@foreach (var (key, dialogReference) in _dialogByGuid)
+{
+    <CascadingValue @key="key" IsFixed="true" Value="dialogReference">
+        @dialogReference.InstanceRenderFragment
+    </CascadingValue>
+}
+
+@code
+{
+    readonly Dictionary<Guid, IDialogReferenceBase> _dialogByGuid = new(1);
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) { }
+
+    protected override void OnInitialized()
+    {
+        DialogService.AddDialogProvider(this);
+    }
+
+    public async Task ShowAsync(IDialogReferenceBase dialogReference)
+    {
+        _dialogByGuid.Add(dialogReference.Id, dialogReference);
+        await InvokeAsync(StateHasChangedWithRendering);
+
+        if (_dialogByGuid.Count == 1)
+        {
+            await JsRuntime.InvokeVoidAsync("LockScroll");
+        }
+    }
+
+    private ValueTask OnLocationChanging(LocationChangingContext arg)
+    {
+        if (_dialogByGuid.Count > 0)
+            return ValueTask.CompletedTask;
+
+        foreach (var (_, dialogReferenceBase) in _dialogByGuid)
+        {
+            dialogReferenceBase.Cancel();
+        }
+
+        _dialogByGuid.Clear();
+        StateHasChanged();
+
+        return ValueTask.CompletedTask;
+    }
+
+    public async void RemoveDialog(Guid id)
+    {
+        if (!_dialogByGuid.ContainsKey(id))
+            return;
+
+        _dialogByGuid.Remove(id);
+        StateHasChangedWithRendering();
+
+        if (_dialogByGuid.Count > 0)
+            return;
+
+        try
+        {
+            await JsRuntime.InvokeVoidAsync("UnlockScroll");
+        }
+        catch
+        {
+            //
+        }
+    }
+}

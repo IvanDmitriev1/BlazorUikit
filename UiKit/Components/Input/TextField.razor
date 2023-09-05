@@ -1,0 +1,98 @@
+﻿@namespace UiKit.Components
+@inherits TextInputBase<string>
+
+<div class="@(string.IsNullOrEmpty(Label) ? string.Empty : "my-2.5") @Class">
+    <Field Disabled="@Disabled" FullWidth="@FullWidth" Class="@($"{ErrorCss} {InputClass}")">
+        @if (Adornment == Adornment.Start)
+        {
+            <InputAdornment Icon="@AdornmentIcon" AdornmentClick="@AdornmentClick" Size="@AdornmentIconSize" Class="input-adornment-left" />
+        }
+
+        <UiInput @ref="@_input"
+            Class="@($"{_adornmentCss}")"
+            Label="@Label"
+            UserAttributes="@UserAttributes"
+            Disabled="@Disabled"
+            InputMode="@InputMode"
+            ReadOnly="@ReadOnly"
+            Placeholder="@Placeholder"
+            MaxLength="@MaxLength"
+            Lines="@Lines"
+            InputType="@InputType"
+
+            Text="@Text"
+            TextChanged="text => CurrentText = text"/>
+
+        @if (Adornment == Adornment.End)
+        {
+            <InputAdornment Icon="@AdornmentIcon" Size="@AdornmentIconSize" AdornmentClick="@AdornmentClick" Class="input-adornment-right" />
+        }
+    </Field>
+    
+    @DisplayValidationErrors.DisplayValidationErrorsFragment(Errors)
+</div>
+
+@code
+{
+    /// <summary>
+    /// Gets or sets an expression that identifies the bound value.
+    /// </summary>
+    [Parameter]
+    public Expression<Func<string>>? TextExpression { get; set; }
+
+    [Parameter]
+    public string? InputClass { get; set; }
+
+    [Parameter]
+    public bool FullWidth { get; set; }
+
+    [Parameter]
+    public InputType InputType { get; set; } = InputType.Text;
+
+    [Parameter]
+    public Adornment Adornment { get; set; }
+
+    [Parameter]
+    public IconData AdornmentIcon { get; set; }
+
+    [Parameter]
+    public Size AdornmentIconSize { get; set; }
+
+    [Parameter]
+    public EventCallback AdornmentClick { get; set; }
+
+    UiInput? _input;
+
+    string _adornmentCss = null!;
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) { }
+
+    protected override void OnParametersSet()
+    {
+        For = TextExpression;
+
+        base.OnParametersSet();
+
+        if (_input is null || _input.Text == Text)
+            return;
+
+        _input.Text = Text;
+        ToggleRender();
+    }
+
+    protected override void OnInitialized()
+    {
+        _adornmentCss = Adornment switch
+        {
+            Adornment.None  => "px-3.5",
+            Adornment.Start => "pr-3.5",
+            Adornment.End   => "pl-3.5",
+            _               => string.Empty
+        };
+    }
+
+    protected override void OnTextChanged()
+    {
+        NotifyEditContext();
+    }
+}
