@@ -69,17 +69,11 @@
         if (_objRef is null)
             return;
 
-        try
+        _objRef.Dispose();
+
+        if (IsJsRuntimeAvailable)
         {
             await JsRuntime.InvokeVoidAsync("UnRegisterInputEvent", _id);
-        }
-        catch (JSDisconnectedException)
-        {
-            //
-        }
-        finally
-        {
-            _objRef.Dispose();
         }
     }
 

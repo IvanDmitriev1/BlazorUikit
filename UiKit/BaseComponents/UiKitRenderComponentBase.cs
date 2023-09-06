@@ -21,6 +21,8 @@ public abstract class UiKitRenderComponentBase : UiKitComponentBase
 	{
 		if (firstRender)
 			_firstRendered = true;
+
+		base.OnAfterRender(firstRender);
 	}
 
 	protected virtual void ToggleRender()

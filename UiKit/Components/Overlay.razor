@@ -40,14 +40,10 @@ else
 
     public async ValueTask DisposeAsync()
     {
-        try
-        {
-            await JsRuntime.InvokeVoidAsync("UnlockScroll");
-        }
-        catch
-        {
-            //
-        }
+        if (!IsJsRuntimeAvailable)
+            return;
+
+        await JsRuntime.InvokeVoidAsync("UnlockScroll");
     }
 
     protected override async Task OnInitializedAsync()
