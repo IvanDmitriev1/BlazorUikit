@@ -1,29 +1,16 @@
 ﻿@namespace UiKit.Components
 @inherits UiKitRenderComponentBase
 
-@if (DialogReference.DisplayOptions.DismissOnBackdropClick)
-{
-    <div class="@ComponentCss" @onclick="Cancel">
-        @ContentRenderFragment(DialogReference)
+<Overlay CloseOnClick="DialogReference.DisplayOptions.DismissOnBackdropClick" OnClick="Cancel">
+    <div role="dialog"
+         class="@BuildCss(DialogReference.DisplayOptions.Breakpoint)"
+         @onclick:stopPropagation="true">
+        <DynamicComponent Type="@DialogReference.DialogType" Parameters="DialogReference.Parameters" />
     </div>
-}
-else
-{
-    <div class="@ComponentCss">
-        @ContentRenderFragment(DialogReference)
-    </div>
-}
+</Overlay>
 
 @code
 {
-    static readonly RenderFragment<IDialogReferenceBase> ContentRenderFragment = dialogReference =>
-        @<div role="dialog"
-              class="@BuildCss(dialogReference.DisplayOptions.Breakpoint)"
-              @onclick:stopPropagation="true">
-            <DynamicComponent Type="@dialogReference.DialogType" Parameters="dialogReference.Parameters"/>
-        </div>;
-
-
     [CascadingParameter]
     IDialogReferenceBase DialogReference { get; set; } = null!;
 

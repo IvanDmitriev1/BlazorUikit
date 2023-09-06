@@ -1,0 +1,73 @@
+﻿@inherits UiKitRenderComponentBase
+@implements IAsyncDisposable
+
+@inject IJSRuntime JsRuntime
+
+@if (CloseOnClick)
+{
+    <div class="@ComponentCss" @onclick="OnClick" @onclick:stopPropagation="true">
+        @ChildContent
+    </div>
+}
+else
+{
+    <div class="@ComponentCss">
+        @ChildContent
+    </div>
+}
+
+@code{
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+    [Parameter]
+    public bool CloseOnClick { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass("bg-main-dark-background/60");
+        cssBuilder.AddClass("flex items-center");
+        cssBuilder.AddClass("z-[1000]");
+        cssBuilder.AddClass("fixed top-0 left-0");
+        cssBuilder.AddClass("w-full h-full");
+
+        cssBuilder.AddClass("cursor-pointer", CloseOnClick);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JsRuntime.InvokeVoidAsync("UnlockScroll");
+        }
+        catch
+        {
+            //
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CacheCss = true;
+
+        if (RuntimeLocation.IsClientSide)
+        {
+            await JsRuntime.InvokeVoidAsync("LockScroll");   
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        if (RuntimeLocation.IsServerSide)
+        {
+            await JsRuntime.InvokeVoidAsync("LockScroll");
+        }
+    }
+}

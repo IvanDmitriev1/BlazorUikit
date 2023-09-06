@@ -1,9 +1,7 @@
 ﻿@namespace UiKit.Components
-
 @inherits UiKitRenderComponentBase
 
 @inject IDialogService DialogService
-@inject IJSRuntime JsRuntime
 
 @foreach (var (key, dialogReference) in _dialogByGuid)
 {
@@ -27,11 +25,6 @@
     {
         _dialogByGuid.Add(dialogReference.Id, dialogReference);
         await InvokeAsync(StateHasChangedWithRendering);
-
-        if (_dialogByGuid.Count == 1)
-        {
-            await JsRuntime.InvokeVoidAsync("LockScroll");
-        }
     }
 
     private ValueTask OnLocationChanging(LocationChangingContext arg)
@@ -50,24 +43,12 @@
         return ValueTask.CompletedTask;
     }
 
-    public async void RemoveDialog(Guid id)
+    public void RemoveDialog(Guid id)
     {
         if (!_dialogByGuid.ContainsKey(id))
             return;
 
         _dialogByGuid.Remove(id);
         StateHasChangedWithRendering();
-
-        if (_dialogByGuid.Count > 0)
-            return;
-
-        try
-        {
-            await JsRuntime.InvokeVoidAsync("UnlockScroll");
-        }
-        catch
-        {
-            //
-        }
     }
 }
