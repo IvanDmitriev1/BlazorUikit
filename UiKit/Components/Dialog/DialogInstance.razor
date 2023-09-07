@@ -1,7 +1,7 @@
 ﻿@namespace UiKit.Components
 @inherits UiKitRenderComponentBase
 
-<Overlay Class="flex items-center" Style="z-index: 100;" CloseOnClick="DialogReference.DisplayOptions.DismissOnBackdropClick" OnClick="Cancel">
+<Overlay Class="@OverlayCssBuilder()" Style="z-index: 100;" OnClick="OverlayOnClickHandler">
     <div role="dialog"
          class="@ComponentCss"
          @onclick:stopPropagation="true">
@@ -30,5 +30,21 @@
         CacheCss = true;
     }
 
-    public void Cancel() => DialogReference.Cancel();
+    private string OverlayCssBuilder()
+    {
+        using var cssBuilder = new CssBuilder(stackalloc char[55]);
+
+        cssBuilder.AddClass("flex items-center");
+        cssBuilder.AddClass("cursor-pointer", DialogReference.DisplayOptions.DismissOnBackdropClick);
+
+        return cssBuilder.ToString();
+    }
+
+    private void OverlayOnClickHandler()
+    {
+        if (!DialogReference.DisplayOptions.DismissOnBackdropClick)
+            return;
+
+        DialogReference.Cancel();
+    }
 }

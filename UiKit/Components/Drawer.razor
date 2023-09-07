@@ -1,11 +1,16 @@
 ﻿@inherits UiKitRenderComponentBase
 
-<aside>
-
-</aside>
+<Overlay LockScroll="false" CloseOnClick="true">
+    <aside>
+        @ChildContent
+    </aside>
+</Overlay>
 
 @code
 {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
 

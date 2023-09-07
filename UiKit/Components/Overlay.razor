@@ -3,29 +3,20 @@
 
 @inject IJSRuntime JsRuntime
 
-@if (CloseOnClick)
-{
-    <div class="@ComponentCss" style="@Style" @onclick="OnClick" @onclick:stopPropagation="true">
-        @ChildContent
-    </div>
-}
-else
-{
-    <div class="@ComponentCss" style="@Style">
-        @ChildContent
-    </div>
-}
+<div class="@ComponentCss" style="@Style" @onclick="OnClick" @onclick:stopPropagation="true">
+    @ChildContent
+</div>
 
 @code{
-
-    [Parameter]
-    public string Style { get; set; } = string.Empty;
 
     [Parameter]
     public RenderFragment ChildContent { get; set; } = null!;
 
     [Parameter]
-    public bool CloseOnClick { get; set; }
+    public string Style { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool LockScroll { get; set; } = true;
 
     [Parameter]
     public EventCallback OnClick { get; set; }
@@ -35,26 +26,19 @@ else
         cssBuilder.AddClass("bg-main-dark-background/60");
         cssBuilder.AddClass("fixed top-0 left-0");
         cssBuilder.AddClass("w-full h-full");
-
-        cssBuilder.AddClass("cursor-pointer", CloseOnClick);
     }
 
     public async ValueTask DisposeAsync()
     {
-        if (!IsJsRuntimeAvailable)
+        if (!IsJsRuntimeAvailable || !LockScroll)
             return;
 
         await JsRuntime.InvokeVoidAsync("UnlockScroll");
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         CacheCss = true;
-
-        if (RuntimeLocation.IsClientSide)
-        {
-            await JsRuntime.InvokeVoidAsync("LockScroll");   
-        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -62,7 +46,7 @@ else
         if (!firstRender)
             return;
 
-        if (RuntimeLocation.IsServerSide)
+        if (LockScroll)
         {
             await JsRuntime.InvokeVoidAsync("LockScroll");
         }
