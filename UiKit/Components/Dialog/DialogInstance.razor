@@ -5,14 +5,16 @@
     <div role="dialog"
          class="@ComponentCss"
          @onclick:stopPropagation="true">
-        <DynamicComponent Type="@DialogReference.DialogType" Parameters="DialogReference.Parameters" />
+        <CascadingValue IsFixed="true" Value="DialogReference">
+            @DialogReference.DialogContent
+        </CascadingValue>
     </div>
 </Overlay>
 
 @code
 {
-    [CascadingParameter]
-    IDialogReferenceBase DialogReference { get; set; } = null!;
+    [Parameter, EditorRequired]
+    public IDialogReferenceBase DialogReference { get; set; } = null!;
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
@@ -34,7 +36,7 @@
     {
         using var cssBuilder = new CssBuilder(stackalloc char[55]);
 
-        cssBuilder.AddClass("flex items-center");
+        cssBuilder.AddClass(DialogReference.DisplayOptions.DialogPosition.ToCss());
         cssBuilder.AddClass("cursor-pointer", DialogReference.DisplayOptions.DismissOnBackdropClick);
 
         return cssBuilder.ToString();

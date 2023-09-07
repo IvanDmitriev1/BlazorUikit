@@ -40,4 +40,15 @@ public interface IDialogService
 	/// </remarks>
     Task<TResult?> ShowAsync<TDialog, TResult>(DialogDisplayOptions options, DialogParameters<TDialog> dialogParameters)
         where TDialog : DialogBase<TDialog, TResult>;
+
+	/// <summary>
+	/// Asynchronously displays a dialog using the specified display options and a render fragment.
+	/// </summary>
+	/// <param name="options">An instance of <see cref="DialogDisplayOptions"/> specifying the display options for the dialog.</param>
+	/// <param name="renderFragment">A <see cref="RenderFragment"/> that represents the content of the dialog.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	/// <remarks>
+	/// This method displays the dialog and awaits the completion of the dialog reference's CompletionTask. If the task is canceled, the method catches the resulting <see cref="TaskCanceledException"/> and continues execution.
+	/// </remarks>
+	Task ShowAsync(DialogDisplayOptions options, RenderFragment renderFragment);
 }

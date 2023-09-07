@@ -4,18 +4,12 @@ namespace UiKit.Components.Dialog;
 
 internal abstract class DialogReferenceBase : IDialogReferenceBase
 {
-	protected DialogReferenceBase(Type dialogType)
-	{
-		DialogType = dialogType;
-	}
-
-	public Type DialogType { get; }
 	public Guid Id { get; } = Guid.NewGuid();
 	public required DialogDisplayOptions DisplayOptions { get; init; }
 	public required IDictionary<string, object> Parameters { get; init; }
 	public required DialogProvider DialogProvider { get; init; }
 
-	public RenderFragment InstanceRenderFragment { get; protected set; } = null!;
+	public RenderFragment DialogContent { get; protected set; } = null!;
 	public DialogBase? ActualDialog { get; set; }
 
 	public abstract void Cancel();
@@ -23,16 +17,15 @@ internal abstract class DialogReferenceBase : IDialogReferenceBase
 
 internal abstract class DialogReferenceBase<TDialog> : DialogReferenceBase
 {
-	protected DialogReferenceBase() : base(typeof(TDialog))
+	protected DialogReferenceBase()
 	{
 		RenderFragment dialogRenderFragment = new RenderFragment(builder =>
 		{
-			builder.OpenComponent<DialogInstance>(0);
-			builder.SetKey(Id);
+			builder.OpenComponent(0, typeof(TDialog));
 			builder.CloseComponent();
 		});
 
-		InstanceRenderFragment = dialogRenderFragment;
+		DialogContent = dialogRenderFragment;
 	}
 }
 
@@ -83,5 +76,22 @@ internal sealed class DialogReference<TDialog, TResult> : DialogReferenceBase<TD
 
 		DialogProvider.RemoveDialog(Id);
 		_tcs.TrySetResult(result);
+	}
+}
+
+internal sealed class RenderFragmentDialogReference : DialogReferenceBase
+{
+	public RenderFragmentDialogReference(RenderFragment renderFragment)
+	{
+		DialogContent = renderFragment;
+	}
+
+	public Task CompletionTask => _tcs.Task;
+	private readonly TaskCompletionSource _tcs = new();
+
+	public override void Cancel()
+	{
+		_tcs.TrySetCanceled();
+		DialogProvider.RemoveDialog(Id);
 	}
 }

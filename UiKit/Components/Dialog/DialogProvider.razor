@@ -5,9 +5,7 @@
 
 @foreach (var (key, dialogReference) in _dialogByGuid)
 {
-    <CascadingValue @key="key" IsFixed="true" Value="dialogReference">
-        @dialogReference.InstanceRenderFragment
-    </CascadingValue>
+    <DialogInstance @key="key" DialogReference="dialogReference"/>
 }
 
 @code

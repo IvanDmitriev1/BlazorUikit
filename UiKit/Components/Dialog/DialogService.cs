@@ -4,6 +4,7 @@ namespace UiKit.Components.Dialog;
 
 internal class DialogService : IDialogService
 {
+	private static readonly IDictionary<string, object> Empty = new Dictionary<string, object>();
 	private DialogProvider? _dialogProvider;
 
 	public void AddDialogProvider(DialogProvider provider)
@@ -58,6 +59,29 @@ internal class DialogService : IDialogService
 		catch (TaskCanceledException)
 		{
 			return default;
+		}
+	}
+
+	/// <inheritdoc />
+	public async Task ShowAsync(DialogDisplayOptions options, RenderFragment renderFragment)
+	{
+		ArgumentNullException.ThrowIfNull(_dialogProvider);
+
+		RenderFragmentDialogReference dialogReference = new RenderFragmentDialogReference(renderFragment)
+		{
+			DisplayOptions = options,
+			DialogProvider = _dialogProvider,
+			Parameters = Empty
+		};
+
+		await _dialogProvider.ShowAsync(dialogReference);
+
+		try
+		{
+			await dialogReference.CompletionTask;
+		}
+		catch (TaskCanceledException)
+		{
 		}
 	}
 }
