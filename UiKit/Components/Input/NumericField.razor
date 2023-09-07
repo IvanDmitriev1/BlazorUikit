@@ -71,9 +71,16 @@
 
         _objRef.Dispose();
 
-        if (IsJsRuntimeAvailable)
+        if (!IsJsRuntimeAvailable)
+            return;
+
+        try
         {
             await JsRuntime.InvokeVoidAsync("UnRegisterInputEvent", _id);
+        }
+        catch
+        {
+            //
         }
     }
 

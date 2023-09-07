@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Routing;
 
 namespace UiKit.Components;
 
-public sealed class Link : UiText
+public sealed class UiLink : UiText
 {
 	[Parameter, EditorRequired]
 	public string Href { get; set; } = null!;
