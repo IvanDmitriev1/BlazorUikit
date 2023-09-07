@@ -1,4 +1,4 @@
-﻿@inherits UiKitRenderComponentBase
+﻿@inherits UiKitComponentBase
 @implements IAsyncDisposable
 
 @inject IJSRuntime JsRuntime
@@ -34,11 +34,6 @@
             return;
 
         await JsRuntime.InvokeVoidAsync("UnlockScroll");
-    }
-
-    protected override void OnInitialized()
-    {
-        CacheCss = true;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

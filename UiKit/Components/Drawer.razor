@@ -1,7 +1,7 @@
 ﻿@inherits UiKitRenderComponentBase
 
-<Overlay LockScroll="false" CloseOnClick="true">
-    <aside>
+<Overlay LockScroll="false" Class="@OverlayStringBuilder()" OnClick="() => CurrentOpen = false">
+    <aside class="@ComponentCss" @onclick:stopPropagation="true">
         @ChildContent
     </aside>
 </Overlay>
@@ -11,8 +11,56 @@
     [Parameter]
     public RenderFragment ChildContent { get; set; } = null!;
 
+    [Parameter]
+    public bool Open { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OpenChanged { get; set; }
+
+    protected bool CurrentOpen
+    {
+        get => Open;
+        set
+        {
+            var hasChanged = value != Open;
+            if (!hasChanged)
+                return;
+
+            Open = value;
+            _ = OpenChanged.InvokeAsync(value);
+            OnOpenChanged();
+        }
+    }
+
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
+        cssBuilder.AddClass("h-full w-fit");
+        cssBuilder.AddClass("cursor-default animate-zoom");
+        cssBuilder.AddClass("rounded border-2");
+        cssBuilder.AddClass(ColorExtensions.FullBorderColor);
+        cssBuilder.AddClass("drop-shadow-md");
+        cssBuilder.AddClass(ColorExtensions.MainBackgroundColor);
+    }
 
+    protected override void OnInitialized()
+    {
+        CacheCss = true;
+    }
+
+    private string OverlayStringBuilder()
+    {
+        using var cssBuilder = new CssBuilder(stackalloc char[55]);
+
+        cssBuilder.AddClass("cursor-pointer");
+        cssBuilder.AddClass("z-[1000]");
+
+        cssBuilder.AddClass("hidden", !Open);
+
+        return cssBuilder.ToString();
+    }
+
+    private void OnOpenChanged()
+    {
+        ToggleRender();
     }
 }
