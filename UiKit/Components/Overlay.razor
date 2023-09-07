@@ -5,18 +5,21 @@
 
 @if (CloseOnClick)
 {
-    <div class="@ComponentCss" @onclick="OnClick" @onclick:stopPropagation="true">
+    <div class="@ComponentCss" style="@Style" @onclick="OnClick" @onclick:stopPropagation="true">
         @ChildContent
     </div>
 }
 else
 {
-    <div class="@ComponentCss">
+    <div class="@ComponentCss" style="@Style">
         @ChildContent
     </div>
 }
 
 @code{
+
+    [Parameter]
+    public string Style { get; set; } = string.Empty;
 
     [Parameter]
     public RenderFragment ChildContent { get; set; } = null!;
@@ -30,8 +33,6 @@ else
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("bg-main-dark-background/60");
-        cssBuilder.AddClass("flex items-center");
-        cssBuilder.AddClass("z-[1000]");
         cssBuilder.AddClass("fixed top-0 left-0");
         cssBuilder.AddClass("w-full h-full");
 

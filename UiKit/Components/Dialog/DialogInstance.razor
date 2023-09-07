@@ -1,9 +1,9 @@
 ﻿@namespace UiKit.Components
 @inherits UiKitRenderComponentBase
 
-<Overlay CloseOnClick="DialogReference.DisplayOptions.DismissOnBackdropClick" OnClick="Cancel">
+<Overlay Class="flex items-center" Style="z-index: 100;" CloseOnClick="DialogReference.DisplayOptions.DismissOnBackdropClick" OnClick="Cancel">
     <div role="dialog"
-         class="@BuildCss(DialogReference.DisplayOptions.Breakpoint)"
+         class="@ComponentCss"
          @onclick:stopPropagation="true">
         <DynamicComponent Type="@DialogReference.DialogType" Parameters="DialogReference.Parameters" />
     </div>
@@ -16,30 +16,13 @@
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        var options = DialogReference.DisplayOptions;
-
-        cssBuilder.AddClass("bg-main-dark-background/60");
-        cssBuilder.AddClass("flex items-center");
-        cssBuilder.AddClass("z-[1000]");
-        cssBuilder.AddClass("fixed top-0 left-0");
-        cssBuilder.AddClass("w-full h-full");
-
-        cssBuilder.AddClass("cursor-pointer", options.DismissOnBackdropClick);
-    }
-
-    private static string BuildCss(Breakpoint breakpoint)
-    {
-        using var cssBuilder = new CssBuilder(stackalloc char[256]);
-
         cssBuilder.AddClass("container mx-auto p-5 w-full");
         cssBuilder.AddClass("cursor-default animate-zoom");
         cssBuilder.AddClass("rounded border-2");
         cssBuilder.AddClass(ColorExtensions.FullBorderColor);
         cssBuilder.AddClass("drop-shadow-md");
         cssBuilder.AddClass(ColorExtensions.MainBackgroundColor);
-        cssBuilder.AddClass(breakpoint.ToTailwindCssMaxWidth());
-
-        return cssBuilder.ToString();
+        cssBuilder.AddClass(DialogReference.DisplayOptions.Breakpoint.ToTailwindCssMaxWidth());
     }
 
     protected override void OnInitialized()
