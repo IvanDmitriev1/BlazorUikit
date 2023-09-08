@@ -47,7 +47,7 @@
     protected virtual Task OnClick()
     {
         List?.SetSelectedValue(Value);
-        ToggleRender();
+        AllowRender();
 
         return Task.CompletedTask;
     }
@@ -55,12 +55,12 @@
     public void SetSelected()
     {
         _isSelected = true;
-        ToggleRender();
+        AllowRender();
     }
 
     public void SetUnselected()
     {
         _isSelected = false;
-        ToggleRender();
+        AllowRender();
     }
 }

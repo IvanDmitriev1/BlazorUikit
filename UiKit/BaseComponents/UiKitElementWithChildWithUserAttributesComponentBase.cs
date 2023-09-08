@@ -9,7 +9,7 @@ public abstract class UiKitElementWithChildWithUserAttributesComponentBase : UiK
 	/// They will be splatted onto the underlying HTML tag.
 	/// </summary>
 	[Parameter(CaptureUnmatchedValues = true)]
-	public Dictionary<string, object> UserAttributes { get; set; } = new();
+	public Dictionary<string, object>? UserAttributes { get; set; }
 
 	protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
 	{

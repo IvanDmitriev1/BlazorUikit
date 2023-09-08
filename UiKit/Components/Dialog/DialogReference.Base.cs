@@ -10,7 +10,7 @@ internal abstract class DialogReferenceBase : IDialogReferenceBase
 	public required IDictionary<string, object> Parameters { get; init; }
 	public required IDialogService DialogService { get; init; }
 
-	public RenderFragment DialogContent { get; protected set; } = null!;
+	public RenderFragment DialogContent { get; private set; } = null!;
 	public DialogBase? ActualDialog { get; set; }
 
 	public abstract void Cancel();

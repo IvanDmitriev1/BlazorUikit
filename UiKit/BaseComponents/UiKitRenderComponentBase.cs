@@ -2,7 +2,7 @@
 
 public abstract class UiKitRenderComponentBase : UiKitComponentBase
 {
-	private bool _forceRender;
+	private bool _render;
 	private bool _firstRendered;
 
 	protected override bool ShouldRender()
@@ -10,10 +10,10 @@ public abstract class UiKitRenderComponentBase : UiKitComponentBase
 		if (!_firstRendered)
 			return true;
 
-		if (!_forceRender)
+		if (!_render)
 			return false;
 
-		_forceRender = false;
+		_render = false;
 		return true;
 	}
 
@@ -25,14 +25,14 @@ public abstract class UiKitRenderComponentBase : UiKitComponentBase
 		base.OnAfterRender(firstRender);
 	}
 
-	protected virtual void ToggleRender()
+	protected virtual void AllowRender()
 	{
-		_forceRender = true;
+		_render = true;
 	}
 
 	protected void StateHasChangedWithRendering()
 	{
-		ToggleRender();
+		AllowRender();
 		StateHasChanged();
 	}
 }

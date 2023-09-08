@@ -80,6 +80,6 @@ public abstract class ValidationComponentBase<T> : UiKitRenderComponentBase, IAs
             ErrorCss = fieldCssClass;
         }
 
-        ToggleRender();
+        AllowRender();
     }
 }
