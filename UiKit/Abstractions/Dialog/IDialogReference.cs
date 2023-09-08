@@ -1,30 +1,33 @@
-﻿using UiKit.Components;
+﻿using System.Diagnostics.CodeAnalysis;
+using UiKit.Components;
 
 namespace UiKit.Abstractions.Dialog;
 
 public interface IDialogReferenceBase
 {
-    Type DialogType { get; }
     Guid Id { get; }
     IDictionary<string, object> Parameters { get; init; }
     DialogDisplayOptions DisplayOptions { get; init; }
 
-    RenderFragment InstanceRenderFragment { get; }
+    RenderFragment DialogContent { get; }
     DialogBase? ActualDialog { get; set; }
 
     void Cancel();
 }
 
-public interface IDialogReference<TDialog> : IDialogReferenceBase
+public interface IDialogReference : IDialogReferenceBase
 {
     Task CompletionTask { get; }
-
     void Close();
 }
 
-public interface IDialogReference<TDialog, TResult> : IDialogReferenceBase
+public interface IDialogReference<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog> : IDialogReference
+{
+    
+}
+
+public interface IDialogReference<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog, TResult> : IDialogReferenceBase
 {
     Task<TResult> CompletionTask { get; }
-
     void Close(TResult result);
 }

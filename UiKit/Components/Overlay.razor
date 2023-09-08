@@ -1,0 +1,49 @@
+﻿@inherits UiKitComponentBase
+@implements IAsyncDisposable
+
+@inject IJSRuntime JsRuntime
+
+<div class="@ComponentCss" style="@Style" @onclick="OnClick" @onclick:stopPropagation="true">
+    @ChildContent
+</div>
+
+@code{
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+    [Parameter]
+    public string Style { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool LockScroll { get; set; } = true;
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass("bg-main-dark-background/60");
+        cssBuilder.AddClass("fixed top-0 left-0");
+        cssBuilder.AddClass("w-full h-full");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (!IsJsRuntimeAvailable || !LockScroll)
+            return;
+
+        await JsRuntime.InvokeVoidAsync("UnlockScroll");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        if (LockScroll)
+        {
+            await JsRuntime.InvokeVoidAsync("LockScroll");
+        }
+    }
+}

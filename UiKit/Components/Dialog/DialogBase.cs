@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using UiKit.Abstractions.Dialog;
 
 namespace UiKit.Components;
@@ -25,12 +26,12 @@ public abstract class DialogBase : ComponentBase, IDisposable
     public virtual bool OnClosing() => true;
 }
 
-public abstract class DialogBase<TSelf> : DialogBase
+public abstract class DialogBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TSelf> : DialogBase
 {
     protected IDialogReference<TSelf> DialogReference => Unsafe.As<IDialogReference<TSelf>>(DialogReferenceBase);
 }
 
-public abstract class DialogBase<TSelf, TResult> : DialogBase
+public abstract class DialogBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TSelf, TResult> : DialogBase
 {
     protected IDialogReference<TSelf, TResult> DialogReference => Unsafe.As<IDialogReference<TSelf, TResult>>(DialogReferenceBase);
 }

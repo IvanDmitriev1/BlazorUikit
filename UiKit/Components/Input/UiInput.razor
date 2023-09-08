@@ -80,7 +80,7 @@ else
             _internalText = Text;
         }
 
-        ToggleRender();
+        AllowRender();
     }
 
     private void OnInput(ChangeEventArgs obj)
@@ -112,12 +112,12 @@ else
         if (string.IsNullOrEmpty(Text))
         {
             _inputCss = string.Empty;
-            ToggleRender();
+            AllowRender();
         }
         else if (string.IsNullOrEmpty(_inputCss))
         {
             _inputCss = "has-text";
-            ToggleRender();
+            AllowRender();
         }
     }
 }

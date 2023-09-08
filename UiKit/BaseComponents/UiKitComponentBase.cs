@@ -8,12 +8,19 @@ public abstract class UiKitComponentBase : ComponentBase
     [Parameter]
     public bool CacheCss { get; set; }
 
+    protected bool IsJsRuntimeAvailable { get; private set; }
     protected bool IncludeClassCss { get; set; } = true;
     protected string ComponentCss => GetComponentCss();
 
     private string? _componentCss;
 
     protected abstract void AddComponentCssClasses(ref CssBuilder cssBuilder);
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        IsJsRuntimeAvailable = true;
+        base.OnAfterRender(firstRender);
+    }
 
     private string GetComponentCss()
     {

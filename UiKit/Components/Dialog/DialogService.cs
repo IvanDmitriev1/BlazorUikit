@@ -1,63 +1,74 @@
-﻿using UiKit.Abstractions.Dialog;
+﻿using System.Diagnostics.CodeAnalysis;
+using UiKit.Abstractions.Dialog;
 
 namespace UiKit.Components.Dialog;
 
 internal class DialogService : IDialogService
 {
+	private static readonly IDictionary<string, object> Empty = new Dictionary<string, object>();
 	private DialogProvider? _dialogProvider;
 
-	public void AddDialogProvider(DialogProvider provider)
+	public void AddDialogProvider(DialogProvider dialogProvider)
 	{
-		_dialogProvider = provider;
+		_dialogProvider = dialogProvider;
 	}
 
+	public void RemoveDialog(Guid id)
+	{
+		_dialogProvider?.RemoveDialog(id);
+	}
 
-	/// <inheritdoc />
-	public async Task ShowAsync<TDialog>(DialogDisplayOptions options, DialogParameters<TDialog> dialogParameters)
+	public async ValueTask<IDialogReference> ShowAsync
+		(DialogDisplayOptions options, RenderFragment renderFragment)
+	{
+		ArgumentNullException.ThrowIfNull(_dialogProvider);
+
+		var dialogReference = new RenderFragmentDialogReference(renderFragment)
+		{
+			DialogService = this,
+			DisplayOptions = options,
+			Parameters = Empty
+		};
+
+		await _dialogProvider.AddDialog(dialogReference);
+		return dialogReference;
+	}
+
+	public async ValueTask<IDialogReference<TDialog>> ShowAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog>
+	(DialogDisplayOptions options,
+	 DialogParameters<TDialog> dialogParameters
+	)
 		where TDialog : DialogBase
 	{
 		ArgumentNullException.ThrowIfNull(_dialogProvider);
 
 		var dialogReference = new DialogReference<TDialog>
 		{
+			DialogService = this,
 			DisplayOptions = options,
-			DialogProvider = _dialogProvider,
 			Parameters = dialogParameters
 		};
 
-		await _dialogProvider.ShowAsync(dialogReference);
-
-		try
-		{
-			await dialogReference.CompletionTask;
-		}
-		catch (TaskCanceledException)
-		{
-		}
+		await _dialogProvider.AddDialog(dialogReference);
+		return dialogReference;
 	}
 
-	/// <inheritdoc />
-	public async Task<TResult?> ShowAsync<TDialog, TResult>(DialogDisplayOptions options, DialogParameters<TDialog> dialogParameters)
+	public async ValueTask<IDialogReference<TDialog, TResult>> ShowAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog, TResult>
+	(DialogDisplayOptions options,
+	 DialogParameters<TDialog> dialogParameters
+	)
 		where TDialog : DialogBase<TDialog, TResult>
 	{
 		ArgumentNullException.ThrowIfNull(_dialogProvider);
 
 		var dialogReference = new DialogReference<TDialog, TResult>
 		{
+			DialogService = this,
 			DisplayOptions = options,
-			DialogProvider = _dialogProvider,
 			Parameters = dialogParameters
 		};
 
-		await _dialogProvider.ShowAsync(dialogReference);
-
-		try
-		{
-			return await dialogReference.CompletionTask;
-		}
-		catch (TaskCanceledException)
-		{
-			return default;
-		}
+		await _dialogProvider.AddDialog(dialogReference);
+		return dialogReference;
 	}
 }

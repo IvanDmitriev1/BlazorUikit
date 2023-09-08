@@ -69,17 +69,18 @@
         if (_objRef is null)
             return;
 
+        _objRef.Dispose();
+
+        if (!IsJsRuntimeAvailable)
+            return;
+
         try
         {
             await JsRuntime.InvokeVoidAsync("UnRegisterInputEvent", _id);
         }
-        catch (JSDisconnectedException)
+        catch
         {
             //
-        }
-        finally
-        {
-            _objRef.Dispose();
         }
     }
 
@@ -91,7 +92,7 @@
             return;
 
         _input.Text = Text;
-        ToggleRender();
+        AllowRender();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -137,7 +138,7 @@
         {
             CurrentValue = T.Zero;
             CurrentText = CurrentValue.ToString();
-            ToggleRender();
+            AllowRender();
 
             return;
         }
@@ -169,7 +170,7 @@
             CurrentText = newText;
         }
 
-        ToggleRender();
+        AllowRender();
     }
 
     private void OnUpButtonCallback()
@@ -179,7 +180,7 @@
             return;
 
         CurrentValue = value;
-        ToggleRender();
+        AllowRender();
     }
 
     private void OnDownCallback()
@@ -189,7 +190,7 @@
             return;
 
         CurrentValue = value;
-        ToggleRender();
+        AllowRender();
     }
 
     [JSInvokable]

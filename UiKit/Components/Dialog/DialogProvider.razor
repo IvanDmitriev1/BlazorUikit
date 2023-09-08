@@ -1,20 +1,16 @@
 ﻿@namespace UiKit.Components
-
 @inherits UiKitRenderComponentBase
 
 @inject IDialogService DialogService
-@inject IJSRuntime JsRuntime
 
 @foreach (var (key, dialogReference) in _dialogByGuid)
 {
-    <CascadingValue @key="key" IsFixed="true" Value="dialogReference">
-        @dialogReference.InstanceRenderFragment
-    </CascadingValue>
+    <DialogInstance @key="key" DialogReference="dialogReference"/>
 }
 
 @code
 {
-    readonly Dictionary<Guid, IDialogReferenceBase> _dialogByGuid = new(1);
+    readonly Dictionary<Guid, IDialogReferenceBase> _dialogByGuid = new();
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) { }
 
@@ -23,18 +19,7 @@
         DialogService.AddDialogProvider(this);
     }
 
-    public async Task ShowAsync(IDialogReferenceBase dialogReference)
-    {
-        _dialogByGuid.Add(dialogReference.Id, dialogReference);
-        await InvokeAsync(StateHasChangedWithRendering);
-
-        if (_dialogByGuid.Count == 1)
-        {
-            await JsRuntime.InvokeVoidAsync("LockScroll");
-        }
-    }
-
-    private ValueTask OnLocationChanging(LocationChangingContext arg)
+    /*private ValueTask OnLocationChanging(LocationChangingContext arg)
     {
         if (_dialogByGuid.Count > 0)
             return ValueTask.CompletedTask;
@@ -48,26 +33,20 @@
         StateHasChanged();
 
         return ValueTask.CompletedTask;
+    }*/
+
+    public async ValueTask AddDialog(IDialogReferenceBase dialogReference)
+    {
+        _dialogByGuid.Add(dialogReference.Id, dialogReference);
+        await InvokeAsync(StateHasChangedWithRendering);
     }
 
-    public async void RemoveDialog(Guid id)
+    public void RemoveDialog(Guid id)
     {
         if (!_dialogByGuid.ContainsKey(id))
             return;
 
         _dialogByGuid.Remove(id);
         StateHasChangedWithRendering();
-
-        if (_dialogByGuid.Count > 0)
-            return;
-
-        try
-        {
-            await JsRuntime.InvokeVoidAsync("UnlockScroll");
-        }
-        catch
-        {
-            //
-        }
     }
 }
