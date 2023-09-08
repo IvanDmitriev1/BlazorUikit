@@ -1,4 +1,5 @@
-﻿using UiKit.Abstractions.Dialog;
+﻿using System.Diagnostics.CodeAnalysis;
+using UiKit.Abstractions.Dialog;
 
 namespace UiKit.Components.Dialog;
 
@@ -14,7 +15,7 @@ internal abstract class DialogReferenceBase : IDialogReferenceBase
 
 	public abstract void Cancel();
 
-	protected void InitializeContentRenderFragment<TDialog>()
+	protected void InitializeContentRenderFragment<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog>()
 	{
 		RenderFragment dialogRenderFragment = new RenderFragment(builder =>
 		{

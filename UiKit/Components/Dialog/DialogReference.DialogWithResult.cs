@@ -1,8 +1,9 @@
-﻿using UiKit.Abstractions.Dialog;
+﻿using System.Diagnostics.CodeAnalysis;
+using UiKit.Abstractions.Dialog;
 
 namespace UiKit.Components.Dialog;
 
-internal sealed class DialogReference<TDialog, TResult> : DialogReferenceBase, IDialogReference<TDialog, TResult>
+internal sealed class DialogReference<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog, TResult> : DialogReferenceBase, IDialogReference<TDialog, TResult>
 	where TDialog : DialogBase<TDialog, TResult>
 {
 	public DialogReference()

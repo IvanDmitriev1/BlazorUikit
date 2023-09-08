@@ -1,4 +1,5 @@
-﻿using UiKit.Abstractions.Dialog;
+﻿using System.Diagnostics.CodeAnalysis;
+using UiKit.Abstractions.Dialog;
 
 namespace UiKit.Components.Dialog;
 
@@ -40,7 +41,7 @@ internal class DialogService : IDialogService
 		return dialogReference;
 	}
 
-	public async ValueTask<IDialogReference<TDialog>> ShowAsync<TDialog>
+	public async ValueTask<IDialogReference<TDialog>> ShowAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog>
 	(DialogDisplayOptions options,
 	 DialogParameters<TDialog> dialogParameters
 	)
@@ -57,7 +58,7 @@ internal class DialogService : IDialogService
 		return dialogReference;
 	}
 
-	public async ValueTask<IDialogReference<TDialog, TResult>> ShowAsync<TDialog, TResult>
+	public async ValueTask<IDialogReference<TDialog, TResult>> ShowAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog, TResult>
 	(DialogDisplayOptions options,
 	 DialogParameters<TDialog> dialogParameters
 	)

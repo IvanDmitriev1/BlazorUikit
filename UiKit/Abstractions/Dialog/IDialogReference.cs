@@ -1,4 +1,5 @@
-﻿using UiKit.Components;
+﻿using System.Diagnostics.CodeAnalysis;
+using UiKit.Components;
 
 namespace UiKit.Abstractions.Dialog;
 
@@ -20,12 +21,12 @@ public interface IDialogReference : IDialogReferenceBase
     void Close();
 }
 
-public interface IDialogReference<TDialog> : IDialogReference
+public interface IDialogReference<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog> : IDialogReference
 {
     
 }
 
-public interface IDialogReference<TDialog, TResult> : IDialogReferenceBase
+public interface IDialogReference<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog, TResult> : IDialogReferenceBase
 {
     Task<TResult> CompletionTask { get; }
     void Close(TResult result);
