@@ -6,30 +6,23 @@ namespace UiKit.Components.Dialog;
 internal class DialogService : IDialogService
 {
 	private static readonly IDictionary<string, object> Empty = new Dictionary<string, object>();
-	private Func<IDialogReferenceBase, ValueTask>? _addDialogHandler;
-	private Action<Guid>? _removeDialogHandler;
+	private DialogProvider? _dialogProvider;
 
-	public void RegisterHandlers(Func<IDialogReferenceBase, ValueTask> addDialogHandler, Action<Guid> removeDialogHandler)
+	public void AddDialogProvider(DialogProvider dialogProvider)
 	{
-		_addDialogHandler = addDialogHandler;
-		_removeDialogHandler = removeDialogHandler;
-	}
-
-	public void ClearAllHandlers()
-	{
-		_addDialogHandler = null;
-		_removeDialogHandler = null;
+		_dialogProvider = dialogProvider;
 	}
 
 	public void RemoveDialog(Guid id)
 	{
-		Action<Guid>? handler = _removeDialogHandler;
-		handler?.Invoke(id);
+		_dialogProvider?.RemoveDialog(id);
 	}
 
 	public async ValueTask<IDialogReference> ShowAsync
 		(DialogDisplayOptions options, RenderFragment renderFragment)
 	{
+		ArgumentNullException.ThrowIfNull(_dialogProvider);
+
 		var dialogReference = new RenderFragmentDialogReference(renderFragment)
 		{
 			DialogService = this,
@@ -37,7 +30,7 @@ internal class DialogService : IDialogService
 			Parameters = Empty
 		};
 
-		await InvokeAddDialogHandler(dialogReference);
+		await _dialogProvider.AddDialog(dialogReference);
 		return dialogReference;
 	}
 
@@ -47,6 +40,8 @@ internal class DialogService : IDialogService
 	)
 		where TDialog : DialogBase
 	{
+		ArgumentNullException.ThrowIfNull(_dialogProvider);
+
 		var dialogReference = new DialogReference<TDialog>
 		{
 			DialogService = this,
@@ -54,7 +49,7 @@ internal class DialogService : IDialogService
 			Parameters = dialogParameters
 		};
 
-		await InvokeAddDialogHandler(dialogReference);
+		await _dialogProvider.AddDialog(dialogReference);
 		return dialogReference;
 	}
 
@@ -64,6 +59,8 @@ internal class DialogService : IDialogService
 	)
 		where TDialog : DialogBase<TDialog, TResult>
 	{
+		ArgumentNullException.ThrowIfNull(_dialogProvider);
+
 		var dialogReference = new DialogReference<TDialog, TResult>
 		{
 			DialogService = this,
@@ -71,13 +68,7 @@ internal class DialogService : IDialogService
 			Parameters = dialogParameters
 		};
 
-		await InvokeAddDialogHandler(dialogReference);
+		await _dialogProvider.AddDialog(dialogReference);
 		return dialogReference;
-	}
-
-	private ValueTask InvokeAddDialogHandler(IDialogReferenceBase reference)
-	{
-		Func<IDialogReferenceBase, ValueTask>? handler = _addDialogHandler;
-		return handler?.Invoke(reference) ?? ValueTask.CompletedTask;
 	}
 }

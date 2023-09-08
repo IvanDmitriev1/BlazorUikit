@@ -5,8 +5,7 @@ namespace UiKit.Abstractions.Dialog;
 
 public interface IDialogService
 {
-	internal void RegisterHandlers(Func<IDialogReferenceBase, ValueTask> addDialogHandler, Action<Guid> removeDialogHandler);
-	internal void ClearAllHandlers();
+	internal void AddDialogProvider(DialogProvider dialogProvider);
 
 	void RemoveDialog(Guid id);
 
