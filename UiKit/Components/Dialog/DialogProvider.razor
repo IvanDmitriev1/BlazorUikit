@@ -1,5 +1,6 @@
 ﻿@namespace UiKit.Components
 @inherits UiKitRenderComponentBase
+@implements IDisposable
 
 @inject IDialogService DialogService
 
@@ -10,19 +11,18 @@
 
 @code
 {
-    readonly Dictionary<Guid, IDialogReferenceBase> _dialogByGuid = new(1);
+    readonly Dictionary<Guid, IDialogReferenceBase> _dialogByGuid = new();
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) { }
 
-    protected override void OnInitialized()
+    public void Dispose()
     {
-        DialogService.AddDialogProvider(this);
+        DialogService.ClearAllHandlers();
     }
 
-    public async Task ShowAsync(IDialogReferenceBase dialogReference)
+    protected override void OnInitialized()
     {
-        _dialogByGuid.Add(dialogReference.Id, dialogReference);
-        await InvokeAsync(StateHasChangedWithRendering);
+        DialogService.RegisterHandlers(AddDialogHandler, RemoveDialogHandler);
     }
 
     private ValueTask OnLocationChanging(LocationChangingContext arg)
@@ -41,12 +41,18 @@
         return ValueTask.CompletedTask;
     }
 
-    public void RemoveDialog(Guid id)
+    private void RemoveDialogHandler(Guid id)
     {
         if (!_dialogByGuid.ContainsKey(id))
             return;
 
         _dialogByGuid.Remove(id);
         StateHasChangedWithRendering();
+    }
+
+    private async ValueTask AddDialogHandler(IDialogReferenceBase dialogReference)
+    {
+        _dialogByGuid.Add(dialogReference.Id, dialogReference);
+        await InvokeAsync(StateHasChangedWithRendering);
     }
 }

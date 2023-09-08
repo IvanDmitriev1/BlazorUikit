@@ -5,83 +5,78 @@ namespace UiKit.Components.Dialog;
 internal class DialogService : IDialogService
 {
 	private static readonly IDictionary<string, object> Empty = new Dictionary<string, object>();
-	private DialogProvider? _dialogProvider;
+	private Func<IDialogReferenceBase, ValueTask>? _addDialogHandler;
+	private Action<Guid>? _removeDialogHandler;
 
-	public void AddDialogProvider(DialogProvider provider)
+	public void RegisterHandlers(Func<IDialogReferenceBase, ValueTask> addDialogHandler, Action<Guid> removeDialogHandler)
 	{
-		_dialogProvider = provider;
+		_addDialogHandler = addDialogHandler;
+		_removeDialogHandler = removeDialogHandler;
 	}
 
-
-	/// <inheritdoc />
-	public async Task ShowAsync<TDialog>(DialogDisplayOptions options, DialogParameters<TDialog> dialogParameters)
-		where TDialog : DialogBase
+	public void ClearAllHandlers()
 	{
-		ArgumentNullException.ThrowIfNull(_dialogProvider);
-
-		var dialogReference = new DialogReference<TDialog>
-		{
-			DisplayOptions = options,
-			DialogProvider = _dialogProvider,
-			Parameters = dialogParameters
-		};
-
-		await _dialogProvider.ShowAsync(dialogReference);
-
-		try
-		{
-			await dialogReference.CompletionTask;
-		}
-		catch (TaskCanceledException)
-		{
-		}
+		_addDialogHandler = null;
+		_removeDialogHandler = null;
 	}
 
-	/// <inheritdoc />
-	public async Task<TResult?> ShowAsync<TDialog, TResult>(DialogDisplayOptions options, DialogParameters<TDialog> dialogParameters)
-		where TDialog : DialogBase<TDialog, TResult>
+	public void RemoveDialog(Guid id)
 	{
-		ArgumentNullException.ThrowIfNull(_dialogProvider);
-
-		var dialogReference = new DialogReference<TDialog, TResult>
-		{
-			DisplayOptions = options,
-			DialogProvider = _dialogProvider,
-			Parameters = dialogParameters
-		};
-
-		await _dialogProvider.ShowAsync(dialogReference);
-
-		try
-		{
-			return await dialogReference.CompletionTask;
-		}
-		catch (TaskCanceledException)
-		{
-			return default;
-		}
+		Action<Guid>? handler = _removeDialogHandler;
+		handler?.Invoke(id);
 	}
 
-	/// <inheritdoc />
-	public async Task ShowAsync(DialogDisplayOptions options, RenderFragment renderFragment)
+	public async ValueTask<IDialogReference> ShowAsync
+		(DialogDisplayOptions options, RenderFragment renderFragment)
 	{
-		ArgumentNullException.ThrowIfNull(_dialogProvider);
-
-		RenderFragmentDialogReference dialogReference = new RenderFragmentDialogReference(renderFragment)
+		var dialogReference = new RenderFragmentDialogReference(renderFragment)
 		{
+			DialogService = this,
 			DisplayOptions = options,
-			DialogProvider = _dialogProvider,
 			Parameters = Empty
 		};
 
-		await _dialogProvider.ShowAsync(dialogReference);
+		await InvokeAddDialogHandler(dialogReference);
+		return dialogReference;
+	}
 
-		try
+	public async ValueTask<IDialogReference<TDialog>> ShowAsync<TDialog>
+	(DialogDisplayOptions options,
+	 DialogParameters<TDialog> dialogParameters
+	)
+		where TDialog : DialogBase
+	{
+		var dialogReference = new DialogReference<TDialog>
 		{
-			await dialogReference.CompletionTask;
-		}
-		catch (TaskCanceledException)
+			DialogService = this,
+			DisplayOptions = options,
+			Parameters = dialogParameters
+		};
+
+		await InvokeAddDialogHandler(dialogReference);
+		return dialogReference;
+	}
+
+	public async ValueTask<IDialogReference<TDialog, TResult>> ShowAsync<TDialog, TResult>
+	(DialogDisplayOptions options,
+	 DialogParameters<TDialog> dialogParameters
+	)
+		where TDialog : DialogBase<TDialog, TResult>
+	{
+		var dialogReference = new DialogReference<TDialog, TResult>
 		{
-		}
+			DialogService = this,
+			DisplayOptions = options,
+			Parameters = dialogParameters
+		};
+
+		await InvokeAddDialogHandler(dialogReference);
+		return dialogReference;
+	}
+
+	private ValueTask InvokeAddDialogHandler(IDialogReferenceBase reference)
+	{
+		Func<IDialogReferenceBase, ValueTask>? handler = _addDialogHandler;
+		return handler?.Invoke(reference) ?? ValueTask.CompletedTask;
 	}
 }

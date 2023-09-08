@@ -14,16 +14,19 @@ public interface IDialogReferenceBase
     void Cancel();
 }
 
-public interface IDialogReference<TDialog> : IDialogReferenceBase
+public interface IDialogReference : IDialogReferenceBase
 {
     Task CompletionTask { get; }
-
     void Close();
+}
+
+public interface IDialogReference<TDialog> : IDialogReference
+{
+    
 }
 
 public interface IDialogReference<TDialog, TResult> : IDialogReferenceBase
 {
     Task<TResult> CompletionTask { get; }
-
     void Close(TResult result);
 }
