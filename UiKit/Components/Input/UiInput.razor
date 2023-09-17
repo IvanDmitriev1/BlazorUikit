@@ -71,7 +71,7 @@ else
 
         UpdateInputCss();
 
-        if (RuntimeLocation.IsServerSide && !_isFocused)
+        if (!OperatingSystem.IsBrowser() && !_isFocused)
         {
             _internalText = Text;
         }
