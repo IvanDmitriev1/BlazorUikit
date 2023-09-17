@@ -28,22 +28,15 @@
         cssBuilder.AddClass("w-full h-full");
     }
 
-    public async ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
     {
         if (!IsJsRuntimeAvailable || !LockScroll)
-            return;
+            return ValueTask.CompletedTask;
 
-        await JsRuntime.InvokeVoidAsync("UnlockScroll");
+        return JsRuntime.InvokeVoidAsync("UnlockScroll");
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender)
-            return;
-
-        if (LockScroll)
-        {
-            await JsRuntime.InvokeVoidAsync("LockScroll");
-        }
-    }
+    protected override Task OnFirstRenderAsync() => LockScroll
+        ? JsRuntime.InvokeVoidAsync("LockScroll").AsTask()
+        : Task.CompletedTask;
 }
