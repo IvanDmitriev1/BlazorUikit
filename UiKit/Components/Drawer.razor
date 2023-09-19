@@ -3,16 +3,16 @@
 
 @inject NavigationManager NavigationManager
 
-<Overlay Class="@OverlayCssBuilder()" LockScroll="false" OnClick="Hide">
-    <div class="@ComponentCss" @onclick:stopPropagation="true">
-        <Stack Direction="Direction.Row">
-            <IconButton Icon="@TablerSvgIcon.X" OnClick="Hide"/>
-            <div class="grow"></div>
-        </Stack>
+<Overlay Class="@OverlayCssBuilder()" LockScroll="false" OnClick="Hide" />
 
-        @ChildContent
-    </div>
-</Overlay>
+<div class="@ComponentCss" @onclick:stopPropagation="true">
+    <Stack Direction="Direction.Row">
+        <IconButton Icon="@TablerSvgIcon.X" OnClick="Hide"/>
+        <div class="grow"></div>
+    </Stack>
+
+    @ChildContent
+</div>
 
 @code {
 
@@ -45,6 +45,10 @@
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
+        cssBuilder.AddClass("fixed h-full z-[1001]");
+        cssBuilder.AddClass("inset-y-0 left-0");
+        cssBuilder.AddClass("transform transition-transform duration-200 ease-in-out");
+        cssBuilder.AddClass("translate-x-[-1000%]", !Open);
         cssBuilder.AddClass("container p-5");
         cssBuilder.AddClass("flex flex-col gap-3.5");
         cssBuilder.AddClass("cursor-default");
@@ -55,9 +59,10 @@
 
     private string OverlayCssBuilder()
     {
-        using var cssBuilder = new CssBuilder(stackalloc char[55]);
+        using var cssBuilder = new CssBuilder(stackalloc char[128]);
 
         cssBuilder.AddClass(Open ? "flex" : "hidden");
+        cssBuilder.AddClass("flex");
         cssBuilder.AddClass("items-left");
         cssBuilder.AddClass("cursor-pointer");
         cssBuilder.AddClass("z-[1000]");
@@ -68,11 +73,6 @@
     public void Dispose()
     {
         _locationChangingRegistration?.Dispose();
-    }
-
-    protected override void OnInitialized()
-    {
-        CacheCss = true;
     }
 
     protected override void OnFirstRender()
