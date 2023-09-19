@@ -8,6 +8,7 @@ public interface IDialogReferenceBase
     Guid Id { get; }
     IDictionary<string, object> Parameters { get; init; }
     DialogDisplayOptions DisplayOptions { get; init; }
+    int DialogPosition { get; init; }
 
     RenderFragment DialogContent { get; }
     DialogBase? ActualDialog { get; set; }

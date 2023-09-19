@@ -6,6 +6,7 @@ namespace UiKit.Components;
 
 public abstract class DialogBase : ComponentBase, IDisposable
 {
+    [CascadingParameter]
     protected IDialogReferenceBase DialogReferenceBase { get; set; } = null!;
 
     public void Dispose()

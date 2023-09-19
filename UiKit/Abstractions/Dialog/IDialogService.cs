@@ -5,8 +5,9 @@ namespace UiKit.Abstractions.Dialog;
 
 public interface IDialogService
 {
-	internal void AddDialogProvider(DialogProvider dialogProvider);
+	IReadOnlyDictionary<Guid, IDialogReferenceBase> DialogsById { get; }
 
+	void AddDialogProvider(DialogProvider dialogProvider);
 	void RemoveDialog(Guid id);
 
 	ValueTask<IDialogReference> ShowAsync

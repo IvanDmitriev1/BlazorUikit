@@ -25,13 +25,16 @@ public abstract class UiKitRenderComponentBase : UiKitComponentBase
 		base.OnAfterRender(firstRender);
 	}
 
-	protected virtual void AllowRender()
+	protected void AllowRender()
 	{
 		_render = true;
 	}
 
 	protected void StateHasChangedWithRendering()
 	{
+		if (_render)
+			return;
+
 		AllowRender();
 		StateHasChanged();
 	}

@@ -7,6 +7,7 @@ internal abstract class DialogReferenceBase : IDialogReferenceBase
 {
 	public Guid Id { get; } = Guid.NewGuid();
 	public required DialogDisplayOptions DisplayOptions { get; init; }
+	public required int DialogPosition { get; init; }
 	public required IDictionary<string, object> Parameters { get; init; }
 	public required IDialogService DialogService { get; init; }
 
@@ -20,6 +21,7 @@ internal abstract class DialogReferenceBase : IDialogReferenceBase
 		RenderFragment dialogRenderFragment = new RenderFragment(builder =>
 		{
 			builder.OpenComponent(0, typeof(TDialog));
+			builder.AddMultipleAttributes(1, Parameters);
 			builder.CloseComponent();
 		});
 
@@ -30,6 +32,7 @@ internal abstract class DialogReferenceBase : IDialogReferenceBase
 internal abstract class DialogReference : DialogReferenceBase, IDialogReference
 {
 	public Task CompletionTask => _tcs.Task;
+
 	private readonly TaskCompletionSource _tcs = new();
 
 	public override void Cancel()
@@ -45,7 +48,7 @@ internal abstract class DialogReference : DialogReferenceBase, IDialogReference
 			return;
 		}
 
-		DialogService.RemoveDialog(Id);
 		_tcs.TrySetResult();
+		DialogService.RemoveDialog(Id);
 	}
 }

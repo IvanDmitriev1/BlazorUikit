@@ -1,4 +1,5 @@
-﻿using UiKit.Abstractions.Dialog;
+﻿using System.Diagnostics.CodeAnalysis;
+using UiKit.Abstractions.Dialog;
 using UiKit.Components;
 
 namespace UiKit.Extensions;
@@ -20,7 +21,7 @@ public static class DialogServiceExtensions
 		}
 	}
 
-	public static async Task ShowAsyncWithResult<TDialog>
+	public static async Task ShowAsyncWithResult<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog>
 		(this IDialogService dialogService, DialogDisplayOptions options, DialogParameters<TDialog> dialogParameters, CancellationToken cancellationToken = default)
 		where TDialog : DialogBase
 	{
@@ -37,7 +38,7 @@ public static class DialogServiceExtensions
 		}
 	}
 
-	public static async Task<TResult?> ShowAsyncWithResult<TDialog, TResult>
+	public static async Task<TResult?> ShowAsyncWithResult<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog, TResult>
 		(this IDialogService dialogService, DialogDisplayOptions options, DialogParameters<TDialog> dialogParameters, CancellationToken cancellationToken = default)
 		where TDialog : DialogBase<TDialog, TResult>
 	{

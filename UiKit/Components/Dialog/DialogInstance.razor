@@ -1,7 +1,7 @@
 ﻿@namespace UiKit.Components
 @inherits UiKitRenderComponentBase
 
-<Overlay Class="@OverlayCssBuilder()" Style="z-index: 100;" OnClick="OverlayOnClickHandler">
+<Overlay Class="@OverlayCssBuilder()" Style="@($"z-index: {DialogReference.DialogPosition}0;")" OnClick="OverlayOnClickHandler">
     <div role="dialog"
          class="@ComponentCss"
          @onclick:stopPropagation="true">
