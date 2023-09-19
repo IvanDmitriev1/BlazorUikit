@@ -14,9 +14,12 @@ public sealed class Stack : UiKitElementWithChildComponentBase
 	[Parameter]
 	public bool FullWidth { get; set; }
 
+	[Parameter]
+	public bool SetDefaultDisplay { get; set; } = true;
+
 	protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
 	{
-		cssBuilder.AddClass("flex");
+		cssBuilder.AddClass("flex", SetDefaultDisplay);
 		cssBuilder.AddClass(Direction.ToTailwindCss());
 		cssBuilder.AddClass(Justify.ToTailwindCss());
 		cssBuilder.AddClass(AlignItems.ToTailwindCss());

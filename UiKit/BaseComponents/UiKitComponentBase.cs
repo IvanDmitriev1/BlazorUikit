@@ -16,11 +16,20 @@ public abstract class UiKitComponentBase : ComponentBase
 
     protected abstract void AddComponentCssClasses(ref CssBuilder cssBuilder);
 
+    protected virtual void OnFirstRender () { }
+    protected virtual Task OnFirstRenderAsync() => Task.CompletedTask;
+
     protected override void OnAfterRender(bool firstRender)
     {
+        if (!firstRender)
+            return;
+
         IsJsRuntimeAvailable = true;
-        base.OnAfterRender(firstRender);
+        OnFirstRender();
     }
+
+    protected override Task OnAfterRenderAsync
+        (bool firstRender) => firstRender ? OnFirstRenderAsync() : Task.CompletedTask;
 
     private string GetComponentCss()
     {
