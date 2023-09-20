@@ -20,4 +20,8 @@
 	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.*" Condition="'$(TargetFramework)' == 'net7.0'" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\IconsGenerator\IconsGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+  </ItemGroup>
+
 </Project>
