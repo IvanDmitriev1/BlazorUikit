@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 using Microsoft.CodeAnalysis;
@@ -38,6 +39,30 @@ public class IconGenerator : IIncrementalGenerator
 			extensionsMethodSb.AppendLine("namespace TablerIconGenerator;");
 			extensionsMethodSb.AppendLine("public static partial class TablerIconExtensions");
 			extensionsMethodSb.AppendLine("{");
+
+			extensionsMethodSb.AppendLine("""
+										  private static RenderFragment CreateRenderFragment(string content) => builder =>
+										  {
+										  	int seq = 0;
+										  
+										  	builder.OpenElement(seq++, "svg");
+										  
+										  	builder.AddAttribute(seq++, "style", "width: 1em;");
+										  	builder.AddAttribute(seq++, "focusable", false);
+										  	builder.AddAttribute(seq++, "aria-hidden", true);
+										  	builder.AddAttribute(seq++, "fill", "none");
+										  	builder.AddAttribute(seq++, "stroke", "currentColor");
+										  	builder.AddAttribute(seq++, "viewBox", "0 0 24 24");
+										  	builder.AddAttribute(seq++, "stroke-width", "2");
+										  	builder.AddAttribute(seq++, "stroke-linecap", "round");
+										  	builder.AddAttribute(seq++, "stroke-linejoin", "round");
+										  
+										  	builder.AddMarkupContent(seq++, content);
+										  
+										  	builder.CloseElement();
+										  };
+										  """);
+
 			extensionsMethodSb.AppendLine("public static Microsoft.AspNetCore.Components.RenderFragment ToRenderFragment(this TablerIconGenerator.TablerIcon icon) => icon switch");
 			extensionsMethodSb.AppendLine("{");
 
@@ -75,7 +100,7 @@ public class IconGenerator : IIncrementalGenerator
 		catch (OperationCanceledException ) { }
 		catch (Exception e)
 		{
-			//
+			//TODO
 		}
 	}
 
@@ -143,36 +168,22 @@ public class IconGenerator : IIncrementalGenerator
 		svg.Load(stream);
 
 		var content = svg.DocumentElement.InnerXml;
-		var viewBox = svg.DocumentElement.GetAttribute("viewBox");
-		var strokeWidth = svg.DocumentElement.GetAttribute("stroke-width");
-		var strokeLineCap = svg.DocumentElement.GetAttribute("stroke-linecap");
-		var strokeLineJoin = svg.DocumentElement.GetAttribute("stroke-linejoin");
 
-		string str = $$""""
-					   private static readonly Microsoft.AspNetCore.Components.RenderFragment {{iconName}} = builder =>
-					   {
-					       int seq = 0;
-					       
-					       builder.OpenElement(seq++, "svg");
-					       
-					       builder.AddAttribute(seq++, "style", "width: 1em;");
-					       builder.AddAttribute(seq++, "focusable", false);
-					       builder.AddAttribute(seq++, "viewBox", "{{viewBox}}");
-					       builder.AddAttribute(seq++, "aria-hidden", true);
-					       builder.AddAttribute(seq++, "fill", "none");
-					       builder.AddAttribute(seq++, "stroke", "currentColor");
-					       builder.AddAttribute(seq++, "stroke-width", "{{strokeWidth}}");
-					       builder.AddAttribute(seq++, "stroke-linecap", "{{strokeLineCap}}");
-					       builder.AddAttribute(seq++, "stroke-linejoin", "{{strokeLineJoin}}");
-					       
-					       builder.AddMarkupContent(seq++, """
-					       {{content}}
-					       """);
-					       
-					       builder.CloseElement();
-					   };
-					   """";
+		var sb = new StringBuilder(1800);
+		sb.Append("private static readonly Microsoft.AspNetCore.Components.RenderFragment ");
+		sb.Append(iconName);
+		sb.Append(" = CreateRenderFragment(");
+		sb.Append('"');
+		sb.Append('"');
+		sb.Append('"');
+		sb.AppendLine();
+		sb.Append(content);
+		sb.AppendLine();
+		sb.Append('"');
+		sb.Append('"');
+		sb.Append('"');
+		sb.AppendLine(");");
 
-		return str;
+		return sb.ToString();
 	}
 }

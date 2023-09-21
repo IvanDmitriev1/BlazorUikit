@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <PackageReference Include="LinkDotNet.StringBuilder" Version="1.18.2" />
-    <PackageReference Include="Vizor.Icons.Tabler" Version="2.11.0" />
 	  
 	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0-rc.2.23455.8" Condition="'$(TargetFramework)' == 'net8.0'" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.*" Condition="'$(TargetFramework)' == 'net7.0'" />
