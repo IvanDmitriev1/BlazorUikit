@@ -9,6 +9,8 @@ namespace IconsGenerator;
 [Generator(LanguageNames.CSharp)]
 public class IconGenerator : IIncrementalGenerator
 {
+	private const string Path = "IconsGenerator.node_modules._tabler.icons.icons.";
+
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
 		context.RegisterPostInitializationOutput(Generate);
@@ -27,12 +29,15 @@ public class IconGenerator : IIncrementalGenerator
 			enumSb.AppendLine("public enum TablerIcon");
 			enumSb.AppendLine("{");
 
-			var extensionsSb = new StringBuilder(81_920 * 6);
+			var extensionsSb = new StringBuilder(81_920 * 4);
 			extensionsSb.AppendLine("namespace TablerIconGenerator;");
-			extensionsSb.AppendLine("public static class TablerIconExtensions");
+			extensionsSb.AppendLine("public static partial class TablerIconExtensions");
 			extensionsSb.AppendLine("{");
 
 			var extensionsMethodSb = new StringBuilder(10_000);
+			extensionsMethodSb.AppendLine("namespace TablerIconGenerator;");
+			extensionsMethodSb.AppendLine("public static partial class TablerIconExtensions");
+			extensionsMethodSb.AppendLine("{");
 			extensionsMethodSb.AppendLine("public static Microsoft.AspNetCore.Components.RenderFragment ToRenderFragment(this TablerIconGenerator.TablerIcon icon) => icon switch");
 			extensionsMethodSb.AppendLine("{");
 
@@ -48,23 +53,24 @@ public class IconGenerator : IIncrementalGenerator
 				enumSb.Append(iconFormattedName);
 				enumSb.Append(",\n");
 
-				extensionsSb.AppendLine(CreateRenderFragment(assembly, assemblyName, iconFormattedName));
+				extensionsSb.AppendLine(CreateRenderFragmentField(assembly, assemblyName, iconFormattedName));
 				extensionsMethodSb.AppendLine($"TablerIconGenerator.TablerIcon.{iconFormattedName} => {iconFormattedName},");
 			}
 
 			enumSb.Remove(enumSb.Length - 2, 2);
-			enumSb.AppendLine("}");
 
+			enumSb.AppendLine("}");
 			var enumSource = enumSb.ToString();
 			context.AddSource("TablerIcon.g.cs", SourceText.From(enumSource, Encoding.UTF8));
 
-			extensionsMethodSb.AppendLine("};");
-			extensionsSb.Append(extensionsMethodSb);
-
 			extensionsSb.AppendLine("}");
 			var extensionsSource = extensionsSb.ToString();
+			context.AddSource("TablerIconExtensions.fields.g.cs", SourceText.From(extensionsSource, Encoding.UTF8));
 
-			context.AddSource("TablerIconExtensions.g.cs", SourceText.From(extensionsSource, Encoding.UTF8));
+			extensionsMethodSb.AppendLine("};");
+			extensionsMethodSb.AppendLine("}");
+			var extensionMethodSource = extensionsMethodSb.ToString();
+			context.AddSource("TablerIconExtensions.methods.g.cs", SourceText.From(extensionMethodSource, Encoding.UTF8));
 		}
 		catch (OperationCanceledException ) { }
 		catch (Exception e)
@@ -72,8 +78,6 @@ public class IconGenerator : IIncrementalGenerator
 			//
 		}
 	}
-
-	private const string Path = "IconsGenerator.node_modules._tabler.icons.icons.";
 
 	private static string GetIconFilteredName(string iconName)
 	{
@@ -131,7 +135,7 @@ public class IconGenerator : IIncrementalGenerator
 		return span.ToString();
 	}
 
-	private static string CreateRenderFragment(Assembly assembly, string iconAssemblyName, string iconName)
+	private static string CreateRenderFragmentField(Assembly assembly, string iconAssemblyName, string iconName)
 	{
 		using var stream = assembly.GetManifestResourceStream(iconAssemblyName);
 			
