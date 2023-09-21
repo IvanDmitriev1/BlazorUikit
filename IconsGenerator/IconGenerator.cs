@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using System.Xml;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
@@ -19,31 +20,50 @@ public class IconGenerator : ISourceGenerator
 	public void Execute(GeneratorExecutionContext context)
 	{
 		var assembly = Assembly.GetExecutingAssembly();
-		var iconNames = assembly.GetManifestResourceNames()
+		var iconAssrmblyNames = assembly.GetManifestResourceNames()
 								.Where(s => s.StartsWith(Path));
 
-		var sb = new StringBuilder(81_920);
-		sb.AppendLine("namespace TablerIconGenerator;");
-		sb.AppendLine("public enum TablerIcon");
-		sb.AppendLine("{");
+		var enumSb = new StringBuilder(81_920);
+		enumSb.AppendLine("namespace TablerIconGenerator;");
+		enumSb.AppendLine("public enum TablerIcon");
+		enumSb.AppendLine("{");
+
+		var extensionsSb = new StringBuilder(81_920 * 6);
+		extensionsSb.AppendLine("namespace TablerIconGenerator;");
+		extensionsSb.AppendLine("public static class TablerIconExtensions");
+		extensionsSb.AppendLine("{");
+
+		var extensionsMethodSb = new StringBuilder(10_000);
+		extensionsMethodSb.AppendLine("public static Microsoft.AspNetCore.Components.RenderFragment ToRenderFragment(this TablerIconGenerator.TablerIcon icon) => icon switch");
+		extensionsMethodSb.AppendLine("{");
 		
-		foreach (var iconName in iconNames)
+		foreach (var assemblyName in iconAssrmblyNames)
 		{
-			var iconFormattedName = GetIconFilteredName(iconName);
+			var iconFormattedName = GetIconFilteredName(assemblyName);
 
 			if (string.IsNullOrEmpty(iconFormattedName))
 				continue;
 
-			sb.Append(iconFormattedName);
-			sb.Append(",\n");
+			enumSb.Append(iconFormattedName);
+			enumSb.Append(",\n");
+
+			extensionsSb.AppendLine(CreateRenderFragment(assembly, assemblyName, iconFormattedName));
+			extensionsMethodSb.AppendLine($"TablerIconGenerator.TablerIcon.{iconFormattedName} => {iconFormattedName},");
 		}
 
-		sb.Remove(sb.Length - 2, 2);
-		sb.AppendLine("}");
+		enumSb.Remove(enumSb.Length - 2, 2);
+		enumSb.AppendLine("}");
 
-		var source = sb.ToString();
+		var enumSource = enumSb.ToString();
+		context.AddSource("TablerIcon.g.cs", SourceText.From(enumSource, Encoding.UTF8));
 
-		context.AddSource("TablerIcon.g.cs", SourceText.From(source, Encoding.UTF8));
+		extensionsMethodSb.AppendLine("};");
+		extensionsSb.Append(extensionsMethodSb);
+
+		extensionsSb.AppendLine("}");
+		var extensionsSource = extensionsSb.ToString();
+
+		context.AddSource("TablerIconExtensions.g.cs", SourceText.From(extensionsSource, Encoding.UTF8));
 	}
 
 	private static string GetIconFilteredName(string iconName)
@@ -91,21 +111,54 @@ public class IconGenerator : ISourceGenerator
 			j++;
 		}
 
-		try
+		foreach (var index in minusIndexes)
 		{
-			foreach (var index in minusIndexes)
-			{
-				if (span.Length <= index)
-					continue;
+			if (span.Length <= index)
+				continue;
 
-				span[index] = char.ToUpper(span[index]);
-			}
-		}
-		catch (Exception e)
-		{
-			Debugger.Launch();
+			span[index] = char.ToUpper(span[index]);
 		}
 
 		return span.ToString();
+	}
+
+	private static string CreateRenderFragment(Assembly assembly, string iconAssemblyName, string iconName)
+	{
+		using var stream = assembly.GetManifestResourceStream(iconAssemblyName);
+			
+		var svg = new XmlDocument();
+		svg.Load(stream);
+
+		var content = svg.DocumentElement.InnerXml.Replace("\r\n", "").Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"");
+		var viewBox = svg.DocumentElement.GetAttribute("viewBox");
+		var strokeWidth = svg.DocumentElement.GetAttribute("stroke-width");
+		var strokeLineCap = svg.DocumentElement.GetAttribute("stroke-linecap");
+		var strokeLineJoin = svg.DocumentElement.GetAttribute("stroke-linejoin");
+
+		string str = $$""""
+					   private static readonly Microsoft.AspNetCore.Components.RenderFragment {{iconName}} = builder =>
+					   {
+					       int seq = 0;
+					       
+					       builder.OpenElement(seq++, "svg");
+					       
+					       builder.AddAttribute(seq++, "focusable", false);
+					       builder.AddAttribute(seq++, "viewBox", "{{viewBox}}");
+					       builder.AddAttribute(seq++, "aria-hidden", true);
+					       builder.AddAttribute(seq++, "fill", "none");
+					       builder.AddAttribute(seq++, "stroke", "currentColor");
+					       builder.AddAttribute(seq++, "stroke-width", "{{strokeWidth}}");
+					       builder.AddAttribute(seq++, "stroke-linecap", "{{strokeLineCap}}");
+					       builder.AddAttribute(seq++, "stroke-linejoin", "{{strokeLineJoin}}");
+					       
+					       builder.AddMarkupContent(seq++, """
+					       {{content}}
+					       """);
+					       
+					       builder.CloseElement();
+					   };
+					   """";
+
+		return str;
 	}
 }
