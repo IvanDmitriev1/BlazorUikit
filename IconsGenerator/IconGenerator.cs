@@ -30,12 +30,12 @@ public class IconGenerator : IIncrementalGenerator
 			enumSb.AppendLine("public enum TablerIcon");
 			enumSb.AppendLine("{");
 
-			var extensionsSb = new StringBuilder(81_920 * 4);
+			var extensionsSb = new StringBuilder(81_920 * 5);
 			extensionsSb.AppendLine("namespace TablerIconGenerator;");
 			extensionsSb.AppendLine("public static partial class TablerIconExtensions");
 			extensionsSb.AppendLine("{");
 
-			var extensionsMethodSb = new StringBuilder(10_000);
+			var extensionsMethodSb = new StringBuilder(5_000);
 			extensionsMethodSb.AppendLine("namespace TablerIconGenerator;");
 			extensionsMethodSb.AppendLine("public static partial class TablerIconExtensions");
 			extensionsMethodSb.AppendLine("{");
@@ -92,6 +92,7 @@ public class IconGenerator : IIncrementalGenerator
 			var extensionsSource = extensionsSb.ToString();
 			context.AddSource("TablerIconExtensions.fields.g.cs", SourceText.From(extensionsSource, Encoding.UTF8));
 
+			extensionsMethodSb.AppendLine("_ => throw new ArgumentOutOfRangeException(nameof(icon), icon, null)");
 			extensionsMethodSb.AppendLine("};");
 			extensionsMethodSb.AppendLine("}");
 			var extensionMethodSource = extensionsMethodSb.ToString();
@@ -169,20 +170,22 @@ public class IconGenerator : IIncrementalGenerator
 
 		var content = svg.DocumentElement.InnerXml;
 
-		var sb = new StringBuilder(1800);
-		sb.Append("private static readonly Microsoft.AspNetCore.Components.RenderFragment ");
-		sb.Append(iconName);
-		sb.Append(" = CreateRenderFragment(");
+		var sb = new StringBuilder(1700);
+		sb.Append($"private const string {iconName}Content =");
 		sb.Append('"');
 		sb.Append('"');
 		sb.Append('"');
-		sb.AppendLine();
 		sb.Append(content);
+		sb.Append('"');
+		sb.Append('"');
+		sb.Append('"');
+		sb.Append(';');
 		sb.AppendLine();
-		sb.Append('"');
-		sb.Append('"');
-		sb.Append('"');
-		sb.AppendLine(");");
+
+		string renderFragmentField =
+			$"private static readonly Microsoft.AspNetCore.Components.RenderFragment {iconName} = CreateRenderFragment({iconName}Content);";
+
+		sb.AppendLine(renderFragmentField);
 
 		return sb.ToString();
 	}

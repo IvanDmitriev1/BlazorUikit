@@ -1,4 +1,5 @@
-﻿using LinkDotNet.StringBuilder;
+﻿using CommunityToolkit.HighPerformance.Buffers;
+using LinkDotNet.StringBuilder;
 using System.Runtime.CompilerServices;
 
 namespace UiKit.Utilities;
@@ -24,7 +25,7 @@ public ref struct CssBuilder
 	public override string ToString()
 	{
 		_stringBuilder.Trim();
-		return _stringBuilder.ToString();
+		return StringPool.Shared.GetOrAdd(_stringBuilder.AsSpan());
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -40,9 +41,10 @@ public ref struct CssBuilder
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void AddClass(scoped ReadOnlySpan<char> value, bool condition)
 	{
-		if (condition)
-		{
-			AddClass(value);
-		}
+		if (!condition || value.IsEmpty)
+			return;
+
+		_stringBuilder.Append(' ');
+		_stringBuilder.Append(value);
 	}
 }
