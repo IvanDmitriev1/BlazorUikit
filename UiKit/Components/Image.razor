@@ -1,4 +1,5 @@
-﻿@inherits UiKitComponentBase
+﻿@namespace UiKit.Components
+@inherits UiKitComponentBase
 
 <img src="@Src" class="@ComponentCss" alt="@Description"/>
 
@@ -16,4 +17,10 @@
         cssBuilder.AddClass("flex");
         cssBuilder.AddClass("object-scale-down");
     }
+
+    protected override void OnInitialized()
+    {
+        CacheCss = true;
+    }
+
 }
