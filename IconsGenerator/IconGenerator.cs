@@ -25,17 +25,17 @@ public class IconGenerator : IIncrementalGenerator
 			var iconAssemblyNames = assembly.GetManifestResourceNames()
 											.Where(static s => s.StartsWith(Path));
 
-			var enumSb = new StringBuilder(81_920);
+			var enumSb = new StringBuilder();
 			enumSb.AppendLine("namespace TablerIconGenerator;");
 			enumSb.AppendLine("public enum TablerIcon");
 			enumSb.AppendLine("{");
 
-			var extensionsSb = new StringBuilder(81_920 * 5);
+			var extensionsSb = new StringBuilder();
 			extensionsSb.AppendLine("namespace TablerIconGenerator;");
 			extensionsSb.AppendLine("public static partial class TablerIconExtensions");
 			extensionsSb.AppendLine("{");
 
-			var extensionsMethodSb = new StringBuilder(5_000);
+			var extensionsMethodSb = new StringBuilder();
 			extensionsMethodSb.AppendLine("namespace TablerIconGenerator;");
 			extensionsMethodSb.AppendLine("public static partial class TablerIconExtensions");
 			extensionsMethodSb.AppendLine("{");
@@ -70,7 +70,7 @@ public class IconGenerator : IIncrementalGenerator
 			{
 				context.CancellationToken.ThrowIfCancellationRequested();
 
-				var iconFormattedName = GetIconFilteredName(assemblyName);
+				var iconFormattedName = FilterIconName(assemblyName);
 
 				if (string.IsNullOrEmpty(iconFormattedName))
 					continue;
@@ -105,7 +105,7 @@ public class IconGenerator : IIncrementalGenerator
 		}
 	}
 
-	private static string GetIconFilteredName(string iconName)
+	private static string FilterIconName(string iconName)
 	{
 		var iconNameSpan = iconName.AsSpan();
 
@@ -170,7 +170,7 @@ public class IconGenerator : IIncrementalGenerator
 
 		var content = svg.DocumentElement.InnerXml;
 
-		var sb = new StringBuilder(1700);
+		var sb = new StringBuilder();
 		sb.Append($"private const string {iconName}Content =");
 		sb.Append('"');
 		sb.Append('"');
