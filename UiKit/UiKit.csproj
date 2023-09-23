@@ -18,10 +18,16 @@
 	  
 	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0-rc.1.23421.29" Condition="'$(TargetFramework)' == 'net8.0'" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.*" Condition="'$(TargetFramework)' == 'net7.0'" />
+	  <PackageReference Include="tailwindcss.msbuild" Version="0.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\IconsGenerator\IconsGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <TailwindCSSDebugBuildArguments>-c wwwroot/css/tailwind.config.js -i wwwroot/css/tailwind.css -o wwwroot/css/output.css</TailwindCSSDebugBuildArguments>
+    <TailwindCSSReleaseBuildArguments>-c wwwroot/css/tailwind.config.js -i wwwroot/css/tailwind.css -o wwwroot/css/output.css --minify</TailwindCSSReleaseBuildArguments>
+  </PropertyGroup>
 
 </Project>
