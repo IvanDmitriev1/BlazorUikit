@@ -1,22 +1,14 @@
 ﻿@namespace UiKit.Components
 @inherits UiKitComponentBase
 
-<svg class="@ComponentCss"
-     focusable="false"
-     viewBox="@ViewBox"
-     aria-hidden="true"
-     fill="none"
-     stroke="currentColor"
-     stroke-width="@Icon.StrokeWidth"
-     stroke-linecap="@Icon.StrokeLineCap"
-     stroke-linejoin="@Icon.StrokeLineJoin">
-    @((MarkupString)Icon.SvgContent)
-</svg>
+<span class="@ComponentCss">
+    @(Icon.ToRenderFragment())
+</span>
 
 @code {
 
     [Parameter, EditorRequired]
-    public IconData Icon { get; set; }
+    public TablerIcon Icon { get; set; }
 
     [Parameter]
     public Size Size { get; set; } = Size.Medium;
@@ -46,7 +38,6 @@
     {
         cssBuilder.AddClass(Size.ToTailwindCssIcon());
         cssBuilder.AddClass(Color.ToTextCss());
-        cssBuilder.AddClass("w-[1em] h-[1em]");
     }
 
     protected override void OnAfterRender(bool firstRender)
