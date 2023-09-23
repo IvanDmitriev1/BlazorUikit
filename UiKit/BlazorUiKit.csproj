@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>full</TrimMode>
+    <PackageVersion>0.1.3-alpha.2</PackageVersion>
   </PropertyGroup>
   
   <ItemGroup>
@@ -15,14 +16,13 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.1" />
     <PackageReference Include="LinkDotNet.StringBuilder" Version="1.18.2" />
-	  
 	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0-rc.1.23421.29" Condition="'$(TargetFramework)' == 'net8.0'" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.*" Condition="'$(TargetFramework)' == 'net7.0'" />
 	  <PackageReference Include="tailwindcss.msbuild" Version="0.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IconsGenerator\IconsGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+    <ProjectReference Include="..\SourceGenerators\IconsGenerator\IconsGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
   </ItemGroup>
 
   <PropertyGroup>
