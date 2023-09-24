@@ -2,7 +2,7 @@
 @inherits UiKitComponentBase
 
 <div class="@ComponentCss">
-    <IconButton Icon="@TablerIcon.ChevronLeft"
+    <IconButton Icon="@TablerIconType.ChevronLeft"
                 Color="Color.PrimaryAlternative"
                 Filled="true"
                 Disabled="Selected == 1"
@@ -21,7 +21,7 @@
         <UiText Class="!text-[25px]">/ @Count</UiText>
     </Stack>            
 
-    <IconButton Icon="@TablerIcon.ChevronRight"
+    <IconButton Icon="@TablerIconType.ChevronRight"
                 Color="Color.PrimaryAlternative"
                 Filled="true"
                 Disabled="Selected >= Count"

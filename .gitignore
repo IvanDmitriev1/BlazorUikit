@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 UiKit/wwwroot/css/output.css
+src/wwwroot/css/output.css
