@@ -5,16 +5,17 @@
 
   <PropertyGroup>
     <PathToTailwindcssFiles>./UiKit/src/wwwroot/css</PathToTailwindcssFiles>
+    <CommandArguments>$(PathToTailwindcssFiles)/tailwind.config.js -i $(PathToTailwindcssFiles)/tailwind.css -o $(PathToTailwindcssFiles)/output.css</CommandArguments>
   </PropertyGroup>
 
   <Target Name="BuildCss" BeforeTargets="CoreBuild">
     <Message Text="Starting tailwindcss. This may take a while..." Importance="High" />
 
-    <Exec Command="dotnet tailwindcss -c $(PathToTailwindcssFiles)/tailwind.config.js -i $(PathToTailwindcssFiles)/tailwind.css -o $(PathToTailwindcssFiles)/output.css" IgnoreExitCode="true" Condition="'$(Configuration)' == 'Debug'" WorkingDirectory="$(SolutionDir)">
+    <Exec Command="dotnet tailwindcss -c $(CommandArguments)" IgnoreExitCode="true" Condition="'$(Configuration)' == 'Debug'" WorkingDirectory="$(SolutionRelativeWorkingDirectory)">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Exec>
 
-    <Exec Command="dotnet tailwindcss -c $(PathToTailwindcssFiles)/tailwind.config.js -i $(PathToTailwindcssFiles)/tailwind.css -o $(PathToTailwindcssFiles)/output.css --minify" IgnoreExitCode="true" Condition="'$(Configuration)' == 'Release'" WorkingDirectory="$(SolutionDir)">
+    <Exec Command="dotnet tailwindcss -c $(CommandArguments) --minify" IgnoreExitCode="true" Condition="'$(Configuration)' == 'Release'" WorkingDirectory="$(SolutionRelativeWorkingDirectory)">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Exec>
 

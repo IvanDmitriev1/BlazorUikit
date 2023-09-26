@@ -13,6 +13,9 @@ public enum Color
 
 public static class ColorExtensions
 {
+    public const string ThemeCssBootstrap =
+        $"{MainBackgroundColor} text-black dark:text-white text-regular font-inter";
+
     public const string MainBackgroundColor = "bg-main-light-background dark:bg-main-dark-background";
 
     public const string BackgroundPrimaryHoverButtonColor = "hover:bg-black/90 dark:hover:bg-white";
