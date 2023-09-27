@@ -8,7 +8,7 @@
     <TrimMode>full</TrimMode>
   </PropertyGroup>
   
-  <!--<Import Project="Tailwindcss.Build.targets" />-->
+  <Import Project="Tailwindcss.Build.targets" />
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />
