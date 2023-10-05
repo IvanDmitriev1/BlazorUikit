@@ -63,25 +63,10 @@
     DotNetObjectReference<NumericField<T>>? _objRef;
 
     public NumericField() : base(T.Zero) { }
-
-    protected override async ValueTask OnDispose()
+    
+    protected override void OnDispose()
     {
-        if (_objRef is null)
-            return;
-
-        _objRef.Dispose();
-
-        if (!IsJsRuntimeAvailable)
-            return;
-
-        try
-        {
-            await JsRuntime.InvokeVoidAsync("UnRegisterInputEvent", _id);
-        }
-        catch
-        {
-            //
-        }
+        _objRef?.Dispose();
     }
 
     protected override void OnParametersSet()
@@ -95,13 +80,10 @@
         AllowRender();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnFirstRenderAsync()
     {
-        if (!firstRender)
-            return;
-
         _objRef = DotNetObjectReference.Create(this);
-        await JsRuntime.InvokeVoidAsync("RegisterInputEvent", _id, _objRef);
+        await JsRuntime.InvokeVoidAsync("RegisterNumericInputEvent", _id, _objRef);
     }
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) { }
@@ -112,13 +94,13 @@
         bool hasValue = Value == T.Zero;
 
         // Refresh Text from Value
-        if (Value.ToString(null, NumberFormatInfo.InvariantInfo) is { } convertedText)
+        if (Value.ToString(null, CultureInfo.CurrentUICulture) is { } convertedText)
         {
             CurrentText = convertedText;
         }
 
         // Refresh Value from Text
-        if (hasText && !hasValue && T.TryParse(Text, CultureInfo.InvariantCulture, out var convertedToValue))
+        if (hasText && !hasValue && T.TryParse(Text, CultureInfo.CurrentUICulture, out var convertedToValue))
         {
             CurrentValue = convertedToValue;
         }
@@ -126,7 +108,7 @@
 
     protected override string? ConvertValueToString()
     {
-        if (Value.ToString(null, NumberFormatInfo.InvariantInfo) is { } convertedText)
+        if (Value.ToString(null, CultureInfo.CurrentUICulture) is { } convertedText)
             return convertedText;
 
         return CurrentText;
@@ -151,18 +133,18 @@
             newText = newText.StartsWith('0') ? newText[1..] : newText;
         }
 
-        if (!T.TryParse(newText, CultureInfo.InvariantCulture, out var convertedToValue))
+        if (!T.TryParse(newText, CultureInfo.CurrentUICulture, out var convertedToValue))
         {
         }
         else if (convertedToValue < Min)
         {
             CurrentValue = Min;
-            CurrentText = Min.ToString(null, NumberFormatInfo.InvariantInfo);
+            CurrentText = Min.ToString(null, CultureInfo.CurrentUICulture);
         }
         else if (convertedToValue > Max)
         {
             CurrentValue = Max;
-            CurrentText = Max.ToString(null, NumberFormatInfo.InvariantInfo);
+            CurrentText = Max.ToString(null, CultureInfo.CurrentUICulture);
         }
         else
         {
@@ -191,11 +173,5 @@
 
         CurrentValue = value;
         AllowRender();
-    }
-
-    [JSInvokable]
-    public void UpdateTextFromJs(string text)
-    {
-        CurrentText = text;
     }
 }

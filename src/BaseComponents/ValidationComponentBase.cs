@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace UiKit.BaseComponents;
 
-public abstract class ValidationComponentBase<T> : UiKitRenderComponentBase, IAsyncDisposable
+public abstract class ValidationComponentBase<T> : UiKitRenderComponentBase, IDisposable
 {
 	[CascadingParameter]
     private EditContext? CascadedEditContext { get; set; }
@@ -18,13 +18,13 @@ public abstract class ValidationComponentBase<T> : UiKitRenderComponentBase, IAs
     private FieldIdentifier _fieldIdentifier;
     private readonly List<string> _errors = new(1);
 
-    protected virtual ValueTask OnDispose() => ValueTask.CompletedTask;
-
-    public async ValueTask DisposeAsync()
+    protected virtual void OnDispose() {}
+    
+    public void Dispose()
     {
         GC.SuppressFinalize(this);
 
-        await OnDispose();
+        OnDispose();
 
         if (_currentEditContext is null)
             return;
