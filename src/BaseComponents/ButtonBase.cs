@@ -22,6 +22,9 @@ public abstract class ButtonBase : UiKitComponentBase
 
     [Parameter]
     public EventCallback<MouseEventArgs> OnClick { get; set; }
+    
+    [Parameter]
+    public string? OnClickJs { get; set; }
 
     protected string HtmlTag { get; set; } = "button";
 

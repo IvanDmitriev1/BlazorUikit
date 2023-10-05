@@ -1,18 +1,17 @@
 ﻿@namespace UiKit.Components
 @inherits UiKitComponentBase
-@implements IDisposable
 
-@inject NavigationManager NavigationManager
-
-<Overlay Class="@OverlayCssBuilder()" LockScroll="false" OnClick="Hide" />
-
-<div class="@ComponentCss" @onclick:stopPropagation="true">
-    <Stack Direction="Direction.Row">
-        <IconButton Icon="@TablerIconType.X" OnClick="Hide" />
-        <div class="grow"></div>
-    </Stack>
-
-    @ChildContent
+<div id="MainDrawerRoot">
+    <Overlay Class="@OverlayClass" LockScroll="false" />
+    
+    <aside class="@ComponentStaticClass" @onclick:stopPropagation="true">
+        <Stack Direction="Direction.Row">
+            <IconButton Icon="@TablerIconType.X" OnClickJs="CloseDrawer('MainDrawerRoot')" />
+            <div class="grow"></div>
+        </Stack>
+    
+        @ChildContent
+    </aside>
 </div>
 
 @code {
@@ -21,48 +20,18 @@
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
-    public bool Open { get; set; }
-
-    [Parameter]
-    public EventCallback<bool> OpenChanged { get; set; }
-
-    protected bool CurrentOpen
-    {
-        get => Open;
-        set
-        {
-            if (Open == value)
-                return;
-
-            Open = value;
-            _ = OpenChanged.InvokeAsync(value);
-        }
-    }
-
-    [Parameter]
     public RenderFragment? TopMenu { get; set; }
 
-    private IDisposable? _locationChangingRegistration;
+    private static readonly string OverlayClass = OverlayCssBuilder();
+    private static readonly string ComponentStaticClass = ComponentCssBuilder();
+    
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder){}
 
-    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
-    {
-        cssBuilder.AddClass("fixed h-full z-[1001]");
-        cssBuilder.AddClass("inset-y-0 left-0");
-        cssBuilder.AddClass("transform transition-transform duration-200 ease-in-out");
-        cssBuilder.AddClass("translate-x-[-1000%]", !Open);
-        cssBuilder.AddClass("container p-5");
-        cssBuilder.AddClass("flex flex-col gap-3.5");
-        cssBuilder.AddClass("cursor-default");
-        cssBuilder.AddClass(ColorExtensions.FullBorderColor);
-        cssBuilder.AddClass("drop-shadow-md");
-        cssBuilder.AddClass(ColorExtensions.MainBackgroundColor);
-    }
-
-    private string OverlayCssBuilder()
+    private static string OverlayCssBuilder()
     {
         using var cssBuilder = new CssBuilder(stackalloc char[128]);
-
-        cssBuilder.AddClass(Open ? "flex" : "hidden");
+        
+        cssBuilder.AddClass("hidden");
         cssBuilder.AddClass("flex");
         cssBuilder.AddClass("items-left");
         cssBuilder.AddClass("cursor-pointer");
@@ -71,25 +40,20 @@
         return cssBuilder.ToString();
     }
 
-    public void Dispose()
+    private static string ComponentCssBuilder()
     {
-        _locationChangingRegistration?.Dispose();
-    }
+        using var cssBuilder = new CssBuilder(stackalloc char[256]);
+        
+        cssBuilder.AddClass("fixed h-full z-[1001]");
+        cssBuilder.AddClass("inset-y-0 left-0");
+        cssBuilder.AddClass("translate-x-[-1000%]");
+        cssBuilder.AddClass("transform transition-transform duration-200 ease-in-out");
+        cssBuilder.AddClass("flex flex-col gap-3.5 p-5");
+        cssBuilder.AddClass("cursor-default");
+        cssBuilder.AddClass(ColorExtensions.FullBorderColor);
+        cssBuilder.AddClass("drop-shadow-md");
+        cssBuilder.AddClass(ColorExtensions.MainBackgroundColor);
 
-    protected override void OnFirstRender()
-    {
-        _locationChangingRegistration = NavigationManager.RegisterLocationChangingHandler(OnLocationChangingHandler);
+        return cssBuilder.ToString();
     }
-
-    private ValueTask OnLocationChangingHandler(LocationChangingContext arg)
-    {
-        Hide();
-        return ValueTask.CompletedTask;
-    }
-
-    private void Hide()
-    {
-        CurrentOpen = false;
-    }
-
 }

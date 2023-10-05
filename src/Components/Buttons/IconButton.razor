@@ -1,14 +1,28 @@
 ﻿@namespace UiKit.Components
 @inherits ButtonBase
 
-<Element Class="@ComponentCss"
-         HtmlTag="@HtmlTag"
-         type="@Type.ToHtml()"
-         href="@Href"
-         disabled="@Disabled"
-         @onclick="OnClick">
-    <UiKitIcon Icon="Icon" Size="Size"/>
-</Element>
+@if (OnClickJs is not null)
+{
+    <Element Class="@ComponentCss"
+             HtmlTag="@HtmlTag"
+             type="@Type.ToHtml()"
+             href="@Href"
+             disabled="@Disabled"
+             onclick="@OnClickJs">
+        <UiKitIcon Icon="Icon" Size="Size"/>
+    </Element>
+}
+else
+{
+    <Element Class="@ComponentCss"
+             HtmlTag="@HtmlTag"
+             type="@Type.ToHtml()"
+             href="@Href"
+             disabled="@Disabled"
+             @onclick="OnClick">
+        <UiKitIcon Icon="Icon" Size="Size"/>
+    </Element>
+}
 
 @code
 {
