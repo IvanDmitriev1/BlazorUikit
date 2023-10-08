@@ -10,7 +10,7 @@ public abstract class UiListItemBase<T> : UiKitRenderComponentBase, IUiListItem<
 
     [CascadingParameter]
     protected IUiList<T>? List { get; set; }
-
+    
     protected bool Selected
     {
         get => _selected;
@@ -20,7 +20,7 @@ public abstract class UiListItemBase<T> : UiKitRenderComponentBase, IUiListItem<
                 return;
             
             _selected = value;
-            AllowRender();
+            StateHasChangedWithRendering();
         }
     }
 

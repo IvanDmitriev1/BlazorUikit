@@ -1,5 +1,5 @@
 ﻿@namespace UiKit.Components
-@inherits UiKitComponentBase
+@inherits UiKitRenderComponentBase
 
 <span class="@ComponentCss">
     @(Icon.ToRenderFragment())
@@ -20,14 +20,7 @@
     public Color Color { get; set; } = Color.Inherit;
 
     private bool _firstRendered;
-
-    protected override bool ShouldRender()
-    {
-        if (!_firstRendered)
-            return true;
-
-        return false;
-    }
+    private TablerIconType _currentIcon;
 
     protected override void OnInitialized()
     {
@@ -40,9 +33,12 @@
         cssBuilder.AddClass(Color.ToTextCss());
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override void OnParametersSet()
     {
-        if (firstRender)
-            _firstRendered = true;
+        if (_currentIcon == Icon)
+            return;
+
+        _currentIcon = Icon;
+        AllowRender();
     }
 }
