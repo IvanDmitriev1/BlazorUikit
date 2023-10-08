@@ -1,7 +1,9 @@
 ﻿@namespace UiKit.Components
 @inherits UiKitComponentBase
 
-<img src="@Src" class="@ComponentCss" alt="@Description"/>
+<div class="@Class">
+    <img src="@Src" alt="@Description" class="@BuildImgCss()"/>
+</div>
 
 @code {
 
@@ -11,16 +13,19 @@
     [Parameter]
     public string Description { get; set; } = string.Empty;
 
-    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    [Parameter]
+    public ObjectFit ObjectFit { get; set; } = ObjectFit.Cover;
+    
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder){}
+
+    private string BuildImgCss()
     {
+        using var cssBuilder = new CssBuilder(stackalloc char[128]);
         cssBuilder.AddClass("rounded");
         cssBuilder.AddClass("flex");
-        cssBuilder.AddClass("object-cover");
+        cssBuilder.AddClass(@ObjectFit.ToTailwindCss());
+        
+        return cssBuilder.ToString();
     }
-
-    protected override void OnInitialized()
-    {
-        CacheCss = true;
-    }
-
+    
 }

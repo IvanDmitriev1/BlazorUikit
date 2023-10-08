@@ -8,10 +8,8 @@
     <IconButton Icon="@TablerIconType.ArrowLeft" Class="hidden md:block" OnClick="Previous"/>
     
     <SwipeArea Class="flex-1 flex flex-col items-center" OnSwipeEnd="OnSwipe">
-        <div class="overflow-hidden @ImageContainerCss">
-            <Image Src="@_selectedImageUrl"/>
-        </div>
-        
+        <Image Src="@_selectedImageUrl" Class="@ImageContainerCss"/>
+
         @if (ShowPreviews)
         {
             <UiList T="string" Direction="Direction.Row" Class="gap-3 items-center md:justify-center flex-wrap md:flex-nowrap" SelectedValue="@_selectedImageUrl" SelectedValueChanged="OnSelectedValueChanged">
