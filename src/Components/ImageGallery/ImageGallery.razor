@@ -1,35 +1,38 @@
 ﻿@namespace UiKit.Components
 @inherits UiKitComponentBase
 
-<Stack Class="@ComponentCss" Direction="Direction.Column" AlignItems="AlignItems.Center">
-    @if (_selectedImageUrl is not null)
-    {
-        <Image Src="@_selectedImageUrl" Class="cursor-pointer" />
-    }
-    else
-    {
-        <Skeleton Class="h-[425px]" FullWidth="true" />
-    }
+<Stack HtmlTag="section" Class="@ComponentCss" Direction="Direction.Column" AlignItems="AlignItems.Center">
+    
+    <div class="p-2">
+        @if (_selectedImageUrl is not null)
+        {
+            <Image Src="@_selectedImageUrl" Class="cursor-pointer"/>
+        }
+        else
+        {
+            <Skeleton Class="h-[425px]" FullWidth="true"/>
+        }
+    </div>
 
-    @if (ImagesUrls is not null)
+    @if (ShowPreviews)
     {
-        <UiList T="string" Direction="Direction.Row" Class="!bg-inherit gap-3 md:justify-between flex-wrap md:flex-nowrap" @bind-SelectedValue="_selectedImageUrl">
+        <UiList T="string" Direction="Direction.Row" Class="gap-3 items-center md:justify-center flex-wrap md:flex-nowrap" @bind-SelectedValue="_selectedImageUrl">
             @foreach (var imageUrl in ImagesUrls)
             {
                 <ImageGalleryItem Value="@imageUrl">
-                    <Image Src="@_selectedImageUrl" Class="w-[130px]"/>
+                    <Image Src="@imageUrl" Class="w-[130px] h-full"/>
                 </ImageGalleryItem>
             }
         </UiList>
     }
     else
     {
-        <Stack Direction="Direction.Row" Class="gap-3 md:justify-between flex-wrap md:flex-nowrap">
-            <Skeleton Class="h-[65px] w-[115px]"/>
-            <Skeleton Class="h-[65px] w-[115px]"/>
-            <Skeleton Class="h-[65px] w-[115px]"/>
-            <Skeleton Class="h-[65px] w-[115px]"/>
-        </Stack>
+        <UiList T="string" Direction="Direction.Row" Class="gap-3 items-center justify-center" @bind-SelectedValue="_selectedImageUrl">
+            @foreach (var imageUrl in ImagesUrls)
+            {
+                <ImageGalleryIconItem Value="@imageUrl" />
+            }
+        </UiList>
     }
 </Stack>
 
@@ -37,13 +40,17 @@
 @code {
 
     [Parameter, EditorRequired]
-    public IReadOnlyList<string>? ImagesUrls { get; set; }
+    public IReadOnlyList<string> ImagesUrls { get; set; } = Array.Empty<string>();
 
+    [Parameter]
+    public bool ShowPreviews { get; set; }
+    
     string? _selectedImageUrl;
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("gap-2.5");
+        cssBuilder.AddClass(Color.Primary.ToBackgroundCss());
     }
 
     protected override void OnInitialized()
@@ -53,4 +60,12 @@
             _selectedImageUrl = ImagesUrls[0];
         }
     }
+
+    static RenderFragment ShowImagesPreviewSkeleton =>
+        @<Stack Direction="Direction.Row" Class="gap-3 md:justify-between flex-wrap md:flex-nowrap">
+            <Skeleton Class="h-[65px] w-[115px]"/>
+            <Skeleton Class="h-[65px] w-[115px]"/>
+            <Skeleton Class="h-[65px] w-[115px]"/>
+            <Skeleton Class="h-[65px] w-[115px]"/>
+        </Stack>;
 }

@@ -69,14 +69,13 @@
         }
     }
 
-    private Dictionary<T, IUiListItem<T>> _itemsDictionary = new(5);
+    private Dictionary<T, IUiListItem<T>> _itemsDictionary = new();
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("flex gap-1.5 p-2");
         cssBuilder.AddClass(Direction.ToTailwindCss());
         cssBuilder.AddClass("rounded w-full");
-        cssBuilder.AddClass(Color.Primary.ToBackgroundCss());
     }
 
     public void RegisterListItem(IUiListItem<T> item)
