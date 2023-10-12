@@ -23,7 +23,8 @@
     public Dictionary<string, object>? UserAttributes { get; set; }
 
     [Parameter]
-    public RenderFragment ChildContent { get; set; } = null!;
+    public RenderFragment? ChildContent { get; set; }
+
 
     [Parameter]
     public T? SelectedValue { get; set; }
@@ -40,43 +41,31 @@
             if (!hasChanged)
                 return;
 
-            var previousValue = SelectedValue;
+            _previousSelectedValue = SelectedValue;
 
             SelectedValue = value;
             _ = SelectedValueChanged.InvokeAsync(value);
-            OnSelectedValueChanged(previousValue);
+            OnSelectedValueChanged(_previousSelectedValue);
         }
     }
 
-
-    [Parameter]
-    public IUiListItem<T>? SelectedItem { get; set; }
-
-    [Parameter]
-    public EventCallback<IUiListItem<T>?> SelectedItemChanged { get; set; }
-
-    protected IUiListItem<T>? CurrentSelectedItem
-    {
-        get => SelectedItem;
-        set
-        {
-            var hasChanged = !EqualityComparer<IUiListItem<T>>.Default.Equals(value, SelectedItem);
-            if (!hasChanged)
-                return;
-
-            SelectedItem = value;
-            _ = SelectedItemChanged.InvokeAsync(value);
-        }
-    }
-
-    private Dictionary<T, IUiListItem<T>> _itemsDictionary = new(5);
-
+    private Dictionary<T, IUiListItem<T>> _itemsDictionary = new();
+    private T? _previousSelectedValue;
+    
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("flex gap-1.5 p-2");
         cssBuilder.AddClass(Direction.ToTailwindCss());
         cssBuilder.AddClass("rounded w-full");
-        cssBuilder.AddClass(Color.Primary.ToBackgroundCss());
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (EqualityComparer<T>.Default.Equals(_previousSelectedValue, SelectedValue))
+            return;
+        
+        OnSelectedValueChanged(_previousSelectedValue);
+        _previousSelectedValue = SelectedValue;
     }
 
     public void RegisterListItem(IUiListItem<T> item)
@@ -86,7 +75,6 @@
         if (EqualityComparer<T>.Default.Equals(item.Value, SelectedValue))
         {
             item.SetSelected();
-            CurrentSelectedItem = item;
         }
     }
 
@@ -102,12 +90,6 @@
 
     private void OnSelectedValueChanged(T? previousValue)
     {
-        if (CurrentSelectedValue is not null)
-        {
-            _itemsDictionary.TryGetValue(CurrentSelectedValue, out var listItem);
-            CurrentSelectedItem = listItem;
-        }
-
         UnSelectItemByValue(previousValue);
         SelectItemByValue(CurrentSelectedValue);
     }

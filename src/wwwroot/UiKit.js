@@ -5,7 +5,6 @@ function RegisterNumericInputEvent(inputId, dotnetIdentifier) {
         return;
     }
     
-    
     const eventListener = function (event) {
         const inputValue = event.target.value;
         const numericValue = inputValue.replace(/[^0-9.,]|([.,][0-9]+)[.,]/g, '$1');
@@ -62,4 +61,27 @@ function CloseDrawer(drawerRootId)
 
     const drawerElement = element.children[1];
     drawerElement.classList.add("translate-x-[-1000%]");
+}
+
+
+
+const imageGalleryTimersDictionary = new Map();
+function RegisterImageGalleryTimer(dotnetIdentifier, interval)
+{
+    const timerId = setInterval(async () => {
+        // Function to be executed at each interval
+        console.log('Timer tick!');
+
+        await dotnetIdentifier.invokeMethodAsync('InvokeNextFromJs');
+    }, interval);
+
+    imageGalleryTimersDictionary.set(dotnetIdentifier._id, timerId);
+}
+
+function UnRegisterImageGalleryTimer(dotnetIdentifier)
+{
+    const timerId = imageGalleryTimersDictionary.get(dotnetIdentifier._id);
+    imageGalleryTimersDictionary.delete(dotnetIdentifier);
+
+    clearInterval(timerId);
 }

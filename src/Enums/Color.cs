@@ -17,7 +17,7 @@ public static class ColorExtensions
         $"{MainBackgroundColor} text-black dark:text-white text-regular font-inter";
 
     public const string MainBackgroundColor = "bg-main-light-background dark:bg-main-dark-background";
-
+    
     public const string BackgroundPrimaryHoverButtonColor = "hover:bg-black/90 dark:hover:bg-white";
     public const string BackgroundPrimaryAlternativeHoverButtonColor = "hover:bg-white dark:hover:bg-dark-gray";
 
@@ -26,7 +26,7 @@ public static class ColorExtensions
 
     public const string FullBorderColor = "border-black/40 dark:border-dark-gray";
 
-    public static ReadOnlySpan<char> ToTextCss(this Color color) => color switch
+    public static string ToTextCss(this Color color) => color switch
     {
         Color.Custom             => string.Empty,
         Color.Inherit            => "text-inherit",
@@ -38,7 +38,7 @@ public static class ColorExtensions
         _                        => throw new ArgumentOutOfRangeException(nameof(color), color, null)
     };
 
-    public static ReadOnlySpan<char> ToTextHoverCss(this Color color) => color switch
+    public static string ToTextHoverCss(this Color color) => color switch
     {
         Color.Custom             => string.Empty,
         Color.Inherit            => "hover:text-inherit",
@@ -50,7 +50,7 @@ public static class ColorExtensions
         _                        => throw new ArgumentOutOfRangeException(nameof(color), color, null)
     };
 
-    public static ReadOnlySpan<char> ToTextActiveCss(this Color color) => color switch
+    public static string ToTextActiveCss(this Color color) => color switch
     {
         Color.Custom             => string.Empty,
         Color.Inherit            => "active:text-inherit",
@@ -62,13 +62,13 @@ public static class ColorExtensions
         _                        => throw new ArgumentOutOfRangeException(nameof(color), color, null)
     };
 
-    public static ReadOnlySpan<char> ToTextDisabledCss(this Color color) => color switch
+    public static string ToTextDisabledCss(this Color color) => color switch
     {
         Color.Custom => string.Empty,
         _            => "text-black/20 dark:text-dark-gray-20"
     };
 
-    public static ReadOnlySpan<char> ToTextPlaceholderCss(this Color color) => color switch
+    public static string ToTextPlaceholderCss(this Color color) => color switch
     {
         Color.Custom             => string.Empty,
         Color.Inherit            => string.Empty,
@@ -80,7 +80,7 @@ public static class ColorExtensions
         _                        => throw new ArgumentOutOfRangeException(nameof(color), color, null)
     };
 
-    public static ReadOnlySpan<char> ToBackgroundCss(this Color color) => color switch
+    public static string ToBackgroundCss(this Color color) => color switch
     {
         Color.Custom             => string.Empty,
         Color.Inherit            => "bg-inherit",
@@ -92,7 +92,7 @@ public static class ColorExtensions
         _                        => throw new ArgumentOutOfRangeException(nameof(color), color, null)
     };
 
-    public static ReadOnlySpan<char> ToBackgroundHoverCss(this Color color) => color switch
+    public static string ToBackgroundHoverCss(this Color color) => color switch
     {
         Color.Custom             => string.Empty,
         Color.Inherit            => "hover:bg-inherit",
@@ -104,7 +104,7 @@ public static class ColorExtensions
         _                        => throw new ArgumentOutOfRangeException(nameof(color), color, null)
     };
 
-    public static ReadOnlySpan<char> ToBackgroundActiveCss(this Color color) => color switch
+    public static string ToBackgroundActiveCss(this Color color) => color switch
     {
         Color.Custom             => string.Empty,
         Color.Inherit            => "active:bg-inherit",
@@ -116,28 +116,28 @@ public static class ColorExtensions
         _                        => throw new ArgumentOutOfRangeException(nameof(color), color, null)
     };
 
-    public static ReadOnlySpan<char> ToBackgroundDisabledCss(this Color color) => color switch
+    public static string ToBackgroundDisabledCss(this Color color) => color switch
     {
         Color.Custom  => string.Empty,
         Color.Inherit => string.Empty,
         _             => "bg-black/5 dark:bg-dark-gray-5"
     };
 
-    public static ReadOnlySpan<char> ToRingCss(this Color color) => color switch
+    public static string ToRingCss(this Color color) => color switch
     {
         Color.Custom             => string.Empty,
         Color.Inherit            => "ring-inherit",
         _                        => "ring-black/5 dark:ring-dark-gray-5"
     };
 
-    public static ReadOnlySpan<char> ToRingFocusWithinCss(this Color color) => color switch
+    public static string ToRingFocusWithinCss(this Color color) => color switch
     {
         Color.Custom  => string.Empty,
         Color.Inherit => "focus-within:ring-inherit",
         _             => "focus-within:ring-black/5 dark:focus-within:ring-dark-gray-5"
     };
 
-    public static ReadOnlySpan<char> ToRingFocusCss(this Color color) => color switch
+    public static string ToRingFocusCss(this Color color) => color switch
     {
         Color.Custom             => string.Empty,
         Color.Inherit            => "focus:ring-inherit",
@@ -156,7 +156,7 @@ public static class ColorExtensions
         _                        => "border-black/5 dark:border-dark-gray-5"
     };
 
-    public static ReadOnlySpan<char> ToBorderFocusWithinCss(this Color color) => color switch
+    public static string ToBorderFocusWithinCss(this Color color) => color switch
     {
         Color.Custom  => string.Empty,
         Color.Inherit => "focus-within:border-inherit",

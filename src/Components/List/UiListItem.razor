@@ -1,7 +1,6 @@
 ﻿@namespace UiKit.Components
 @typeparam T where T : notnull
-@inherits UiKitRenderComponentBase
-@implements IUiListItem<T>
+@inherits UiListItemBase<T>
 
 <li class="@ComponentCss" @onclick="OnClick" @onclick:stopPropagation="true">
     @ChildContent
@@ -11,56 +10,21 @@
 
     [Parameter]
     public RenderFragment ChildContent { get; set; } = null!;
-
-    [Parameter, EditorRequired]
-    public T Value { get; set; } = default!;
-
-    [CascadingParameter]
-    protected IUiList<T>? List { get; set; }
-
-    private bool _isSelected;
-
+    
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass("p-3");
         cssBuilder.AddClass("rounded");
         cssBuilder.AddClass("cursor-pointer");
 
-        cssBuilder.AddClass(Color.PrimaryAlternative.ToBackgroundCss(), _isSelected);
-        cssBuilder.AddClass(Color.PrimaryAlternative.ToTextCss(), _isSelected);
-        cssBuilder.AddClass(Color.Primary.ToTextHoverCss(), !_isSelected);
-        cssBuilder.AddClass(ColorExtensions.BackgroundPrimaryHoverButtonColor, !_isSelected);
+        cssBuilder.AddClass(Color.PrimaryAlternative.ToBackgroundCss(), Selected);
+        cssBuilder.AddClass(Color.PrimaryAlternative.ToTextCss(), Selected);
+        cssBuilder.AddClass(Color.Primary.ToTextHoverCss(), !Selected);
+        cssBuilder.AddClass(ColorExtensions.BackgroundPrimaryHoverButtonColor, !Selected);
     }
-
-    public void Dispose()
-    {
-        GC.SuppressFinalize(this);
-
-        List?.UnRegisterListItem(this);
-    }
-
-    protected override void OnInitialized()
-    {
-        List?.RegisterListItem(this);
-    }
-
+    
     protected virtual Task OnClick()
     {
         List?.SetSelectedValue(Value);
-        AllowRender();
-
         return Task.CompletedTask;
-    }
-
-    public void SetSelected()
-    {
-        _isSelected = true;
-        AllowRender();
-    }
-
-    public void SetUnselected()
-    {
-        _isSelected = false;
-        AllowRender();
     }
 }

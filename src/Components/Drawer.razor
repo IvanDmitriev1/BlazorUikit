@@ -4,9 +4,9 @@
 <div id="MainDrawerRoot">
     <Overlay Class="@OverlayClass" LockScroll="false" />
     
-    <aside class="@ComponentStaticClass" @onclick:stopPropagation="true">
-        <Stack Direction="Direction.Row">
-            <IconButton Icon="@TablerIconType.X" OnClickJs="CloseDrawer('MainDrawerRoot')" />
+    <aside class="@ComponentCss" @onclick:stopPropagation="true">
+        <Stack Direction="Direction.Row" Class="mb-6">
+            <IconButton Icon="@TablerIconType.X" Size="Size.Large" OnClickJs="CloseDrawer('MainDrawerRoot')" />
             <div class="grow"></div>
         </Stack>
     
@@ -23,9 +23,19 @@
     public RenderFragment? TopMenu { get; set; }
 
     private static readonly string OverlayClass = OverlayCssBuilder();
-    private static readonly string ComponentStaticClass = ComponentCssBuilder();
-    
-    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder){}
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass("fixed h-full z-[1001]");
+        cssBuilder.AddClass("inset-y-0 left-0");
+        cssBuilder.AddClass("translate-x-[-1000%]");
+        cssBuilder.AddClass("transform transition-transform duration-200 ease-in-out");
+        cssBuilder.AddClass("p-5");
+        cssBuilder.AddClass("cursor-default");
+        cssBuilder.AddClass(ColorExtensions.FullBorderColor);
+        cssBuilder.AddClass("drop-shadow-md");
+        cssBuilder.AddClass(ColorExtensions.MainBackgroundColor);
+    }
 
     private static string OverlayCssBuilder()
     {
@@ -36,23 +46,6 @@
         cssBuilder.AddClass("items-left");
         cssBuilder.AddClass("cursor-pointer");
         cssBuilder.AddClass("z-[1000]");
-
-        return cssBuilder.ToString();
-    }
-
-    private static string ComponentCssBuilder()
-    {
-        using var cssBuilder = new CssBuilder(stackalloc char[256]);
-        
-        cssBuilder.AddClass("fixed h-full z-[1001]");
-        cssBuilder.AddClass("inset-y-0 left-0");
-        cssBuilder.AddClass("translate-x-[-1000%]");
-        cssBuilder.AddClass("transform transition-transform duration-200 ease-in-out");
-        cssBuilder.AddClass("flex flex-col gap-3.5 p-5");
-        cssBuilder.AddClass("cursor-default");
-        cssBuilder.AddClass(ColorExtensions.FullBorderColor);
-        cssBuilder.AddClass("drop-shadow-md");
-        cssBuilder.AddClass(ColorExtensions.MainBackgroundColor);
 
         return cssBuilder.ToString();
     }

@@ -21,7 +21,7 @@
             }
             else
             {
-                @_selectedListItem?.ChildContent
+                @SelectedUiLisItemWithRenderFragment?.ChildContent
             }
         </div>
 
@@ -33,6 +33,7 @@
     <CascadingValue Value="this" IsFixed="true">
         <div class="@BuildListCss()">
             <UiList T="T"
+                    Class="@Color.Primary.ToBackgroundCss()"
                     @bind-SelectedValue="CurrentValue"
                     @bind-SelectedItem="_selectedListItem"
                     @onmouseover="() => _isMouseOverList = true"
@@ -63,6 +64,7 @@
     private bool _isOpen;
     private bool _isMouseOverList;
     private IUiListItem<T>? _selectedListItem;
+    private UiListItem<T>? SelectedUiLisItemWithRenderFragment => _selectedListItem as UiListItem<T>;
     private string _listCss = string.Empty;
     private ElementReference _element;
     private static readonly string ChevronDownCss = $"{ColorExtensions.FullBorderColor} border-l p-1.5";

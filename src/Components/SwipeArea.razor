@@ -1,0 +1,66 @@
+﻿@namespace UiKit.Components
+
+<div @ref="_componentRef" class="@Class" 
+     @ontouchstart="OnTouchStart" @ontouchstart:stopPropagation="true"
+     @ontouchend="OnTouchEnd" @ontouchend:stopPropagation="true"
+     @ontouchcancel="OnTouchCancel" @ontouchcancel:stopPropagation="true">
+    @ChildContent
+</div>
+
+@code
+{
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Swipe threshold in pixels. If SwipeDelta is below Sensitivity then OnSwipe is not called.
+    /// </summary>
+    [Parameter]
+    public int Sensitivity { get; set; } = 100;
+
+    [Parameter]
+    public EventCallback<SwipeDirection> OnSwipeEnd { get; set; }
+    
+    private ElementReference _componentRef;
+    private double? _xDown;
+    private double? _yDown;
+
+    private void OnTouchStart(TouchEventArgs args)
+    {
+        _xDown = args.Touches[0].ClientX;
+        _yDown = args.Touches[0].ClientY;
+
+    }
+
+    private Task OnTouchEnd(TouchEventArgs args)
+    {
+        if (_xDown is null || _yDown is null)
+        {
+            return Task.CompletedTask;
+        }
+
+        var xDiff = _xDown.Value - args.ChangedTouches[0].ClientX;
+        var yDiff = _yDown.Value - args.ChangedTouches[0].ClientY;
+
+        if (Math.Abs(xDiff) < Sensitivity && Math.Abs(yDiff) < Sensitivity)
+        {
+            _xDown = _yDown = null;
+            return Task.CompletedTask;
+        }
+
+        var swipeDirection = Math.Abs(xDiff) > Math.Abs(yDiff) ?
+            xDiff > 0 ? SwipeDirection.LeftToRight : SwipeDirection.RightToLeft :
+            yDiff > 0 ? SwipeDirection.TopToBottom : SwipeDirection.BottomToTop;
+        
+        OnTouchCancel();
+        return OnSwipeEnd.InvokeAsync(swipeDirection);
+    }
+
+    private void OnTouchCancel()
+    {
+        _xDown = _yDown = null;
+    }
+}

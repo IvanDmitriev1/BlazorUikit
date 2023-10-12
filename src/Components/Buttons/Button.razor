@@ -6,7 +6,9 @@
 
          type="@Type.ToHtml()"
          href="@Href"
+         target="@HrefTarget.ToHtml()"
          disabled="@Disabled"
+         data-enhance-nav="@(!HrefOutside)"
 
          @onclick="OnClick">
     @ChildContent
@@ -14,9 +16,6 @@
 
 @code
 {
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
-
     [Parameter]
     public Size Size { get; set; } = Size.Medium;
 

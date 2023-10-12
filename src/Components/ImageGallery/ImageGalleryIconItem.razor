@@ -1,0 +1,23 @@
+﻿@namespace UiKit.Components
+@typeparam T where T : notnull
+@inherits UiListItemBase<T>
+
+<li class="@ComponentCss" @onclick="OnClick" @onclick:stopPropagation="true">
+    <UiKitIcon Icon="@IconType"/>
+</li>
+
+@code {
+
+    TablerIconType IconType => Selected ? TablerIconType.CircleDot : TablerIconType.Circle;
+    
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass("cursor-pointer");
+        cssBuilder.AddClass("p-1.5");
+    }
+
+    private void OnClick()
+    {
+        List?.SetSelectedValue(Value);
+    }
+}
