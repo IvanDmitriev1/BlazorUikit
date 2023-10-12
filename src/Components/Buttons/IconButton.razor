@@ -7,9 +7,11 @@
              HtmlTag="@HtmlTag"
              type="@Type.ToHtml()"
              href="@Href"
+             target="@HrefTarget.ToHtml()"
              disabled="@Disabled"
              onclick="@OnClickJs">
         <UiKitIcon Icon="Icon" Size="Size"/>
+        @ChildContent
     </Element>
 }
 else
@@ -18,9 +20,11 @@ else
              HtmlTag="@HtmlTag"
              type="@Type.ToHtml()"
              href="@Href"
+             target="@HrefTarget.ToHtml()"
              disabled="@Disabled"
              @onclick="OnClick">
         <UiKitIcon Icon="Icon" Size="Size"/>
+        @ChildContent
     </Element>
 }
 
@@ -38,6 +42,7 @@ else
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("w-fit");
+        cssBuilder.AddClass("flex flex-row items-center");
 
         if (!Filled)
             return;

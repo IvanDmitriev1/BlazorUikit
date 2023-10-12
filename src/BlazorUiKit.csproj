@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.*" Condition="'$(TargetFramework)' == 'net7.0'" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0-rtm.23504.12" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0-rc.2.*" Condition="'$(TargetFramework)' == 'net8.0'" />
   </ItemGroup>
 
   <ItemGroup>

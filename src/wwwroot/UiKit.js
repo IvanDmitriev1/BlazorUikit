@@ -75,12 +75,12 @@ function RegisterImageGalleryTimer(dotnetIdentifier, interval)
         await dotnetIdentifier.invokeMethodAsync('InvokeNextFromJs');
     }, interval);
 
-    imageGalleryTimersDictionary.set(dotnetIdentifier, timerId);
+    imageGalleryTimersDictionary.set(dotnetIdentifier._id, timerId);
 }
 
 function UnRegisterImageGalleryTimer(dotnetIdentifier)
 {
-    const timerId = imageGalleryTimersDictionary[dotnetIdentifier];
+    const timerId = imageGalleryTimersDictionary.get(dotnetIdentifier._id);
     imageGalleryTimersDictionary.delete(dotnetIdentifier);
 
     clearInterval(timerId);

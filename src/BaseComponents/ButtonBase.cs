@@ -3,7 +3,16 @@
 public abstract class ButtonBase : UiKitComponentBase
 {
     [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
     public string? Href { get; set; }
+
+    [Parameter]
+    public bool HrefOutside { get; set; }
+
+    [Parameter]
+    public HrefTarget HrefTarget { get; set; } = HrefTarget.Self;
 
     [Parameter]
     public bool Disabled { get; set; }
