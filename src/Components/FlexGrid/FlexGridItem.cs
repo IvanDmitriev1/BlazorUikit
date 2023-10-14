@@ -26,7 +26,7 @@ public sealed class FlexGridItem : UiKitElementWithChildComponentBase
 		CacheCss = true;
 	}
 
-	private static ReadOnlySpan<char> GetXsFlexBias(int value) => value switch
+	private static string GetXsFlexBias(int value) => value switch
 	{
 		0  => string.Empty,
 		1  => "basis-1/12 w-1/12",
@@ -44,7 +44,7 @@ public sealed class FlexGridItem : UiKitElementWithChildComponentBase
 		_  => throw new ArgumentOutOfRangeException(nameof(value), value, null)
 	};
 
-	private static ReadOnlySpan<char> GetSmFlexBias(int value) => value switch
+	private static string GetSmFlexBias(int value) => value switch
 	{
 		0  => string.Empty,
 		1  => "sm:basis-1/12 sm:w-1/12",
@@ -62,7 +62,7 @@ public sealed class FlexGridItem : UiKitElementWithChildComponentBase
 		_  => throw new ArgumentOutOfRangeException(nameof(value), value, null)
 	};
 
-	private static ReadOnlySpan<char> GetMdFlexBias(int value) => value switch
+	private static string GetMdFlexBias(int value) => value switch
 	{
 		0  => string.Empty,
 		1  => "md:basis-1/12 md:w-1/12",
@@ -80,7 +80,7 @@ public sealed class FlexGridItem : UiKitElementWithChildComponentBase
 		_  => throw new ArgumentOutOfRangeException(nameof(value), value, null)
 	};
 
-	private static ReadOnlySpan<char> GetLgFlexBias(int value) => value switch
+	private static string GetLgFlexBias(int value) => value switch
 	{
 		0  => string.Empty,
 		1  => "lg:basis-1/12 lg:w-1/12",

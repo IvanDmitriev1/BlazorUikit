@@ -79,6 +79,7 @@
         cssBuilder.AddClass("p-1 sm:p-3.5 gap-3.5");
         cssBuilder.AddClass(AlignItems.Center.ToTailwindCss());
         cssBuilder.AddClass(Color.Primary.ToBackgroundCss());
+        cssBuilder.AddClass("rounded");
     }
     
     public async ValueTask DisposeAsync()
