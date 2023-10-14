@@ -69,8 +69,7 @@ const imageGalleryTimersDictionary = new Map();
 function RegisterImageGalleryTimer(dotnetIdentifier, interval)
 {
     const timerId = setInterval(async () => {
-        // Function to be executed at each interval
-        console.log('Timer tick!');
+        //console.log('Timer tick!');
 
         await dotnetIdentifier.invokeMethodAsync('InvokeNextFromJs');
     }, interval);

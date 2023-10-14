@@ -115,10 +115,11 @@
     [JSInvokable]
     public void InvokeNextFromJs()
     {
-        var timeBetweenChanges = Stopwatch.GetElapsedTime(_timestamp);
+        //Problem with blazor wasm
+        /*var timeBetweenChanges = Stopwatch.GetElapsedTime(_timestamp);
         
         if (timeBetweenChanges <= AutoCycleTime)
-            return;
+            return;*/
         
         CurrentIndex++;
         StateHasChanged();
@@ -127,19 +128,19 @@
     private void OnSelectedValueChanged(string value)
     {
         _selectedImageUrl = value;
-        _timestamp = Stopwatch.GetTimestamp();
+        //_timestamp = Stopwatch.GetTimestamp();
     }
     
     private void Previous()
     {
         CurrentIndex--;
-        _timestamp = Stopwatch.GetTimestamp();
+        //_timestamp = Stopwatch.GetTimestamp();
     }
     
     private void Next()
     {
         CurrentIndex++;
-        _timestamp = Stopwatch.GetTimestamp();
+        //_timestamp = Stopwatch.GetTimestamp();
     }
 
     private void OnSwipe(SwipeDirection direction)
