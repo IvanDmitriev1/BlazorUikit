@@ -1,6 +1,6 @@
-﻿using UiKit.Abstractions.List;
+﻿using BlazorUiKit.Abstractions.List;
 
-namespace UiKit.BaseComponents;
+namespace BlazorUiKit.BaseComponents;
 
 public abstract class UiListItemBase<T> : UiKitRenderComponentBase, IUiListItem<T>
     where T : notnull

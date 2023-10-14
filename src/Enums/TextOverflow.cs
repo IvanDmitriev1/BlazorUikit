@@ -1,4 +1,4 @@
-﻿namespace UiKit.Enums;
+﻿namespace BlazorUiKit.Enums;
 
 public enum TextOverflow
 {

@@ -1,8 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using UiKit.Abstractions.Dialog;
-using UiKit.Components.Dialog;
+﻿using BlazorUiKit.Abstractions.Dialog;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace UiKit.Extensions;
+namespace BlazorUiKit.Extensions;
 
 public static class ServiceCollectionExtensions
 {

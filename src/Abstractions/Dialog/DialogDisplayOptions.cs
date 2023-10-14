@@ -1,4 +1,4 @@
-﻿namespace UiKit.Abstractions.Dialog;
+﻿namespace BlazorUiKit.Abstractions.Dialog;
 
 public sealed class DialogDisplayOptions
 {

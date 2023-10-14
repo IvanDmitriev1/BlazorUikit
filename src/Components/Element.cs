@@ -1,4 +1,4 @@
-﻿namespace UiKit.Components;
+﻿namespace BlazorUiKit.Components;
 
 public sealed class Element : UiKitElementWithChildWithUserAttributesComponentBase
 {

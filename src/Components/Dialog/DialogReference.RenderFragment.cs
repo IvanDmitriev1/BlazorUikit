@@ -1,4 +1,4 @@
-﻿namespace UiKit.Components.Dialog;
+﻿namespace BlazorUiKit.Components;
 
 internal sealed class RenderFragmentDialogReference : DialogReference
 {

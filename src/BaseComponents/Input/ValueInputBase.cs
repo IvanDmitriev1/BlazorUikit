@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace UiKit.BaseComponents.Input;
+namespace BlazorUiKit.BaseComponents.Input;
 
 public abstract class ValueInputBase<T> : TextInputBase<T>
 {

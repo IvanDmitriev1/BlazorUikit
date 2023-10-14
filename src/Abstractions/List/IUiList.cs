@@ -1,4 +1,4 @@
-﻿namespace UiKit.Abstractions.List;
+﻿namespace BlazorUiKit.Abstractions.List;
 
 public interface IUiList<T>
     where T : notnull

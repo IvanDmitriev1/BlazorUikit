@@ -1,4 +1,4 @@
-﻿namespace UiKit.Utilities;
+﻿namespace BlazorUiKit.Utilities;
 
 public static class EventUtil
 {

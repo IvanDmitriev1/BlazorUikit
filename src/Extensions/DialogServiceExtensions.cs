@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using UiKit.Abstractions.Dialog;
-using UiKit.Components;
+using BlazorUiKit.Abstractions.Dialog;
 
-namespace UiKit.Extensions;
+namespace BlazorUiKit.Extensions;
 
 public static class DialogServiceExtensions
 {

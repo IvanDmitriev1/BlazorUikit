@@ -1,4 +1,4 @@
-﻿namespace UiKit.BaseComponents.Input;
+﻿namespace BlazorUiKit.BaseComponents.Input;
 
 public abstract class InputBase<T> : ValidationComponentBase<T>
 {

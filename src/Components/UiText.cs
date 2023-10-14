@@ -1,4 +1,4 @@
-﻿namespace UiKit.Components;
+﻿namespace BlazorUiKit.Components;
 
 public class UiText : UiKitElementWithChildComponentBase
 {

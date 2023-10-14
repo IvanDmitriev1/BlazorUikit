@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using UiKit.Abstractions.Dialog;
+using BlazorUiKit.Abstractions.Dialog;
 
-namespace UiKit.Components;
+namespace BlazorUiKit.Components;
 
 public abstract class DialogBase : ComponentBase, IDisposable
 {

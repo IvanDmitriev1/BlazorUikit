@@ -1,4 +1,4 @@
-﻿namespace UiKit.BaseComponents;
+﻿namespace BlazorUiKit.BaseComponents;
 
 public abstract class UiKitComponentBase : ComponentBase
 {

@@ -2,7 +2,7 @@
 using LinkDotNet.StringBuilder;
 using System.Runtime.CompilerServices;
 
-namespace UiKit.Utilities;
+namespace BlazorUiKit.Utilities;
 
 public ref struct CssBuilder
 {

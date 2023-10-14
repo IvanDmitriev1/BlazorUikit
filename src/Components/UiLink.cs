@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.AspNetCore.Components.Routing;
-
-namespace UiKit.Components;
+﻿namespace BlazorUiKit.Components;
 
 public sealed class UiLink : UiText
 {

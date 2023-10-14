@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.AspNetCore.Components.Forms;
 
-namespace UiKit.BaseComponents;
+namespace BlazorUiKit.BaseComponents;
 
 public abstract class ValidationComponentBase<T> : UiKitRenderComponentBase, IDisposable
 {

@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace UiKit.Extensions;
+namespace BlazorUiKit.Extensions;
 
 public static class NumberExtensions
 {

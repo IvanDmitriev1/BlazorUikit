@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Rendering;
-
-namespace UiKit.BaseComponents;
+﻿namespace BlazorUiKit.BaseComponents;
 
 public abstract class UiKitElementWithChildComponentBase : UiKitElementComponentBase
 {

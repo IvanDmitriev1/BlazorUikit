@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using UiKit.Abstractions.Dialog;
+using BlazorUiKit.Abstractions.Dialog;
 
-namespace UiKit.Components.Dialog;
+namespace BlazorUiKit.Components;
 
 internal sealed class DialogReference<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog, TResult> : DialogReferenceBase, IDialogReference<TDialog, TResult>
 	where TDialog : DialogBase<TDialog, TResult>

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using UiKit.Abstractions.Dialog;
+using BlazorUiKit.Abstractions.Dialog;
 
-namespace UiKit.Components.Dialog;
+namespace BlazorUiKit.Components;
 
 internal class DialogService : IDialogService
 {

@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using UiKit.Components;
 
-namespace UiKit.Abstractions.Dialog;
+namespace BlazorUiKit.Abstractions.Dialog;
 
 public interface IDialogReferenceBase
 {

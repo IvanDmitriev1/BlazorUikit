@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace UiKit.Components;
+namespace BlazorUiKit.Components;
 
 public class DialogParameters<TDialog> : Dictionary<string, object> where TDialog : DialogBase
 {
