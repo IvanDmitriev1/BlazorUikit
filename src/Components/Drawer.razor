@@ -32,9 +32,9 @@
         cssBuilder.AddClass("transform transition-transform duration-200 ease-in-out");
         cssBuilder.AddClass("p-5");
         cssBuilder.AddClass("cursor-default");
-        cssBuilder.AddClass(ColorExtensions.FullBorderColor);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderCss(Color.Secondary));
         cssBuilder.AddClass("drop-shadow-md");
-        cssBuilder.AddClass(ColorExtensions.MainBackgroundColor);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.PageBackgroundCss);
     }
 
     private static string OverlayCssBuilder()

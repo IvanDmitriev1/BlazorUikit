@@ -13,7 +13,7 @@
     private static string CreateCss(IReadOnlyCollection<string> list)
     {
         using var cssBuilder = new CssBuilder(stackalloc char[50]);
-        cssBuilder.AddClass(Color.Error.ToTextCss());
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color.Error));
         cssBuilder.AddClass("mt-1", list.Count > 0);
 
         return cssBuilder.ToString();

@@ -29,8 +29,8 @@
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass(Size.ToTailwindCssIcon());
-        cssBuilder.AddClass(Color.ToTextCss());
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToIconSizeCss(Size));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color));
     }
 
     protected override void OnParametersSet()

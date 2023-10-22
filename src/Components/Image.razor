@@ -21,11 +21,10 @@
     private string BuildImgCss()
     {
         using var cssBuilder = new CssBuilder(stackalloc char[128]);
-        cssBuilder.AddClass("rounded");
+        cssBuilder.AddClass(BorderRadius.Default.ToTailwindcss());
         cssBuilder.AddClass("flex");
         cssBuilder.AddClass(ObjectFit.ToTailwindCss());
         
         return cssBuilder.ToString();
     }
-    
 }

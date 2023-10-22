@@ -17,7 +17,7 @@ public class UiText : UiKitElementWithChildComponentBase
 	protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
 	{
 		cssBuilder.AddClass(Typo.ToTailwindCss());
-		cssBuilder.AddClass(Color.ToTextCss());
+		cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color));
 		cssBuilder.AddClass(Align.ToTailwindCss());
 		cssBuilder.AddClass(TextOverflow.ToTailwindCss());
 	}
