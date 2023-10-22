@@ -20,7 +20,8 @@ public abstract class UiListItemBase<T> : UiKitRenderComponentBase, IUiListItem<
                 return;
             
             _selected = value;
-            StateHasChangedWithRendering();
+            AllowRender();
+            StateHasChanged();
         }
     }
 
@@ -32,8 +33,8 @@ public abstract class UiListItemBase<T> : UiKitRenderComponentBase, IUiListItem<
 
         List?.UnRegisterListItem(this);
     }
-    
-    protected override void OnFirstRender()
+
+    protected override void OnInitialized()
     {
         List?.RegisterListItem(this);
     }

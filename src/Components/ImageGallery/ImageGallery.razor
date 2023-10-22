@@ -16,7 +16,7 @@
                 @foreach (var imageUrl in ImagesUrls)
                 {
                     <ImageGalleryItem Value="@imageUrl">
-                        <Image Src="@imageUrl" Class="w-[130px] h-full"/>
+                        <Image Src="@imageUrl" Class="w-[100px] h-full"/>
                     </ImageGalleryItem>
                 }
             </UiList>
@@ -26,7 +26,7 @@
             <UiList T="string" Direction="Direction.Row" Class="gap-3 items-center justify-center" SelectedValue="@_selectedImageUrl" SelectedValueChanged="OnSelectedValueChanged">
                 @foreach (var imageUrl in ImagesUrls)
                 {
-                    <ImageGalleryIconItem Value="@imageUrl"/>
+                    <ImageGalleryIconItem Value="@imageUrl" />
                 }
             </UiList>
         }
@@ -78,7 +78,6 @@
     {
         cssBuilder.AddClass("p-1 sm:p-3.5 gap-3.5");
         cssBuilder.AddClass(AlignItems.Center.ToTailwindCss());
-        cssBuilder.AddClass(Color.Primary.ToBackgroundCss());
         cssBuilder.AddClass("rounded");
     }
     

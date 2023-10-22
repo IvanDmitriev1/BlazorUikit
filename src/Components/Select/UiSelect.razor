@@ -36,9 +36,9 @@
                     Class="@Color.Primary.ToBackgroundCss()"
                     @bind-SelectedValue="CurrentValue"
                     @bind-SelectedItem="_selectedListItem"
-                    @onmouseover="() => _isMouseOverList = true"
-                    @onmouseout="() => _isMouseOverList = false"
-                    @onclick="() => IsOpen = false">
+                    OnMouseOver="EventUtil.AsNonRenderingEventHandler(() => _isMouseOverList = true)"
+                    OnMouseOut="EventUtil.AsNonRenderingEventHandler(() => _isMouseOverList = false)"
+                    OnClick="() => IsOpen = false">
                 @ChildContent
             </UiList>
         </div>
@@ -61,13 +61,14 @@
         }
     }
 
+    private static readonly string ChevronDownCss = $"{ColorExtensions.FullBorderColor} border-l p-1.5";
+
     private bool _isOpen;
     private bool _isMouseOverList;
     private IUiListItem<T>? _selectedListItem;
     private UiListItem<T>? SelectedUiLisItemWithRenderFragment => _selectedListItem as UiListItem<T>;
     private string _listCss = string.Empty;
     private ElementReference _element;
-    private static readonly string ChevronDownCss = $"{ColorExtensions.FullBorderColor} border-l p-1.5";
 
     public UiSelect() : base(default) { }
 

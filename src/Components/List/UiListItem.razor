@@ -10,12 +10,13 @@
 
     [Parameter]
     public RenderFragment ChildContent { get; set; } = null!;
-    
+
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("rounded");
         cssBuilder.AddClass("cursor-pointer");
 
+        cssBuilder.AddClass("p-4");
         cssBuilder.AddClass(Color.PrimaryAlternative.ToBackgroundCss(), Selected);
         cssBuilder.AddClass(Color.PrimaryAlternative.ToTextCss(), Selected);
         cssBuilder.AddClass(Color.Primary.ToTextHoverCss(), !Selected);

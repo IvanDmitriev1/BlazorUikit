@@ -4,7 +4,10 @@
 @implements IUiList<T>
 
 <CascadingValue Value="this" IsFixed="true">
-    <ul @attributes="UserAttributes" class="@ComponentCss">
+    <ul @onmouseover="OnMouseOver"
+        @onmouseout="OnMouseOut"
+        @onclick="OnClick"
+        class="@ComponentCss">
         @ChildContent
     </ul>
 </CascadingValue>
@@ -14,15 +17,25 @@
     [Parameter]
     public Direction Direction { get; set; } = Direction.Column;
 
-    /// <summary>
-    /// UserAttributes carries all attributes you add to the component that don't match any of its parameters.
-    /// They will be splatted onto the underlying HTML tag.
-    /// </summary>
-    [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? UserAttributes { get; set; }
-
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
+
+
+    [Parameter]
+    public EventCallback OnMouseOver { get; set; }
+
+    [Parameter]
+    public EventCallback OnMouseOut { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+
+    [Parameter]
+    public IUiListItem<T>? SelectedItem { get; set; }
+
+    [Parameter]
+    public EventCallback<IUiListItem<T>?> SelectedItemChanged { get; set; }
 
 
     [Parameter]
@@ -44,13 +57,16 @@
 
             SelectedValue = value;
             _ = SelectedValueChanged.InvokeAsync(value);
+
+            SetSelectedItem(value);
+
             OnSelectedValueChanged(_previousSelectedValue);
         }
     }
 
     private Dictionary<T, IUiListItem<T>> _itemsDictionary = new();
     private T? _previousSelectedValue;
-    
+
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("flex gap-1.5 p-2");
@@ -62,7 +78,7 @@
     {
         if (EqualityComparer<T>.Default.Equals(_previousSelectedValue, SelectedValue))
             return;
-        
+
         OnSelectedValueChanged(_previousSelectedValue);
         _previousSelectedValue = SelectedValue;
     }
@@ -74,6 +90,7 @@
         if (EqualityComparer<T>.Default.Equals(item.Value, SelectedValue))
         {
             item.SetSelected();
+            SetSelectedItem(item.Value);
         }
     }
 
@@ -85,6 +102,15 @@
     public void SetSelectedValue(T value)
     {
         CurrentSelectedValue = value;
+    }
+
+    private void SetSelectedItem(T? value)
+    {
+        if (value is null)
+            return;
+
+        SelectedItem = _itemsDictionary[value];
+        _ = SelectedItemChanged.InvokeAsync(SelectedItem);
     }
 
     private void OnSelectedValueChanged(T? previousValue)
