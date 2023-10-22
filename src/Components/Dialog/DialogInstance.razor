@@ -1,45 +1,38 @@
 ﻿@namespace BlazorUiKit.Components
 @inherits UiKitRenderComponentBase
 
-<Overlay Class="@OverlayCssBuilder()" Style="@($"z-index: {DialogReference.DialogPosition}0;")" OnClick="OverlayOnClickHandler">
-    <div role="dialog"
-         class="@ComponentCss"
-         @onclick:stopPropagation="true">
-        <CascadingValue IsFixed="true" Value="DialogReference">
-            @DialogReference.DialogContent
-        </CascadingValue>
-    </div>
-</Overlay>
+@inject IJSRuntime JsRuntime
+
+<dialog @ref="_element" class="@ComponentCss" @onclose="OverlayOnClickHandler">
+    <CascadingValue IsFixed="true" Value="DialogReference">
+                @DialogReference.DialogContent
+    </CascadingValue>
+</dialog>
 
 @code
 {
     [Parameter, EditorRequired]
     public IDialogReferenceBase DialogReference { get; set; } = null!;
 
+    ElementReference _element;
+
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass("container mx-auto p-5 w-full");
+        cssBuilder.AddClass("container p-5");
         cssBuilder.AddClass("cursor-default animate-zoom");
-        cssBuilder.AddClass("rounded border-2");
+        cssBuilder.AddClass("rounded border-2 drop-shadow-md");
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderCss(Color.Secondary));
-        cssBuilder.AddClass("drop-shadow-md");
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.PageBackgroundCss);
         cssBuilder.AddClass(DialogReference.DisplayOptions.Breakpoint.ToTailwindCssMaxWidth());
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.PageBackgroundCss);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.PageTextCss);
+        
+        cssBuilder.AddClass("backdrop:bg-main-dark-background/60");
+        cssBuilder.AddClass("backdrop:cursor-pointer", DialogReference.DisplayOptions.DismissOnBackdropClick);
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnFirstRenderAsync()
     {
-        CacheCss = true;
-    }
-
-    private string OverlayCssBuilder()
-    {
-        using var cssBuilder = new CssBuilder(stackalloc char[55]);
-
-        cssBuilder.AddClass(DialogReference.DisplayOptions.DialogPosition.ToCss());
-        cssBuilder.AddClass("cursor-pointer", DialogReference.DisplayOptions.DismissOnBackdropClick);
-
-        return cssBuilder.ToString();
+        await JsRuntime.InvokeVoidAsync("OpenModalDialog", _element);
     }
 
     private void OverlayOnClickHandler()

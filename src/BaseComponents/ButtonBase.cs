@@ -54,6 +54,7 @@ public abstract class ButtonBase : UiKitComponentBase
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
+        cssBuilder.AddClass("select-none");
         cssBuilder.AddClass("rounded");
         cssBuilder.AddClass("focus:ring focus:outline-none");
         cssBuilder.AddClass("transition duration-300");
