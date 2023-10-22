@@ -76,13 +76,13 @@
         cssBuilder.AddClass("transition duration-300");
         cssBuilder.AddClass("justify-center items-center overflow-hidden");
 
-        cssBuilder.AddClass(Color.Primary.ToBackgroundCss());
-        cssBuilder.AddClass(ColorExtensions.BackgroundPrimaryHoverButtonColor);
-        cssBuilder.AddClass(ColorExtensions.BackgroundPrimaryActiveButtonColor);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundCss(Color.Primary));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(Color.Primary));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundActiveCss(Color.Primary));
         cssBuilder.AddClass("focus:ring focus:outline-none");
-        cssBuilder.AddClass(Color.Primary.ToRingFocusCss());
-        cssBuilder.AddClass(Color.Primary.ToTextCss());
-        cssBuilder.AddClass(Color.Primary.ToTextHoverCss());
-        cssBuilder.AddClass(Color.Primary.ToTextActiveCss());
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToRingFocusCss(Color.Primary));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color.Primary));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextHoverCss(Color.Primary));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextActiveCss(Color.Primary));
     }
 }

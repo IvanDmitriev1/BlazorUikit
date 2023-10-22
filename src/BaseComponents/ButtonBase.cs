@@ -59,33 +59,23 @@ public abstract class ButtonBase : UiKitComponentBase
         cssBuilder.AddClass("transition duration-300");
         cssBuilder.AddClass("text-center", TextCenter);
 
-        cssBuilder.AddClass(Color.ToTextDisabledCss(), Disabled);
-        cssBuilder.AddClass(Color.ToBackgroundDisabledCss(), Disabled);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundDisabledCss, Disabled);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss, Disabled);
 
         if (Disabled)
         {
             return;
         }
 
-        cssBuilder.AddClass(Color.ToRingFocusCss());
-        cssBuilder.AddClass(Color.ToTextCss());
-        cssBuilder.AddClass(Color.ToTextActiveCss());
-        cssBuilder.AddClass(Color.ToTextHoverCss());
+        var swappedColor = Color == Color.Primary ? Color.Secondary : Color;
         
-        cssBuilder.AddClass(Color.ToBackgroundCss(), Variant == Variant.Filled);
-
-        cssBuilder.AddClass(Color switch
-        {
-            Color.Primary            => ColorExtensions.BackgroundPrimaryHoverButtonColor,
-            Color.PrimaryAlternative => ColorExtensions.BackgroundPrimaryAlternativeHoverButtonColor,
-            _                        => Color.ToBackgroundHoverCss()
-        });
-
-        cssBuilder.AddClass(Color switch
-        {
-            Color.Primary            => ColorExtensions.BackgroundPrimaryActiveButtonColor,
-            Color.PrimaryAlternative => ColorExtensions.BackgroundPrimaryAlternativeActiveButtonColor,
-            _                        => Color.ToBackgroundActiveCss()
-        });
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundCss(Color), Variant == Variant.Filled);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(swappedColor));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundActiveCss(Color));
+            
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToRingFocusCss(Color));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextHoverCss(swappedColor));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextActiveCss(Color));
     }
 }

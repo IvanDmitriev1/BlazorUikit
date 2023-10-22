@@ -20,17 +20,18 @@
     {
         cssBuilder.AddClass("input-control");
 
-        cssBuilder.AddClass(Color.Primary.ToBackgroundCss());
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundCss(Color.Primary));
         cssBuilder.AddClass("inline-flex relative rounded");
         cssBuilder.AddClass("active:!outline-none");
         cssBuilder.AddClass("focus-within:ring");
-        cssBuilder.AddClass(Color.Primary.ToBorderFocusWithinCss());
-        cssBuilder.AddClass(Color.Primary.ToRingFocusWithinCss());
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderCss(Color.Primary));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderFocusWithinCss(Color.Primary));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToRingFocusWithinCss(Color.Primary));
 
-        cssBuilder.AddClass(Color.Primary.ToBackgroundHoverCss(), !Disabled);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(Color.Primary), !Disabled);
         cssBuilder.AddClass("drop-shadow-sm", !Disabled);
-        cssBuilder.AddClass(Color.Primary.ToBackgroundDisabledCss(), Disabled);
-        cssBuilder.AddClass(Color.Primary.ToTextDisabledCss(), Disabled);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundDisabledCss, Disabled);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss, Disabled);
         cssBuilder.AddClass("w-full", FullWidth);
     }
 }

@@ -30,4 +30,19 @@ public static class TypoExtensions
 		Typo.Heading => "span",
 		_            => throw new ArgumentOutOfRangeException(nameof(typo), typo, null)
 	};
+	
+	public static string ToTailwindCss(this Typo typo) => typo switch
+	{
+		Typo.H1      => string.Empty,
+		Typo.H2      => string.Empty,
+		Typo.H3      => string.Empty,
+		Typo.H4      => string.Empty,
+		Typo.H5      => string.Empty,
+		Typo.H6      => string.Empty,
+		Typo.Header  => "text-header",
+		Typo.Regular => "text-regular",
+		Typo.Small   => "text-small",
+		Typo.Heading => "text-heading",
+		_            => throw new ArgumentOutOfRangeException(nameof(typo), typo, null)
+	};
 }

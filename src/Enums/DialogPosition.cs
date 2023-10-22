@@ -9,11 +9,11 @@ public enum DialogPosition
 
 public static class DialogPositionExtensions
 {
-    public static ReadOnlySpan<char> ToCss(this DialogPosition dialogPosition) => dialogPosition switch
+    public static string ToCss(this DialogPosition dialogPosition) => dialogPosition switch
     {
         DialogPosition.Custom => string.Empty,
-        DialogPosition.Center => $"{ThemeManager.ThemeProvider.ToDisplayCss(Display.Flex)} {ThemeManager.ThemeProvider.ToAlignCss(Align.Center)}",
-        DialogPosition.Left   => $"{ThemeManager.ThemeProvider.ToDisplayCss(Display.Flex)} {ThemeManager.ThemeProvider.ToAlignCss(Align.Left)}",
+        DialogPosition.Center => $"flex items-center",
+        DialogPosition.Left   => $"flex items-left",
         _                     => throw new ArgumentOutOfRangeException(nameof(dialogPosition), dialogPosition, null)
     };
 }

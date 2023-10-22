@@ -21,9 +21,9 @@
         cssBuilder.AddClass("container mx-auto p-5 w-full");
         cssBuilder.AddClass("cursor-default animate-zoom");
         cssBuilder.AddClass("rounded border-2");
-        cssBuilder.AddClass(ColorExtensions.FullBorderColor);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderCss(Color.Secondary));
         cssBuilder.AddClass("drop-shadow-md");
-        cssBuilder.AddClass(ColorExtensions.MainBackgroundColor);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.PageBackgroundCss);
         cssBuilder.AddClass(DialogReference.DisplayOptions.Breakpoint.ToTailwindCssMaxWidth());
     }
 

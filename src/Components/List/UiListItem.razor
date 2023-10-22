@@ -17,10 +17,10 @@
         cssBuilder.AddClass("cursor-pointer");
 
         cssBuilder.AddClass("p-4");
-        cssBuilder.AddClass(Color.PrimaryAlternative.ToBackgroundCss(), Selected);
-        cssBuilder.AddClass(Color.PrimaryAlternative.ToTextCss(), Selected);
-        cssBuilder.AddClass(Color.Primary.ToTextHoverCss(), !Selected);
-        cssBuilder.AddClass(ColorExtensions.BackgroundPrimaryHoverButtonColor, !Selected);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundActiveCss(Color.Primary, false), Selected);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextActiveCss(Color.Primary, false), Selected);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color.Primary), !Selected);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(Color.Primary), !Selected);
     }
     
     protected virtual Task OnClick()

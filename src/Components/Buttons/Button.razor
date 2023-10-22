@@ -23,6 +23,6 @@
     {
         base.AddComponentCssClasses(ref cssBuilder);
 
-        cssBuilder.AddClass(Size.ToTailwindCss());
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToSizeCss(Size));
     }
 }

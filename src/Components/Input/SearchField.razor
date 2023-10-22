@@ -15,7 +15,7 @@
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("border-4");
-        cssBuilder.AddClass(Color.Primary.ToBorderCss());
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderCss(Color.Primary));
     }
 
     protected override void OnInitialized()

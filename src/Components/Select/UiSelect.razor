@@ -17,7 +17,7 @@
         <div class="py-4 pl-3.5 mr-3.5">
             @if (_selectedListItem is null)
             {
-                <UiText Color="Color.Custom" Class="@($"{Color.Primary.ToTextPlaceholderCss()}")">@Label</UiText>
+                <UiText Color="Color.Custom" Class="@ThemeManager.ThemeProvider.TextPlaceholderCss">@Label</UiText>
             }
             else
             {
@@ -33,7 +33,7 @@
     <CascadingValue Value="this" IsFixed="true">
         <div class="@BuildListCss()">
             <UiList T="T"
-                    Class="@Color.Primary.ToBackgroundCss()"
+                    Class="@ThemeManager.ThemeProvider.ToBackgroundCss(Color.Primary)"
                     @bind-SelectedValue="CurrentValue"
                     @bind-SelectedItem="_selectedListItem"
                     OnMouseOver="EventUtil.AsNonRenderingEventHandler(() => _isMouseOverList = true)"
@@ -61,7 +61,7 @@
         }
     }
 
-    private static readonly string ChevronDownCss = $"{ColorExtensions.FullBorderColor} border-l p-1.5";
+    private static readonly string ChevronDownCss = $"{ThemeManager.ThemeProvider.ToBorderCss(Color.Secondary)} border-l p-1.5";
 
     private bool _isOpen;
     private bool _isMouseOverList;
@@ -87,7 +87,7 @@
     {
         using var cssBuilder = new CssBuilder(stackalloc char[124]);
         cssBuilder.AddClass(_isOpen ? "display" : "hidden");
-        cssBuilder.AddClass(ColorExtensions.MainBackgroundColor);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.PageBackgroundCss);
         cssBuilder.AddClass("absolute top-12");
         cssBuilder.AddClass("w-full");
         cssBuilder.AddClass("drop-shadow-lg");
