@@ -86,13 +86,16 @@ function UnRegisterImageGalleryTimer(dotnetIdentifier)
 }
 
 
-function OpenModalDialog(dialog)
+function OpenModalDialog(dialog, preventDismissOnOverlayClick)
 {
     if (dialog.open)
         return;
 
     dialog.showModal();
 
+    if (preventDismissOnOverlayClick)
+        return;
+    
     dialog.addEventListener("click", e => {
         const dialogDimensions = dialog.getBoundingClientRect()
         if (

@@ -3,9 +3,25 @@
 
 @inject IJSRuntime JsRuntime
 
-<dialog @ref="_element" class="@ComponentCss" @onclose="OverlayOnClickHandler">
+<dialog @ref="_element" class="@ComponentCss" @onclose="DialogReference.Cancel">
     <CascadingValue IsFixed="true" Value="DialogReference">
-                @DialogReference.DialogContent
+        @if (DialogReference.DisplayOptions.HeadLess)
+        {
+            @DialogReference.DialogContent   
+        }
+        else
+        {
+            <Stack Direction="Direction.Row" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-6">
+                <h3 class="text-center">@DialogReference.DisplayOptions.Title</h3>
+                
+                @if (DialogReference.DisplayOptions.ShowDismiss)
+                {
+                    <IconButton Icon="TablerIconType.X" OnClick="DialogReference.Cancel"></IconButton>   
+                }
+            </Stack>
+            
+            @DialogReference.DialogContent
+        }
     </CascadingValue>
 </dialog>
 
@@ -27,19 +43,10 @@
         cssBuilder.AddClass(ThemeManager.ThemeProvider.PageTextCss);
         
         cssBuilder.AddClass("backdrop:bg-main-dark-background/60");
-        cssBuilder.AddClass("backdrop:cursor-pointer", DialogReference.DisplayOptions.DismissOnBackdropClick);
     }
 
     protected override async Task OnFirstRenderAsync()
     {
-        await JsRuntime.InvokeVoidAsync("OpenModalDialog", _element);
-    }
-
-    private void OverlayOnClickHandler()
-    {
-        if (!DialogReference.DisplayOptions.DismissOnBackdropClick)
-            return;
-
-        DialogReference.Cancel();
+        await JsRuntime.InvokeVoidAsync("OpenModalDialog", _element, DialogReference.DisplayOptions.PreventDismissOnOverlayClick);
     }
 }
