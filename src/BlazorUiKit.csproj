@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazor.TablerIcons" Version="1.0.0-alpha.1" />
+    <PackageReference Include="Blazor.TablerIcons" Version="1.0.0-alpha.2" />
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.1" />
     <PackageReference Include="LinkDotNet.StringBuilder" Version="1.18.2" />
   </ItemGroup>

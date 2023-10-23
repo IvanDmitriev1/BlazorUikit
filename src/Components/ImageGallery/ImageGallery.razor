@@ -5,7 +5,7 @@
 @inject IJSRuntime JsRuntime
 
 <Stack HtmlTag="section" Class="@ComponentCss" Direction="Direction.Row">
-    <IconButton Icon="@TablerIconType.ArrowLeft" Class="hidden md:block" OnClick="Previous"/>
+    <UiButton Icon="@TablerIcon.ArrowLeft" Class="hidden md:block" @onclick="Previous" />
     
     <SwipeArea Class="flex-1 flex flex-col items-center" OnSwipeEnd="OnSwipe">
         <Image Src="@_selectedImageUrl" Class="@ImageContainerCss"/>
@@ -32,7 +32,7 @@
         }
     </SwipeArea>
     
-    <IconButton Icon="@TablerIconType.ArrowRight" Class="hidden md:block" OnClick="Next"/>
+    <UiButton Icon="@TablerIcon.ArrowRight" Class="hidden md:block" @onclick="Next" />
 </Stack>
 
 @code {

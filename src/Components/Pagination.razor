@@ -2,12 +2,11 @@
 @inherits UiKitComponentBase
 
 <div class="@ComponentCss">
-    <IconButton Icon="@TablerIconType.ChevronLeft"
+    <UiButton   Icon="@TablerIcon.ChevronLeft"
                 Color="Color.Secondary"
-                Filled="true"
                 Disabled="Selected == 1"
                 Size="Size.Large"
-                OnClick="() => CurrentSelected--" />
+                @onclick="() => CurrentSelected--" />
 
     <Stack Class="gap-2.5" AlignItems="AlignItems.Center">
         <NumericField T="int"
@@ -21,12 +20,11 @@
         <UiText Class="!text-[25px]">/ @Count</UiText>
     </Stack>            
 
-    <IconButton Icon="@TablerIconType.ChevronRight"
+    <UiButton Icon="@TablerIcon.ChevronRight"
                 Color="Color.Secondary"
-                Filled="true"
                 Disabled="Selected >= Count"
                 Size="Size.Large"
-                OnClick="() => CurrentSelected++" />
+                @onclick="() => CurrentSelected++" />
 </div>
 
 

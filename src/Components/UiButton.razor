@@ -1,15 +1,44 @@
-﻿namespace BlazorUiKit.BaseComponents;
+﻿@namespace BlazorUiKit.Components
+@inherits UiKitComponentBase
 
-public abstract class ButtonBase : UiKitComponentBase
+<Element @attributes="@UserAttributes"
+         Class="@ComponentCss"
+         HtmlTag="@HtmlTag"
+         type="@Type.ToHtml()"
+         href="@Href"
+         target="@HrefTarget.ToHtml()"
+         disabled="@Disabled">
+    
+    @if (IconPosition == ButtonIconPosition.Left)
+    {
+        <UiKitIcon Class="mr-2.5" Icon="Icon" Size="Size"/>
+    }
+    
+    @if (IconPosition == ButtonIconPosition.Content && Icon != TablerIcon.None)
+    {
+        <UiKitIcon Icon="Icon" Size="Size"/>
+    }
+    else
+    {
+        @ChildContent
+    }
+    
+    @if (IconPosition == ButtonIconPosition.Right)
+    {
+        <UiKitIcon Class="ml-2.5" Icon="Icon" Size="Size"/>
+    }
+</Element>
+
+@code
 {
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? UserAttributes { get; set; }
+    
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
     public string? Href { get; set; }
-
-    [Parameter]
-    public bool HrefOutside { get; set; }
 
     [Parameter]
     public HrefTarget HrefTarget { get; set; } = HrefTarget.Self;
@@ -27,14 +56,14 @@ public abstract class ButtonBase : UiKitComponentBase
     public Variant Variant { get; set; } = Variant.Filled;
 
     [Parameter]
-    public bool TextCenter { get; set; } = true;
+    public Size Size { get; set; } = Size.Medium;
 
     [Parameter]
-    public EventCallback<MouseEventArgs> OnClick { get; set; }
+    public TablerIcon Icon { get; set; } = TablerIcon.None;
+
+    [Parameter]
+    public ButtonIconPosition IconPosition { get; set; } = ButtonIconPosition.Content;
     
-    [Parameter]
-    public string? OnClickJs { get; set; }
-
     protected string HtmlTag { get; set; } = "button";
 
     protected override void OnParametersSet()
@@ -54,12 +83,14 @@ public abstract class ButtonBase : UiKitComponentBase
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass("select-none");
-        cssBuilder.AddClass("rounded");
+        cssBuilder.AddClass("inline-flex justify-center items-center");
+        cssBuilder.AddClass("select-none rounded");
         cssBuilder.AddClass("focus:ring focus:outline-none");
         cssBuilder.AddClass("transition duration-300");
-        cssBuilder.AddClass("text-center", TextCenter);
-
+        
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToSizeCss(Size), IconPosition != ButtonIconPosition.Content || Icon == TablerIcon.None);
+        cssBuilder.AddClass("p-1.5", Icon != TablerIcon.None && IconPosition == ButtonIconPosition.Content);
+        
         cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundDisabledCss, Disabled);
         cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss, Disabled);
 
