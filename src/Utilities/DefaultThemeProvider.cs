@@ -171,23 +171,4 @@ public class DefaultThemeProvider : IThemeProvider
         Color.Inherit => "focus-within:ring-inherit",
         _ => "focus-within:ring-black/5 dark:focus-within:ring-dark-gray-5"
     };
-    
-
-    public string ToSizeCss(Size value) => value switch
-    {
-        Size.Custom => string.Empty,
-        Size.Small => "py-2.5 px-3",
-        Size.Medium => "py-4 px-5 font-bold",
-        Size.Large => "py-5 px-6 font-bold",
-        _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
-    };
-
-    public string ToIconSizeCss(Size value) => value switch
-    {
-        Size.Custom => string.Empty,
-        Size.Small => "text-[1.5rem]",
-        Size.Medium => "text-[2rem]",
-        Size.Large => "text-[2.5rem]",
-        _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
-    };
 }

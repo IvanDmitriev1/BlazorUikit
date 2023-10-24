@@ -29,7 +29,13 @@
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToIconSizeCss(Size));
+        cssBuilder.AddClass(Size switch{
+            Size.Custom => string.Empty,
+            Size.Small => "text-[1.5rem]",
+            Size.Medium => "text-[2rem]",
+            Size.Large => "text-[2.5rem]",
+            _ => throw new ArgumentOutOfRangeException()});
+        
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color));
     }
 

@@ -22,7 +22,4 @@ public interface IThemeProvider
     public string ToRingCss(Color color);
     public string ToRingFocusCss(Color color);
     public string ToRingFocusWithinCss(Color color);
-
-    public string ToSizeCss(Size value);
-    public string ToIconSizeCss(Size value);
 }

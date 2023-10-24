@@ -7,10 +7,9 @@
 </li>
 
 @code {
-
-    [Parameter]
-    public RenderFragment ChildContent { get; set; } = null!;
-
+    
+    protected EventCallback OnClick { get; set; }
+    
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("rounded");
@@ -22,10 +21,16 @@
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color.Primary), !Selected);
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(Color.Primary), !Selected);
     }
-    
-    protected virtual Task OnClick()
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        OnClick = new EventCallbackFactory().Create(this, OnCLickHandler);
+    }
+
+    private void OnCLickHandler()
     {
         List?.SetSelectedValue(Value);
-        return Task.CompletedTask;
     }
 }

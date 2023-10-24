@@ -29,8 +29,8 @@
         @if (ShowArrows)
         {
             <Stack Direction="Direction.Column" Justify="Justify.SpaceBetween" Class="absolute top-0 right-0 mr-1.5 h-full">
-                <UiButton Class="!p-0 m-0 mt-1" Size="Size.Small" Icon="@TablerIcon.ArrowUp" OnClick="OnUpButtonCallback" />
-                <UiButton Class="!p-0 m-0 mb-1" Size="Size.Small" Icon="@TablerIcon.ArrowDown" OnClick="OnDownCallback" />
+                <UiButton Class="!p-0 m-0 mt-1" Size="Size.Small" Icon="@TablerIcon.ArrowUp" @onclick="OnUpButtonCallback" />
+                <UiButton Class="!p-0 m-0 mb-1" Size="Size.Small" Icon="@TablerIcon.ArrowDown" @onclick="OnDownCallback" />
             </Stack>
         }
     </Field>

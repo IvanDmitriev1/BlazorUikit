@@ -21,7 +21,7 @@
             }
             else
             {
-                @SelectedUiLisItemWithRenderFragment?.ChildContent
+                @_selectedListItem?.ChildContent
             }
         </div>
 
@@ -66,7 +66,6 @@
     private bool _isOpen;
     private bool _isMouseOverList;
     private IUiListItem<T>? _selectedListItem;
-    private UiListItem<T>? SelectedUiLisItemWithRenderFragment => _selectedListItem as UiListItem<T>;
     private string _listCss = string.Empty;
     private ElementReference _element;
 

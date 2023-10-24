@@ -5,6 +5,9 @@ namespace BlazorUiKit.BaseComponents;
 public abstract class UiListItemBase<T> : UiKitRenderComponentBase, IUiListItem<T>
     where T : notnull
 {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     [Parameter, EditorRequired]
     public T Value { get; set; } = default!;
 

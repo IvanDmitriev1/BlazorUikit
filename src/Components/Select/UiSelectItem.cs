@@ -6,10 +6,16 @@ public sealed class UiSelectItem<T> : UiListItem<T>
 	[CascadingParameter]
 	private UiSelect<T> Select { get; set; } = null!;
 
-	protected override async Task OnClick()
+	protected override void OnInitialized()
 	{
-		await base.OnClick();
+		base.OnInitialized();
+		
+		OnClick = new EventCallbackFactory().Create(this, OnClickHandler);
+	}
 
+	private async Task OnClickHandler()
+	{
+		List?.SetSelectedValue(Value);
 		await Select.Focus();
 	}
 }

@@ -87,8 +87,14 @@
         cssBuilder.AddClass("select-none rounded");
         cssBuilder.AddClass("focus:ring focus:outline-none");
         cssBuilder.AddClass("transition duration-300");
+
+        cssBuilder.AddClass(Size switch{
+            Size.Custom => string.Empty,
+            Size.Small => "py-2.5 px-3",
+            Size.Medium => "py-4 px-5 font-bold",
+            Size.Large => "py-5 px-6 font-bold text-header",
+            _ => throw new ArgumentOutOfRangeException()}, IconPosition != ButtonIconPosition.Content || Icon == TablerIcon.None);
         
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToSizeCss(Size), IconPosition != ButtonIconPosition.Content || Icon == TablerIcon.None);
         cssBuilder.AddClass("p-1.5", Icon != TablerIcon.None && IconPosition == ButtonIconPosition.Content);
         
         cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundDisabledCss, Disabled);
