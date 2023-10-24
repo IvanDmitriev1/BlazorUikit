@@ -2,20 +2,28 @@
 @typeparam T where T : notnull
 @inherits UiListItemBase<T>
 
-<li class="@ComponentCss" @onclick="OnClick" @onclick:stopPropagation="true">
+<li class="@ComponentCss" @onclick="_onClick" @onclick:stopPropagation="true">
     @ChildContent
 </li>
 
 @code {
-    
-    protected EventCallback OnClick { get; set; }
+
+    private EventCallback _onClick;
     
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("rounded");
-        cssBuilder.AddClass("cursor-pointer");
-
         cssBuilder.AddClass("p-4");
+        cssBuilder.AddClass("select-none");
+
+        if (Disabled)
+        {
+            cssBuilder.AddClass("cursor-not-allowed");
+            cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss);
+            return;
+        }
+        
+        cssBuilder.AddClass("cursor-pointer");
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundActiveCss(Color.Primary, false), Selected);
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextActiveCss(Color.Primary, false), Selected);
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color.Primary), !Selected);
@@ -26,8 +34,10 @@
     {
         base.OnInitialized();
 
-        OnClick = new EventCallbackFactory().Create(this, OnCLickHandler);
+        _onClick = InitializeOnClickCallback();
     }
+    
+    protected virtual EventCallback InitializeOnClickCallback() => Disabled ? EventCallback.Empty : new EventCallbackFactory().Create(this, OnCLickHandler);
 
     private void OnCLickHandler()
     {

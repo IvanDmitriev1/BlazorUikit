@@ -11,6 +11,9 @@ public abstract class UiListItemBase<T> : UiKitRenderComponentBase, IUiListItem<
     [Parameter, EditorRequired]
     public T Value { get; set; } = default!;
 
+    [Parameter]
+    public bool Disabled { get; set; }
+    
     [CascadingParameter]
     protected IUiList<T>? List { get; set; }
     

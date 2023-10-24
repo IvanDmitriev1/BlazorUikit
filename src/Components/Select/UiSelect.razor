@@ -10,14 +10,14 @@
            @onblur="OnBlur" />
     @if (!string.IsNullOrEmpty(Label) && _selectedListItem is not null)
     {
-        <label class="input-control-label">@Label</label>
+        <label class="input-control-label select-none">@Label</label>
     }
 
     <Stack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" FullWidth="true">
         <div class="py-4 pl-3.5 mr-3.5">
             @if (_selectedListItem is null)
             {
-                <UiText Color="Color.Custom" Class="@ThemeManager.ThemeProvider.TextPlaceholderCss">@Label</UiText>
+                <label class="@ThemeManager.ThemeProvider.TextPlaceholderCss">@Label</label>
             }
             else
             {
@@ -39,7 +39,20 @@
                     OnMouseOver="EventUtil.AsNonRenderingEventHandler(() => _isMouseOverList = true)"
                     OnMouseOut="EventUtil.AsNonRenderingEventHandler(() => _isMouseOverList = false)"
                     OnClick="() => IsOpen = false">
-                @ChildContent
+                
+                @if (Items is not null && ItemTemplate is not null)
+                {
+                    @foreach (var item in Items)
+                    {
+                        <UiSelectItem T="T" Value="item">
+                            @ItemTemplate(item)
+                        </UiSelectItem>
+                    }
+                }
+                else
+                {
+                    @ChildContent
+                }
             </UiList>
         </div>
     </CascadingValue>
@@ -50,6 +63,12 @@
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
+    
+    [Parameter]
+    public IReadOnlyCollection<T>? Items { get; set; }
+
+    [Parameter]
+    public RenderFragment<T>? ItemTemplate { get; set; }
 
     private bool IsOpen
     {
@@ -73,7 +92,6 @@
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass("cursor-pointer");
         cssBuilder.AddClass(_isOpen ? "z-20" : string.Empty);
 
         if (!string.IsNullOrEmpty(Label))
