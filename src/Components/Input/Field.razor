@@ -29,7 +29,7 @@
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToRingFocusWithinCss(Color.Primary));
 
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(Color.Primary), !Disabled);
-        cssBuilder.AddClass("drop-shadow-sm", !Disabled);
+        cssBuilder.AddClass("rounded border border-dark-gray-5 shadow-sm", !Disabled);
         cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundDisabledCss, Disabled);
         cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss, Disabled);
         cssBuilder.AddClass("w-full", FullWidth);

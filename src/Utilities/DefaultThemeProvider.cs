@@ -6,11 +6,13 @@ public class DefaultThemeProvider : IThemeProvider
 
     public static IThemeProvider Instance { get; } = new DefaultThemeProvider();
     
+    public string PageBackgroundCss { get; } = "bg-main-light-background dark:bg-main-dark-background";
+    public string PageTextCss { get; } = "text-dark dark:text-white text-regular font-inter";
+
     #region Background
 
-    public string PageBackgroundCss { get; } = "bg-main-light-background dark:bg-main-dark-background";
-    public string PageTextCss { get; } = "text-black dark:text-white text-regular font-inter";
-
+    public string BackgroundCardCss { get; } = "bg-white dark:bg-dark-gray-5";
+    
     public string ToBackgroundCss(Color color) => color switch
     {
         Color.Custom => string.Empty,
@@ -75,7 +77,7 @@ public class DefaultThemeProvider : IThemeProvider
     {
         Color.Custom => string.Empty,
         Color.Inherit => "text-inherit",
-        Color.Primary => "text-black dark:text-white",
+        Color.Primary => "text-dark dark:text-white",
         Color.Secondary => "text-white dark:text-black",
         Color.Error => "text-error-light",
         Color.Successful => "text-successful",
@@ -87,7 +89,7 @@ public class DefaultThemeProvider : IThemeProvider
     {
         Color.Custom => string.Empty,
         Color.Inherit => "hover:text-inherit",
-        Color.Primary => "hover:text-black dark:hover:text-white",
+        Color.Primary => "hover:text-dark dark:hover:text-white",
         Color.Secondary => "hover:text-white dark:hover:text-black",
         Color.Error => "text-white",
         Color.Successful => "text-white",

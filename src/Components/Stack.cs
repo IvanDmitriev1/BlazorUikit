@@ -16,6 +16,9 @@ public sealed class Stack : UiKitElementWithChildComponentBase
 
 	[Parameter]
 	public bool SetDefaultDisplay { get; set; } = true;
+	
+	[Parameter]
+	public bool AsCard { get; set; }
 
 	protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
 	{
@@ -24,5 +27,9 @@ public sealed class Stack : UiKitElementWithChildComponentBase
 		cssBuilder.AddClass(Justify.ToTailwindCss());
 		cssBuilder.AddClass(AlignItems.ToTailwindCss());
 		cssBuilder.AddClass("w-full", FullWidth);
+
+		cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundCardCss, AsCard);
+		cssBuilder.AddClass("rounded border border-dark-gray shadow", AsCard);
+		cssBuilder.AddClass("p-5", AsCard);
 	}
 }
