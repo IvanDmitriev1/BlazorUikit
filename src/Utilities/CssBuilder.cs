@@ -24,7 +24,6 @@ public ref struct CssBuilder
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public override string ToString()
 	{
-		_stringBuilder.Trim();
 		return StringPool.Shared.GetOrAdd(_stringBuilder.AsSpan());
 	}
 

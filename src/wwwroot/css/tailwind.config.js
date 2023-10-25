@@ -20,11 +20,18 @@ module.exports = {
       },
       'dark':{
         DEFAULT: "rgba(0, 0, 0, 0.89)",
+        '5': "rgba(0, 0, 0, 0.05)",
+        '10': "rgba(0, 0, 0, 0.10)",
+        '15': "rgba(0, 0, 0, 0.15)",
+        '20': "rgba(0, 0, 0, 0.20)",
+        '30': "rgba(0, 0, 0, 0.30)",
+        '40': "rgba(0, 0, 0, 0.40)",
+        '80': "rgba(0, 0, 0, 0.40)",
+        '90': "rgba(0, 0, 0, 0.90)",
       },
       'main-dark-background': "#242424",
       'main-light-background':"#fbfbfb",
       'white': "#FFFFFF",
-      'black': "#000000",
       'yellow': "#FFB341",
       'blue': "rgba(0, 102, 255, 0.30)",
       'error': {
@@ -64,7 +71,7 @@ module.exports = {
       DEFAULT: "6px",
     },
     boxShadow: {
-      'sm': 'rgba(0, 0, 0, 0.12) 0px 0px 1px 0px, rgba(0, 0, 0, 0.14) 0px 1px 2px 0px',
+      'sm': 'rgba(0, 0, 0, 0.12) 0px 0px 2px 0px, rgba(0, 0, 0, 0.14) 0px 1px 2px 0px',
       DEFAULT: 'rgba(0, 0, 0, 0.12) 0px 0px 2px 0px, rgba(0, 0, 0, 0.14) 0px 2px 4px 0px',
       'md': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
       'lg': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
