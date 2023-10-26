@@ -2,7 +2,7 @@
 
 @if (AdornmentClick.HasDelegate)
 {
-    <IconButton Filled="false" Class="@Class" Icon="@Icon" Size="@Size" Color="@Color" OnClick="@AdornmentClick"/>
+    <UiButton Class="@Class" Icon="@Icon" Size="@Size" Color="@Color" @onclick="@AdornmentClick"/>
 }
 else
 {

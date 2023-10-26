@@ -1,6 +1,6 @@
 ﻿namespace BlazorUiKit.Enums;
 
-public enum Adornment
+public enum AdornmentPlacement
 {
     None,
     Start,

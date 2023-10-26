@@ -5,8 +5,24 @@
 
 @inject IJSRuntime JsRuntime
 
-<div class="@(string.IsNullOrEmpty(Label) ? string.Empty : "my-3.5") @Class">
-    <Field Disabled="@Disabled" FullWidth="@FullWidth" Class="@ErrorCss">
+<InputField Disabled="@Disabled"
+            FullWidth="@FullWidth"
+            Errors="@Errors"
+            Label="@Label"
+            AdornmentPlacement="AdornmentPlacement.End"
+            ValidationCss="@ValidationCss"
+            Class="@Class">
+    <AdornmentRenderFragment>
+        @if (ShowArrows)
+        {
+            <Stack Direction="Direction.Column" Justify="Justify.SpaceBetween" Class="absolute top-0 right-0 mr-1.5 h-full">
+                <UiButton Class="!p-0 m-0 mt-1" Size="Size.Small" Icon="@TablerIcon.ArrowUp" @onclick="OnUpButtonCallback" />
+                <UiButton Class="!p-0 m-0 mb-1" Size="Size.Small" Icon="@TablerIcon.ArrowDown" @onclick="OnDownCallback" />
+            </Stack>
+        }
+    </AdornmentRenderFragment>
+    
+    <InputRenderFragment>
         <UiInput @ref="@_input"
                  Class="@($"{InputCss} px-3.5")"
                  Label="@Label"
@@ -18,25 +34,15 @@
                  InputMode="@InputMode.Numeric"
                  InputType="@InputType.Text"
                  id="@_id"
-
+                 
                  max="@Max"
                  min="@Min"
                  step="@Step"
-
+                 
                  Text="@Text"
                  TextChanged="OnTextChangedCallback" />
-        
-        @if (ShowArrows)
-        {
-            <Stack Direction="Direction.Column" Justify="Justify.SpaceBetween" Class="absolute top-0 right-0 mr-1.5 h-full">
-                <UiButton Class="!p-0 m-0 mt-1" Size="Size.Small" Icon="@TablerIcon.ArrowUp" @onclick="OnUpButtonCallback" />
-                <UiButton Class="!p-0 m-0 mb-1" Size="Size.Small" Icon="@TablerIcon.ArrowDown" @onclick="OnDownCallback" />
-            </Stack>
-        }
-    </Field>
-    
-    @DisplayValidationErrors.DisplayValidationErrorsFragment(Errors)
-</div>
+    </InputRenderFragment>
+</InputField>
 
 @code
 {

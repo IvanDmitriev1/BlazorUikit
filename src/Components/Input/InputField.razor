@@ -1,0 +1,90 @@
+﻿@namespace BlazorUiKit.Components
+@inherits UiKitComponentBase
+
+<div class="@ContainerBuilderCss()">
+    <div class="@ComponentCss">
+        @if (AdornmentPlacement == AdornmentPlacement.Start)
+            {
+                @AdornmentRenderFragment
+            }
+        
+            @InputRenderFragment
+        
+            @if (!string.IsNullOrEmpty(Label) && ShowLabel)
+            {
+                <label class="input-control-label">@Label</label>
+            }
+        
+            @ChildContent
+        
+            @if (AdornmentPlacement == AdornmentPlacement.End)
+            {
+                @AdornmentRenderFragment
+            }
+    </div>
+
+    @DisplayValidationErrors.DisplayValidationErrorsFragment(Errors)
+</div>
+
+@code
+{
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    
+    [Parameter]
+    public RenderFragment? InputRenderFragment { get; set; }
+    
+    [Parameter, EditorRequired]
+    public string? ValidationCss { get; set; }
+    
+    [Parameter, EditorRequired]
+    public bool Disabled { get; set; }
+
+    [Parameter, EditorRequired]
+    public bool FullWidth { get; set; }
+
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool ShowLabel { get; set; } = true;
+    
+    [Parameter, EditorRequired]
+    public IReadOnlyList<string> Errors { get; set; } = Array.Empty<string>();
+    
+    [Parameter, EditorRequired]
+    public AdornmentPlacement AdornmentPlacement { get; set; }
+    
+    [Parameter]
+    public RenderFragment? AdornmentRenderFragment { get; set; }
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass("input-control");
+        
+        cssBuilder.AddClass("inline-flex relative rounded");
+        cssBuilder.AddClass("active:!outline-none");
+        cssBuilder.AddClass("focus-within:ring");
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundCss(Color.Primary));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderCss(Color.Primary));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderFocusWithinCss(Color.Primary));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToRingFocusWithinCss(Color.Primary));
+        
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(Color.Primary), !Disabled);
+        cssBuilder.AddClass("rounded border border-dark-gray-5 shadow-sm", !Disabled);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundDisabledCss, Disabled);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss, Disabled);
+        cssBuilder.AddClass("w-full", FullWidth);
+        cssBuilder.AddClass(ValidationCss);
+    }
+
+    private string ContainerBuilderCss()
+    {
+        using var cssBuilder = new CssBuilder(stackalloc char[55]);
+
+        cssBuilder.AddClass("w-full", FullWidth);
+        cssBuilder.AddClass("mt-3.5", !string.IsNullOrEmpty(Label));
+        
+        return cssBuilder.ToString();
+    }
+}

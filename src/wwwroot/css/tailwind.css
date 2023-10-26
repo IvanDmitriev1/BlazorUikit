@@ -12,38 +12,19 @@
         @apply outline outline-2 outline-successful;
     }
 
-    .input-control {
-    }
-
-    .input-control:focus-within {
-        
-    }
-
     .input-control-label {
-        @apply absolute px-1.5 top-0 left-4 translate-y-4 origin-top-left text-label-large duration-200 pointer-events-none z-10;
-    }
-
-    .input-adornment {
-        @apply flex items-center mx-3;
-    }
-
-    .input-adornment-left {
-        @apply input-adornment;
-    }
-
-    .input-adornment-right {
-        @apply input-adornment;
+        @apply absolute px-1.5 top-0 left-4 translate-y-4 origin-top-left text-label-large duration-200 pointer-events-none z-10 select-none;
     }
 
     .has-text {
     }
-
+    
     .input-control input:focus + .input-control-label,
     .input-control input:disabled + .input-control-label,
     .input-control input:placeholder-shown + .input-control-label,
     .input-control input:not(:placeholder-shown):not(:empty) + .input-control-label,
     .input-control input.has-text + .input-control-label,
-
+    
     .input-control textarea:focus + .input-control-label,
     .input-control textarea:disabled + .input-control-label,
     .input-control textarea:placeholder-shown + .input-control-label,
@@ -88,15 +69,14 @@
         @apply text-h6;
     }
 
+    a {
+        @apply focus:outline-none disabled:bg-dark-gray-5 disabled:text-dark-gray-60;
+    }
+
     input {
         @apply focus:!outline-none active:!outline-none bg-transparent placeholder-dark-40 dark:placeholder-dark-gray-30;
     }
-
     textarea {
         @apply bg-transparent;
-    }
-
-    a {
-        @apply focus:outline-none disabled:bg-dark-gray-5 disabled:text-dark-gray-60;
     }
 }
