@@ -30,6 +30,5 @@ public sealed class Stack : UiKitElementWithChildComponentBase
 
 		cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundCardCss, AsCard);
 		cssBuilder.AddClass("rounded border border-dark-gray shadow", AsCard);
-		cssBuilder.AddClass("p-5", AsCard);
 	}
 }
