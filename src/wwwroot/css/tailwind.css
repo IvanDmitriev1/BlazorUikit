@@ -89,7 +89,7 @@
     }
 
     input {
-        @apply focus:!outline-none active:!outline-none bg-transparent placeholder-black/30 dark:placeholder-dark-gray-30;
+        @apply focus:!outline-none active:!outline-none bg-transparent placeholder-dark-40 dark:placeholder-dark-gray-30;
     }
 
     textarea {

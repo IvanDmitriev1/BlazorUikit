@@ -5,6 +5,7 @@ public interface IThemeProvider
     public string PageBackgroundCss { get; }
     public string PageTextCss { get; }
     
+    public string BackgroundCardCss { get; }
     public string ToBackgroundCss(Color color);
     public string ToBackgroundHoverCss(Color color);
     public string ToBackgroundActiveCss(Color color, bool active = true);

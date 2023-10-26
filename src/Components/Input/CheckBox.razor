@@ -15,7 +15,7 @@
             }
         </span>
     
-        <UiText Class="ml-2.5">@Label</UiText>
+        <UiText Class="ml-2.5 select-none">@Label</UiText>
     </label>
 
     @DisplayValidationErrors.DisplayValidationErrorsFragment(Errors)
@@ -76,10 +76,11 @@
         cssBuilder.AddClass("transition duration-300");
         cssBuilder.AddClass("justify-center items-center overflow-hidden");
 
+        cssBuilder.AddClass("rounded border border-dark-gray-5 shadow-sm");
+        cssBuilder.AddClass("focus:ring focus:outline-none");
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundCss(Color.Primary));
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(Color.Primary));
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundActiveCss(Color.Primary));
-        cssBuilder.AddClass("focus:ring focus:outline-none");
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToRingFocusCss(Color.Primary));
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color.Primary));
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextHoverCss(Color.Primary));

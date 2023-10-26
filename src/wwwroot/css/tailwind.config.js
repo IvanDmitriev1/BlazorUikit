@@ -18,10 +18,20 @@ module.exports = {
         '60': "rgba(255, 255, 255, 0.6)",
         '70': "rgba(255, 255, 255, 0.7)",
       },
+      'dark':{
+        DEFAULT: "rgba(0, 0, 0, 0.89)",
+        '5': "rgba(0, 0, 0, 0.05)",
+        '10': "rgba(0, 0, 0, 0.10)",
+        '15': "rgba(0, 0, 0, 0.15)",
+        '20': "rgba(0, 0, 0, 0.20)",
+        '30': "rgba(0, 0, 0, 0.30)",
+        '40': "rgba(0, 0, 0, 0.40)",
+        '80': "rgba(0, 0, 0, 0.40)",
+        '90': "rgba(0, 0, 0, 0.90)",
+      },
       'main-dark-background': "#242424",
-      'main-light-background':"#EDEEF0",
+      'main-light-background':"#fbfbfb",
       'white': "#FFFFFF",
-      'black': "#000000",
       'yellow': "#FFB341",
       'blue': "rgba(0, 102, 255, 0.30)",
       'error': {
@@ -57,13 +67,18 @@ module.exports = {
       'label-large': [ "1.25rem", { lineHeight: "1", fontWeight: "400", letterSpacing: "0.00938em" }],
       'label-small': [ "1.125rem", { lineHeight: "1", fontWeight: "400", letterSpacing: "0.00938em" }],
     },
-    borderRadius: {
-      DEFAULT: "6px",
-      'sm': "4px",
-      'xl': "0.75rem",
-    },
     ringWidth: {
       DEFAULT: "6px",
+    },
+    boxShadow: {
+      'sm': 'rgba(0, 0, 0, 0.12) 0px 0px 2px 0px, rgba(0, 0, 0, 0.14) 0px 1px 2px 0px',
+      DEFAULT: 'rgba(0, 0, 0, 0.12) 0px 0px 2px 0px, rgba(0, 0, 0, 0.14) 0px 2px 4px 0px',
+      'md': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+      'lg': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+      'xl': '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+      '2xl': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
+      inner: 'inset 0 2px 4px 0 rgb(0 0 0 / 0.05)',
+      none: 'none',
     },
     extend: {
       outlineWidth: {
@@ -77,7 +92,7 @@ module.exports = {
           '0%': { transform: 'scale(0.5)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
         },
-      },
+      }
     },
   },
   plugins: [

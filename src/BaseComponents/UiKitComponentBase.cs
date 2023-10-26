@@ -43,7 +43,7 @@ public abstract class UiKitComponentBase : ComponentBase
 
     private string BuildComponentCss()
     {
-        var cssBuilder = new CssBuilder(stackalloc char[425]);
+        var cssBuilder = new CssBuilder(stackalloc char[455]);
 
         try
         {
