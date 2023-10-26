@@ -9,13 +9,13 @@
             ValidationCss="@ValidationCss"
             Class="@Class">
     <AdornmentRenderFragment>
-        <InputAdornment Icon="@AdornmentIcon" Size="@AdornmentIconSize" AdornmentClick="@AdornmentClick" Class="@_adornmentCss" />
+        <InputAdornment Icon="@AdornmentIcon" Size="@AdornmentSize"  AdornmentPlacement="@AdornmentPlacement" AdornmentClick="@AdornmentClick" />
     </AdornmentRenderFragment>
     
     <InputRenderFragment>
         <UiInput @ref="@_input"
                  UserAttributes="@UserAttributes"
-                 Class="@_inputCss"
+                 Class="p-3.5"
                  Disabled="@Disabled"
                  InputMode="@InputMode"
                  ReadOnly="@ReadOnly"
@@ -54,16 +54,20 @@
     public TablerIcon AdornmentIcon { get; set; }
 
     [Parameter]
-    public Size AdornmentIconSize { get; set; }
+    public Size AdornmentSize { get; set; } = Size.Medium;
 
     [Parameter]
     public EventCallback AdornmentClick { get; set; }
+
+    string InputCss => AdornmentPlacement switch
+    {
+        AdornmentPlacement.None  => "px-3.5",
+        AdornmentPlacement.Start => "pr-3.5",
+        AdornmentPlacement.End   => "pl-3.5",
+        _ => throw new ArgumentOutOfRangeException()
+    };
     
-
     UiInput? _input;
-
-    string _adornmentCss = string.Empty;
-    string _inputCss = string.Empty;
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) { }
 
@@ -78,17 +82,6 @@
 
         _input.Text = Text;
         AllowRender();
-    }
-
-    protected override void OnInitialized()
-    {
-        _inputCss = AdornmentPlacement switch
-        {
-            AdornmentPlacement.None  => "px-3.5",
-            AdornmentPlacement.Start => "pr-3.5",
-            AdornmentPlacement.End   => "pl-3.5",
-            _               => string.Empty
-        };
     }
 
     protected override void OnTextChanged()

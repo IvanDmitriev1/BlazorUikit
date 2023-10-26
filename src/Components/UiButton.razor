@@ -11,12 +11,12 @@
     
     @if (IconPosition == ButtonIconPosition.Left)
     {
-        <UiKitIcon Class="mr-2.5" Icon="Icon" Size="Size"/>
+        @IconRenderFragment
     }
     
     @if (IconPosition == ButtonIconPosition.Content && Icon != TablerIcon.None)
     {
-        <UiKitIcon Icon="Icon" Size="Size"/>
+        @IconRenderFragment
     }
     else
     {
@@ -25,7 +25,7 @@
     
     @if (IconPosition == ButtonIconPosition.Right)
     {
-        <UiKitIcon Class="ml-2.5" Icon="Icon" Size="Size"/>
+        @IconRenderFragment
     }
 </Element>
 
@@ -63,8 +63,24 @@
 
     [Parameter]
     public ButtonIconPosition IconPosition { get; set; } = ButtonIconPosition.Content;
+
+    private RenderFragment IconRenderFragment =>
+        @<UiKitIcon Class="@_iconCss" Icon="Icon" Size="Size"/>;
+
+    private string HtmlTag { get; set; } = "button";
     
-    protected string HtmlTag { get; set; } = "button";
+    private string? _iconCss;
+    
+    protected override void OnInitialized()
+    {
+        _iconCss = IconPosition switch
+        {
+            ButtonIconPosition.Content => null,
+            ButtonIconPosition.Left => "mr-2.5",
+            ButtonIconPosition.Right => "ml-2.5",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
 
     protected override void OnParametersSet()
     {
@@ -84,9 +100,10 @@
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("inline-flex justify-center items-center");
-        cssBuilder.AddClass("select-none rounded border border-dark-gray-5 shadow-sm");
         cssBuilder.AddClass("focus:ring focus:outline-none");
         cssBuilder.AddClass("transition duration-300");
+        cssBuilder.AddClass("select-none rounded");
+        cssBuilder.AddClass("border border-dark-gray-5 shadow-sm", Variant == Variant.Filled);
 
         cssBuilder.AddClass(Size switch{
             Size.Custom => string.Empty,

@@ -19,6 +19,10 @@
     .has-text {
     }
     
+    .input-adornment-left {
+        
+    }
+    
     .input-control input:focus + .input-control-label,
     .input-control input:disabled + .input-control-label,
     .input-control input:placeholder-shown + .input-control-label,
