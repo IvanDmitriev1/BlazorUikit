@@ -1,5 +1,6 @@
 ﻿@namespace BlazorUiKit.Components
 @typeparam T where T : notnull
+@using CommunityToolkit.HighPerformance.Helpers
 @inherits ValueInputBase<T?>
 
 <InputField Disabled="false"
@@ -9,13 +10,11 @@
             Label="@Label"
             AdornmentPlacement="AdornmentPlacement.End"
             ValidationCss="@ValidationCss"
-            Class="@ComponentCss">
+            Class="@Class">
     <InputRenderFragment>
-        <input type="checkbox"
-               class="absolute opacity-0 cursor-pointer h-full w-full has-text"
-               @ref="_element"
-               @bind="IsOpen"
-               @onblur="OnBlur"/>
+        <div class="absolute opacity-0 cursor-pointer h-full w-full input-control has-text"
+             @ref="_element"
+             @onclick="() => IsOpen = !IsOpen"></div>
     </InputRenderFragment>
     
     <AdornmentRenderFragment>
@@ -38,16 +37,13 @@
             </div>
         </Stack>
         
-        <CascadingValue Value="this" IsFixed="true">
-            <div class="@BuildListCss()">
+        <PopOver @bind-Open="_isOpen" Class="top-12 mt-2.5">
+            <CascadingValue Value="this" IsFixed="true">
                 <UiList T="T"
                         Class="@ThemeManager.ThemeProvider.ToBackgroundCss(Color.Primary)"
                         @bind-SelectedValue="CurrentValue"
-                        @bind-SelectedItem="_selectedListItem"
-                        OnMouseOver="EventUtil.AsNonRenderingEventHandler(() => _isMouseOverList = true)"
-                        OnMouseOut="EventUtil.AsNonRenderingEventHandler(() => _isMouseOverList = false)"
-                        OnClick="() => IsOpen = false">
-        
+                        @bind-SelectedItem="_selectedListItem">
+                    
                     @if (Items is not null && ItemTemplate is not null)
                     {
                         @foreach (var item in Items)
@@ -62,8 +58,8 @@
                         @ChildContent
                     }
                 </UiList>
-            </div>
-        </CascadingValue>
+            </CascadingValue>
+        </PopOver>
     </ChildContent>
 </InputField>
 
@@ -83,6 +79,11 @@
         get => _isOpen;
         set
         {
+            if (_isOpen == value)
+            {
+                return;
+            }
+            
             _isOpen = value;
             AllowRender();
         }
@@ -97,42 +98,24 @@
     private string _listCss = string.Empty;
     private ElementReference _element;
 
-    public UiSelect() : base(default) { }
-
-    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    public UiSelect() : base(default)
     {
-        cssBuilder.AddClass(_isOpen ? "z-20" : string.Empty);
+        
     }
 
-    private string BuildListCss()
-    {
-        using var cssBuilder = new CssBuilder(stackalloc char[124]);
-        cssBuilder.AddClass(_isOpen ? "display" : "hidden");
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.PageBackgroundCss);
-        cssBuilder.AddClass("absolute top-12");
-        cssBuilder.AddClass("w-full");
-        cssBuilder.AddClass("drop-shadow-lg");
-        cssBuilder.AddClass("mt-2.5");
-        cssBuilder.AddClass("select-none");
-
-        return cssBuilder.ToString();
-    }
-
-    private void OnBlur(FocusEventArgs args)
-    {
-        if (_isMouseOverList)
-            return;
-
-        IsOpen = false;
-    }
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) {}
 
     protected override void OnValueChanged()
     {
         IsOpen = false;
     }
-
+    
     protected override void RefreshValueOrText() { }
     protected override string ConvertValueToString() => string.Empty;
-
-    internal ValueTask Focus() => _element.FocusAsync();
+    
+    public void ExplicitHide()
+    {
+        IsOpen = false;
+        StateHasChanged();
+    }
 }

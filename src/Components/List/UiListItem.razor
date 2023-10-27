@@ -2,13 +2,11 @@
 @typeparam T where T : notnull
 @inherits UiListItemBase<T>
 
-<li class="@ComponentCss" @onclick="_onClick" @onclick:stopPropagation="true">
+<li class="@ComponentCss" @onclick="OnClickHandler" @onclick:stopPropagation="true">
     @ChildContent
 </li>
 
 @code {
-
-    private EventCallback _onClick;
     
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
@@ -30,17 +28,11 @@
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(Color.Primary), !Selected);
     }
 
-    protected override void OnInitialized()
+    protected virtual void OnClickHandler()
     {
-        base.OnInitialized();
-
-        _onClick = InitializeOnClickCallback();
-    }
-    
-    protected virtual EventCallback InitializeOnClickCallback() => Disabled ? EventCallback.Empty : new EventCallbackFactory().Create(this, OnCLickHandler);
-
-    private void OnCLickHandler()
-    {
-        List?.SetSelectedValue(Value);
+        if (!Disabled && !Selected)
+        {
+            List?.SetSelectedValue(Value);
+        }
     }
 }

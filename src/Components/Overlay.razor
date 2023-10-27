@@ -4,14 +4,21 @@
 
 @inject IJSRuntime JsRuntime
 
-<div class="@ComponentCss" style="@Style" @onclick="OnClick" @onclick:stopPropagation="true">
-    @ChildContent
-</div>
+@if (Visible)
+{
+    <div class="@ComponentCss"
+         style="@Style"
+         @onclick="OnClick"
+         @onclick:stopPropagation="true"></div>
+}
 
 @code{
 
     [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    public bool Visible { get; set; } = true;
+    
+    [Parameter]
+    public bool HiddenVariant { get; set; }
     
     [Parameter]
     public string Style { get; set; } = string.Empty;
@@ -24,9 +31,10 @@
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass("bg-main-dark-background/60");
-        cssBuilder.AddClass("fixed top-0 left-0");
         cssBuilder.AddClass("w-full h-full");
+        cssBuilder.AddClass("fixed top-0 left-0");
+
+        cssBuilder.AddClass("bg-main-dark-background/60", !HiddenVariant);
     }
 
     public ValueTask DisposeAsync()

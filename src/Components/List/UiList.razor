@@ -4,10 +4,7 @@
 @implements IUiList<T>
 
 <CascadingValue Value="this" IsFixed="true">
-    <ul @onmouseover="OnMouseOver"
-        @onmouseout="OnMouseOut"
-        @onclick="OnClick"
-        class="@ComponentCss">
+    <ul class="@ComponentCss">
         @ChildContent
     </ul>
 </CascadingValue>
@@ -19,16 +16,7 @@
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-
-
-    [Parameter]
-    public EventCallback OnMouseOver { get; set; }
-
-    [Parameter]
-    public EventCallback OnMouseOut { get; set; }
-
-    [Parameter]
-    public EventCallback OnClick { get; set; }
+    
 
 
     [Parameter]
@@ -72,6 +60,11 @@
         cssBuilder.AddClass("flex gap-1.5 p-2");
         cssBuilder.AddClass(Direction.ToTailwindCss());
         cssBuilder.AddClass("rounded w-full");
+    }
+
+    protected override void OnInitialized()
+    {
+        CacheCss = true;
     }
 
     protected override void OnParametersSet()

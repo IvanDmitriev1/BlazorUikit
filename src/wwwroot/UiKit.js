@@ -108,3 +108,11 @@ function OpenModalDialog(dialog, preventDismissOnOverlayClick)
         }
     });
 }
+
+function HideElement(element) {
+    element.classList.replace("display", "hidden");
+}
+
+function DisplayElement(element) {
+    element.classList.replace("hidden", "display");
+}
