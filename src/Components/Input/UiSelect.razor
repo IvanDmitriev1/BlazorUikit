@@ -12,9 +12,10 @@
             ValidationCss="@ValidationCss"
             Class="@Class">
     <InputRenderFragment>
-        <div class="absolute opacity-0 cursor-pointer h-full w-full input-control has-text"
-             @ref="_element"
-             @onclick="() => IsOpen = !IsOpen"></div>
+        <input type="checkbox"
+               class="absolute opacity-0 cursor-pointer h-full w-full input-control has-text"
+               @ref="_element"
+               @onchange="() => IsOpen = !IsOpen "/>
     </InputRenderFragment>
     
     <AdornmentRenderFragment>
