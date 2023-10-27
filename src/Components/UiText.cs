@@ -22,6 +22,11 @@ public class UiText : UiKitElementWithChildComponentBase
 		cssBuilder.AddClass(TextOverflow.ToTailwindCss());
 	}
 
+	protected override void OnInitialized()
+	{
+		CacheCss = true;
+	}
+
 	protected override void OnParametersSet()
 	{
 		HtmlTag = Typo.ToHtmlTag();

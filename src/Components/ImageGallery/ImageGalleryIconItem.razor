@@ -16,6 +16,13 @@
         cssBuilder.AddClass("p-1.5");
     }
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        CacheCss = true;
+    }
+
     private void OnClick()
     {
         List?.SetSelectedValue(Value);
