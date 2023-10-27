@@ -1,36 +1,32 @@
 ﻿@namespace BlazorUiKit.Components
 @inherits TextInputBase<string>
 
-<div class="@(string.IsNullOrEmpty(Label) ? string.Empty : "my-2.5") @Class">
-    <Field Disabled="@Disabled" FullWidth="@FullWidth" Class="@($"{ErrorCss} {InputClass}")">
-        @if (Adornment == Adornment.Start)
-        {
-            <InputAdornment Icon="@AdornmentIcon" AdornmentClick="@AdornmentClick" Size="@AdornmentIconSize" Class="input-adornment-left" />
-        }
-
-        <UiInput @ref="@_input"
-            Class="@($"{_adornmentCss}")"
+<InputField Disabled="@Disabled"
+            FullWidth="@FullWidth" 
+            Errors="@Errors"
             Label="@Label"
-            UserAttributes="@UserAttributes"
-            Disabled="@Disabled"
-            InputMode="@InputMode"
-            ReadOnly="@ReadOnly"
-            Placeholder="@Placeholder"
-            MaxLength="@MaxLength"
-            Lines="@Lines"
-            InputType="@InputType"
-
-            Text="@Text"
-            TextChanged="text => CurrentText = text"/>
-
-        @if (Adornment == Adornment.End)
-        {
-            <InputAdornment Icon="@AdornmentIcon" Size="@AdornmentIconSize" AdornmentClick="@AdornmentClick" Class="input-adornment-right" />
-        }
-    </Field>
+            AdornmentPlacement="@AdornmentPlacement"
+            ValidationCss="@ValidationCss"
+            Class="@Class">
+    <AdornmentRenderFragment>
+        <InputAdornment Icon="@AdornmentIcon" Size="@AdornmentSize"  AdornmentPlacement="@AdornmentPlacement" AdornmentClick="@AdornmentClick" />
+    </AdornmentRenderFragment>
     
-    @DisplayValidationErrors.DisplayValidationErrorsFragment(Errors)
-</div>
+    <InputRenderFragment>
+        <UiInput @ref="@_input"
+                 Class="p-3.5"
+                 Disabled="@Disabled"
+                 InputMode="@InputMode"
+                 ReadOnly="@ReadOnly"
+                 Placeholder="@Placeholder"
+                 MaxLength="@MaxLength"
+                 Lines="@Lines"
+                 InputType="@InputType"
+                 
+                 Text="@Text"
+                 TextChanged="text => CurrentText = text"/>
+    </InputRenderFragment>
+</InputField>
 
 @code
 {
@@ -41,29 +37,33 @@
     public Expression<Func<string>>? TextExpression { get; set; }
 
     [Parameter]
-    public string? InputClass { get; set; }
-
-    [Parameter]
     public bool FullWidth { get; set; }
 
     [Parameter]
     public InputType InputType { get; set; } = InputType.Text;
 
+    
     [Parameter]
-    public Adornment Adornment { get; set; }
+    public AdornmentPlacement AdornmentPlacement { get; set; }
 
     [Parameter]
     public TablerIcon AdornmentIcon { get; set; }
 
     [Parameter]
-    public Size AdornmentIconSize { get; set; }
+    public Size AdornmentSize { get; set; } = Size.Medium;
 
     [Parameter]
     public EventCallback AdornmentClick { get; set; }
 
+    string InputCss => AdornmentPlacement switch
+    {
+        AdornmentPlacement.None  => "px-3.5",
+        AdornmentPlacement.Start => "pr-3.5",
+        AdornmentPlacement.End   => "pl-3.5",
+        _ => throw new ArgumentOutOfRangeException()
+    };
+    
     UiInput? _input;
-
-    string _adornmentCss = null!;
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) { }
 
@@ -78,17 +78,6 @@
 
         _input.Text = Text;
         AllowRender();
-    }
-
-    protected override void OnInitialized()
-    {
-        _adornmentCss = Adornment switch
-        {
-            Adornment.None  => "px-3.5",
-            Adornment.Start => "pr-3.5",
-            Adornment.End   => "pl-3.5",
-            _               => string.Empty
-        };
     }
 
     protected override void OnTextChanged()

@@ -4,15 +4,8 @@
 <div class="@Class">
     <label class="inline-flex items-center cursor-pointer">
         <span class="@ComponentCss">
-            <input type="checkbox" class="absolute opacity-0 cursor-pointer" @bind="CurrentChecked" />
-            @if (Checked)
-            {
-                <UiKitIcon Icon="@TablerIcon.Check" />
-            }
-            else
-            {
-                <div class="w-[2em] h-[2em]"></div>
-            }
+            <input type="checkbox" class="absolute opacity-0 cursor-pointer peer" @bind="CurrentChecked" />
+            <UiKitIcon Class="invisible peer-checked:visible" Icon="@TablerIcon.Check" />
         </span>
     
         <UiText Class="ml-2.5 select-none">@Label</UiText>
@@ -69,10 +62,9 @@
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass(ErrorCss);
+        cssBuilder.AddClass(ValidationCss);
         cssBuilder.AddClass("p-1.5 my-1.5");
-        cssBuilder.AddClass("inline-flex rounded");
-        cssBuilder.AddClass("relative");
+        cssBuilder.AddClass("inline-flex relative");
         cssBuilder.AddClass("transition duration-300");
         cssBuilder.AddClass("justify-center items-center overflow-hidden");
 

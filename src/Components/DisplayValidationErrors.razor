@@ -2,7 +2,7 @@
 
 @code
 {
-    public static RenderFragment<IReadOnlyList<string>> DisplayValidationErrorsFragment = errors =>
+    public static readonly RenderFragment<IReadOnlyList<string>> DisplayValidationErrorsFragment = errors =>
         @<Stack Class="@CreateCss(errors)" Direction="Direction.Column">
             @foreach (var error in errors)
             {

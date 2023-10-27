@@ -2,11 +2,11 @@
 
 @if (AdornmentClick.HasDelegate)
 {
-    <IconButton Filled="false" Class="@Class" Icon="@Icon" Size="@Size" Color="@Color" OnClick="@AdornmentClick"/>
+    <UiButton Class="@ComponentCss()" Icon="@Icon" Size="@Size" Variant="Variant.Text" @onclick="@AdornmentClick"/>
 }
 else
 {
-    <UiKitIcon Class="@Class" Icon="@Icon" Size="@Size" Color="@Color" />
+    <UiKitIcon Class="@ComponentCss()" Icon="@Icon" Size="@Size" />
 }
 
 @code
@@ -14,18 +14,15 @@ else
     [Parameter, EditorRequired]
     public TablerIcon Icon { get; set; }
 
-    [Parameter]
-    public string? Class { get; set; }
-
-    [Parameter]
-    public Color Color { get; set; } = Color.Primary;
-
-    [Parameter]
+    [Parameter, EditorRequired]
     public Size Size { get; set; } = Size.Medium;
+    
+    [Parameter, EditorRequired]
+    public AdornmentPlacement AdornmentPlacement { get; set; }
 
     [Parameter]
     public EventCallback AdornmentClick { get; set; }
-
+    
     private bool _firstRendered;
 
     protected override bool ShouldRender()
@@ -40,5 +37,20 @@ else
     {
         if (firstRender)
             _firstRendered = true;
+    }
+
+    private string ComponentCss()
+    {
+        using var cssBuilder = new CssBuilder(stackalloc char[55]);
+        
+        cssBuilder.AddClass("my-auto");
+        
+        cssBuilder.AddClass("input-adornment-left", AdornmentPlacement == AdornmentPlacement.Start);
+        cssBuilder.AddClass("ml-3.5", AdornmentPlacement == AdornmentPlacement.Start);
+        
+        cssBuilder.AddClass("mr-1.5", AdornmentPlacement == AdornmentPlacement.End && AdornmentClick.HasDelegate);
+        cssBuilder.AddClass("mr-3.5", AdornmentPlacement == AdornmentPlacement.End && !AdornmentClick.HasDelegate);
+        
+        return cssBuilder.ToString();
     }
 }

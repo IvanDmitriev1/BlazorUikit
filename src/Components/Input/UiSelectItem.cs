@@ -8,19 +8,16 @@ public sealed class UiSelectItem<T> : UiListItem<T>
 
 	protected override EventCallback InitializeOnClickCallback()
 	{
-		if (Disabled)
-		{
-			return new EventCallbackFactory().Create(this, OnClickDisabledHandler);
-		}
-
 		return new EventCallbackFactory().Create(this, OnClickHandler);
 	}
 	
 	private Task OnClickHandler()
 	{
-		List?.SetSelectedValue(Value);
+		if (!Disabled)
+		{
+			List?.SetSelectedValue(Value);
+		}
+
 		return Select.Focus().AsTask();
 	}
-
-	private Task OnClickDisabledHandler() => Select.Focus().AsTask();
 }
