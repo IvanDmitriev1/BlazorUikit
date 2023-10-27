@@ -23,7 +23,7 @@
 }
 else
 {
-    <input class="@_inputCss @ComponentCss"
+    <input class="@ComponentCss"
            @ref="_elementReference"
            @attributes="UserAttributes"
            type="@InputType.ToHtml()"
@@ -40,9 +40,16 @@ else
 
 @code {
 
+    /// <summary>
+    /// UserAttributes carries all attributes you add to the component that don't match any of its parameters.
+    /// They will be splatted onto the underlying HTML tag.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> UserAttributes { get; set; } = new();
+    
     [Parameter]
     public InputType InputType { get; set; } = InputType.Text;
-
+    
     [Parameter]
     public bool Immediate { get; set; }
 
@@ -55,6 +62,8 @@ else
     {
         cssBuilder.AddClass("flex-auto");
         cssBuilder.AddClass("py-4");
+
+        cssBuilder.AddClass(_inputCss);
     }
 
     protected override void OnParametersSet()
