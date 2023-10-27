@@ -2,7 +2,11 @@
 @typeparam T where T : notnull
 @inherits UiListItemBase<T>
 
-<li class="@ComponentCss" @onclick="OnClickHandler" @onclick:stopPropagation="true">
+<li aria-selected="@Selected.ToHtml()"
+    aria-disabled="@Disabled.ToHtml()"
+    class="@ComponentCss"
+    @onclick="OnClickHandler"
+    @onclick:stopPropagation="true">
     @ChildContent
 </li>
 
@@ -10,22 +14,19 @@
     
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
+        cssBuilder.AddClass("transition");
         cssBuilder.AddClass("rounded");
         cssBuilder.AddClass("p-4");
         cssBuilder.AddClass("select-none");
-
-        if (Disabled)
-        {
-            cssBuilder.AddClass("cursor-not-allowed");
-            cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss);
-            return;
-        }
         
-        cssBuilder.AddClass("cursor-pointer");
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundActiveCss(Color.Primary, false), Selected);
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextActiveCss(Color.Primary, false), Selected);
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color.Primary), !Selected);
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(Color.Primary), !Selected);
+        cssBuilder.AddClass("cursor-pointer", !Disabled);
+        cssBuilder.AddClass("aria-disabled:cursor-not-allowed");
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss);
+        
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundActiveCss(Color.Primary), !Disabled);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextActiveCss(Color.Primary), !Disabled);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(Color.Primary), !Disabled);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color.Primary));
     }
 
     protected virtual void OnClickHandler()

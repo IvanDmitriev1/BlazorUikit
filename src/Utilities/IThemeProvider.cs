@@ -8,12 +8,12 @@ public interface IThemeProvider
     public string BackgroundCardCss { get; }
     public string ToBackgroundCss(Color color);
     public string ToBackgroundHoverCss(Color color);
-    public string ToBackgroundActiveCss(Color color, bool active = true);
+    public string ToBackgroundActiveCss(Color color);
     public string BackgroundDisabledCss { get; }
     
     public string ToTextCss(Color color);
     public string ToTextHoverCss(Color color);
-    public string ToTextActiveCss(Color color, bool active = true);
+    public string ToTextActiveCss(Color color);
     public string TextDisabledCss { get; }
     public string TextPlaceholderCss { get; }
 

@@ -37,37 +37,19 @@ public class DefaultThemeProvider : IThemeProvider
         _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
     };
 
-    public string ToBackgroundActiveCss(Color color, bool active = true)
+    public string ToBackgroundActiveCss(Color color) => color switch
     {
-        if (active)
-        {
-            return color switch
-            {
-                Color.Custom => string.Empty,
-                Color.Inherit => "active:bg-inherit",
-                Color.Primary => "active:bg-dark-90 dark:active:bg-white",
-                Color.Secondary => "active:bg-white dark:active:bg-dark-gray",
-                Color.Error => "active:bg-error-dark",
-                Color.Successful => "active:bg-successful-dark",
-                Color.Warning => "active:bg-warning-dark",
-                _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
-            };
-        }
-        
-        return color switch
-        {
-            Color.Custom => string.Empty,
-            Color.Inherit => "bg-inherit",
-            Color.Primary => "bg-dark-90 dark:bg-white",
-            Color.Secondary => "bg-white dark:bg-dark-gray",
-            Color.Error => "bg-error-dark",
-            Color.Successful => "bg-successful-dark",
-            Color.Warning => "bg-warning-dark",
-            _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
-        };
-    }
+        Color.Custom => string.Empty,
+        Color.Inherit => "active:bg-inherit aria-selected:bg-inherit",
+        Color.Primary => "active:bg-dark-90 aria-selected:bg-dark-90 dark:active:bg-white dark:aria-selected:bg-white",
+        Color.Secondary => "active:bg-white aria-selected:bg-white dark:active:bg-dark-gray dark:aria-selected:bg-dark-gray",
+        Color.Error => "active:bg-error-dark",
+        Color.Successful => "active:bg-successful-dark",
+        Color.Warning => "active:bg-warning-dark",
+        _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
+    };
 
-    public string BackgroundDisabledCss { get; } = "bg-dark-5 dark:bg-dark-gray-5";
+    public string BackgroundDisabledCss { get; } = "disabled:bg-dark-5 aria-disabled:bg-dark-5 dark:disabled:bg-dark-gray-5 dark:aria-disabled:bg-dark-5";
 
     #endregion
 
@@ -97,37 +79,19 @@ public class DefaultThemeProvider : IThemeProvider
         _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
     };
 
-    public string ToTextActiveCss(Color color, bool active = true)
+    public string ToTextActiveCss(Color color) => color switch
     {
-        if (active)
-        {
-            return color switch
-            {
-                Color.Custom => string.Empty,
-                Color.Inherit => "active:text-inherit",
-                Color.Primary => "active:text-white dark:active:text-dark",
-                Color.Secondary => "active:text-dark dark:active:text-white",
-                Color.Error => "text-white",
-                Color.Successful => "text-white",
-                Color.Warning => "text-white",
-                _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
-            };
-        }
-        
-        return color switch
-        {
-            Color.Custom => string.Empty,
-            Color.Inherit => "text-inherit",
-            Color.Primary => "text-white dark:text-dark",
-            Color.Secondary => "text-dark dark:text-white",
-            Color.Error => "text-white",
-            Color.Successful => "text-white",
-            Color.Warning => "text-white",
-            _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
-        };
-    }
+        Color.Custom => string.Empty,
+        Color.Inherit => "active:text-inherit",
+        Color.Primary => "active:text-white aria-selected:text-white dark:active:text-dark dark:aria-selected:text-dark",
+        Color.Secondary => "active:text-dark aria-selected:text-dark dark:active:text-white dark:aria-selected:text-white",
+        Color.Error => "text-white",
+        Color.Successful => "text-white",
+        Color.Warning => "text-white",
+        _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
+    };
 
-    public string TextDisabledCss { get; } = "text-dark-30 dark:text-dark-gray-20";
+    public string TextDisabledCss { get; } = "disabled:text-dark-30 aria-disabled:text-dark-30 dark:disabled:text-dark-gray-20 dark:aria-disabled:text-dark-gray-20";
     public string TextPlaceholderCss { get; } = "text-dark-40 dark:text-dark-gray-30";
 
     #endregion
