@@ -33,6 +33,8 @@
                  Lines="@Lines"
                  InputMode="@InputMode.Numeric"
                  InputType="@InputType.Text"
+                 Immediate="@Immediate"
+                 DebounceInterval="@DebounceInterval"
                  
                  max="@Max"
                  min="@Min"
@@ -53,6 +55,12 @@
 
     [Parameter]
     public T Step { get; set; } = T.One;
+    
+    [Parameter]
+    public bool Immediate { get; set; }
+    
+    [Parameter]
+    public TimeSpan DebounceInterval { get; set; }
 
     [Parameter]
     public bool FullWidth { get; set; }
@@ -78,10 +86,7 @@
         AllowRender();
     }
 
-    protected override async Task OnFirstRenderAsync()
-    {
-        await JsRuntime.InvokeVoidAsync("RegisterNumericInputEvent", _input!.ElementReference);
-    }
+    protected override Task OnFirstRenderAsync() => JsRuntime.InvokeVoidAsync("RegisterNumericInputEvent", _input!.ElementReference).AsTask();
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) { }
 

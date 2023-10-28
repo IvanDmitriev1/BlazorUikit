@@ -96,13 +96,13 @@
         _selectedImageUrl = ImagesUrls[0];
     }
 
-    protected override async Task OnFirstRenderAsync()
+    protected override Task OnFirstRenderAsync()
     {
         if (AutoCycleTime == TimeSpan.Zero)
-            return;
+            return Task.CompletedTask;
         
         _objRef = DotNetObjectReference.Create(this);
-        await JsRuntime.InvokeVoidAsync("SetUpImageGalleryTimer", _objRef, _rootElement!.ElementReference, AutoCycleTime.TotalMilliseconds);
+        return JsRuntime.InvokeVoidAsync("SetUpImageGalleryTimer", _rootElement!.ElementReference, AutoCycleTime.TotalMilliseconds, _objRef).AsTask();
     }
 
     [JSInvokable]

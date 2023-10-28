@@ -10,7 +10,6 @@ public abstract class TextInputBase<T> : InputBase<T>
 	
 	[Parameter]
 	public InputMode InputMode { get; set; } = InputMode.Text;
-	
 
 	[Parameter]
 	public string? Text { get; set; }

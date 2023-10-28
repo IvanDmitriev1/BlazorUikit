@@ -22,6 +22,8 @@
                  MaxLength="@MaxLength"
                  Lines="@Lines"
                  InputType="@InputType"
+                 Immediate="@Immediate"
+                 DebounceInterval="@DebounceInterval"
                  
                  Text="@Text"
                  TextChanged="text => CurrentText = text"/>
@@ -41,6 +43,12 @@
 
     [Parameter]
     public InputType InputType { get; set; } = InputType.Text;
+    
+    [Parameter]
+    public bool Immediate { get; set; }
+
+    [Parameter]
+    public TimeSpan DebounceInterval { get; set; }
 
     
     [Parameter]
@@ -84,5 +92,11 @@
     protected override void OnTextChanged()
     {
         NotifyEditContext();
+    }
+    
+    [JSInvokable]
+    public void ChangeCurrentText(string newValue)
+    {
+        CurrentText = newValue;
     }
 }

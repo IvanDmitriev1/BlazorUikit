@@ -7,18 +7,22 @@ class DOMCleanup {
      * @param {Function} cleanupFunction - The function to call when the element is removed.
      */
     static createObserver(targetElement, cleanupFunction) {
-        const observer = new MutationObserver((mutations) => {
+        const callback = function (mutations)
+        {
             const targetRemoved = mutations.some((mutation) =>
                 Array.from(mutation.removedNodes).includes(targetElement)
             );
 
             if (targetRemoved) {
                 cleanupFunction();
-                this.disconnectObserver(targetElement);
+                DOMCleanup.disconnectObserver(targetElement);
             }
-        });
-
-        observer.observe(targetElement.parentNode, { childList: true });
+        };
+        
+        const observer = new MutationObserver(callback);
+        const config = { childList: true, subtree: true };
+        
+        observer.observe(targetElement.parentNode, config);
         this.#observers.set(targetElement, observer);
     }
 
@@ -39,24 +43,67 @@ window.DOMCleanup = DOMCleanup;
 
 class TimerHelper {
     static #TimersDictionary = new Map();
-    
-    static createTimer(element, interval, onTickFunction)
+
+    static createTimer(element, interval, onTickFunction, onCleanup = null)
     {
-        const timerId = setInterval(onTickFunction, interval);
-        this.#TimersDictionary.set(element, timerId);
-        
-        const timersDictionary = this.#TimersDictionary;
-
-        DOMCleanup.createObserver(element, function ()
+        const deleteTimerWithCleanUp = function ()
         {
-            const timerId = timersDictionary.get(element);
-            timersDictionary.delete(element);
+            TimerHelper.deleteTimer(element);
 
-            clearInterval(timerId);
-        });
+            if(onCleanup !== null)
+            {
+                onCleanup();
+            }
+        }
+        
+        const timerId = setInterval(function ()
+        {
+            if(!document.body.contains(element))
+            {
+                deleteTimerWithCleanUp();
+                return;
+            }
+            
+            onTickFunction();
+        }, interval);
+        this.#TimersDictionary.set(element, timerId);
+
+        const timersDictionary = this.#TimersDictionary;
+        DOMCleanup.createObserver(element, deleteTimerWithCleanUp);
+    }
+    
+    static deleteTimer(element)
+    {
+        const timerId = this.#TimersDictionary.get(element);
+        this.#TimersDictionary.delete(element);
+
+        clearInterval(timerId);
     }
 }
 window.TimerHelper = TimerHelper;
+
+
+window.InputDebounceDictionary = new Map();
+function SetUpInputDebounceInterval(element, interval, dotnetIdentifier)
+{
+    TimerHelper.createTimer(element, interval, async function () {
+        console.log('Timer tick!');
+        const inputValue = element.value;
+
+        const previouseValue = window.InputDebounceDictionary.get(element);
+        
+        if (inputValue === null || inputValue === "" || previouseValue === inputValue) {
+            return;
+        }
+
+        window.InputDebounceDictionary.set(element, inputValue);
+        await dotnetIdentifier.invokeMethodAsync('ChangeCurrentText', inputValue);
+    }, function ()
+    {
+        window.InputDebounceDictionary.delete(element);
+    });
+}
+
 
 function RegisterNumericInputEvent(inputElement) {
     const eventListener = function (event) {
@@ -72,7 +119,6 @@ function RegisterNumericInputEvent(inputElement) {
 
     inputElement.addEventListener('input', eventListener);
 }
-
 
 
 function LockScroll() {
@@ -122,7 +168,7 @@ function CloseDrawer(drawerRootId)
 }
 
 
-function SetUpImageGalleryTimer(dotnetIdentifier, element, interval)
+function SetUpImageGalleryTimer(element, interval, dotnetIdentifier)
 {
     TimerHelper.createTimer(element, interval, async function () {
         //console.log('Timer tick!');
