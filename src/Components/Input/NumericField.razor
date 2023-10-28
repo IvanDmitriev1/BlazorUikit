@@ -33,7 +33,6 @@
                  Lines="@Lines"
                  InputMode="@InputMode.Numeric"
                  InputType="@InputType.Text"
-                 id="@_id"
                  
                  max="@Max"
                  min="@Min"
@@ -65,15 +64,8 @@
     public string? InputCss { get; set; }
 
     UiInput? _input;
-    readonly string _id = Guid.NewGuid().ToString();
-    DotNetObjectReference<NumericField<T>>? _objRef;
 
     public NumericField() : base(T.Zero) { }
-    
-    protected override void OnDispose()
-    {
-        _objRef?.Dispose();
-    }
 
     protected override void OnParametersSet()
     {
@@ -88,8 +80,7 @@
 
     protected override async Task OnFirstRenderAsync()
     {
-        _objRef = DotNetObjectReference.Create(this);
-        await JsRuntime.InvokeVoidAsync("RegisterNumericInputEvent", _id, _objRef);
+        await JsRuntime.InvokeVoidAsync("RegisterNumericInputEvent", _input!.ElementReference);
     }
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) { }

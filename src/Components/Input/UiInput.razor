@@ -5,7 +5,7 @@
 {
     <textarea
             class="@_inputCss @ComponentCss resize-none outline-none"
-            @ref="_elementReference"
+            @ref="ElementReference"
             @attributes="UserAttributes"
             type="@InputType.ToHtml()"
             placeholder="@Placeholder"
@@ -24,7 +24,7 @@
 else
 {
     <input class="@ComponentCss"
-           @ref="_elementReference"
+           @ref="ElementReference"
            @attributes="UserAttributes"
            type="@InputType.ToHtml()"
            placeholder="@Placeholder"
@@ -52,8 +52,9 @@ else
     
     [Parameter]
     public bool Immediate { get; set; }
-
-    ElementReference _elementReference;
+    
+    public ElementReference ElementReference { get; private set; }
+    
     string? _internalText;
     bool _isFocused;
     string _inputCss = string.Empty;

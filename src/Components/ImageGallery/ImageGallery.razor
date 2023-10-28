@@ -1,10 +1,13 @@
 ﻿@namespace BlazorUiKit.Components
 @inherits UiKitComponentBase
-@implements IAsyncDisposable
+@implements IDisposable
 
 @inject IJSRuntime JsRuntime
 
-<Stack HtmlTag="section" Class="@ComponentCss" Direction="Direction.Row">
+<Stack @ref="_rootElement"
+       HtmlTag="section"
+       Class="@ComponentCss"
+       Direction="Direction.Row">
     <UiButton Icon="@TablerIcon.ArrowLeft" Class="hidden md:block" @onclick="Previous" />
     
     <SwipeArea Class="flex-1 flex flex-col items-center" OnSwipeEnd="OnSwipe">
@@ -70,6 +73,7 @@
     }
     
     DotNetObjectReference<ImageGallery>? _objRef;
+    Stack? _rootElement;
     string _selectedImageUrl = string.Empty;
     int _currentIndex = 0;
     Int64 _timestamp;
@@ -81,20 +85,9 @@
         cssBuilder.AddClass("rounded");
     }
     
-    public async ValueTask DisposeAsync()
+    public void Dispose()
     {
-        if (!IsJsRuntimeAvailable || _objRef is null)
-            return;
-
-        try
-        {
-            await JsRuntime.InvokeVoidAsync("UnRegisterImageGalleryTimer", _objRef);
-            _objRef.Dispose();
-        }
-        catch (JSDisconnectedException)
-        {
-            
-        }
+        _objRef?.Dispose();
     }
 
     protected override void OnInitialized()
@@ -109,7 +102,7 @@
             return;
         
         _objRef = DotNetObjectReference.Create(this);
-        await JsRuntime.InvokeVoidAsync("RegisterImageGalleryTimer", _objRef, AutoCycleTime.TotalMilliseconds);
+        await JsRuntime.InvokeVoidAsync("SetUpImageGalleryTimer", _objRef, _rootElement!.ElementReference, AutoCycleTime.TotalMilliseconds);
     }
 
     [JSInvokable]

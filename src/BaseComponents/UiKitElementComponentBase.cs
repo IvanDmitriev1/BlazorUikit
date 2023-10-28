@@ -4,6 +4,8 @@ public abstract class UiKitElementComponentBase : UiKitComponentBase
 {
 	[Parameter]
 	public string HtmlTag { get; set; } = "div";
+	
+	public ElementReference ElementReference { get; private set; }
 
 	protected virtual void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq) { }
 
@@ -24,6 +26,8 @@ public abstract class UiKitElementComponentBase : UiKitComponentBase
 
 		OnBuildingRenderTree(builder, ref seq);
 
+		builder.AddElementReferenceCapture(seq++, reference => ElementReference = reference);
+		
 		//Close
 		builder.CloseElement();
 	}

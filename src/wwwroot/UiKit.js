@@ -1,10 +1,64 @@
-function RegisterNumericInputEvent(inputId, dotnetIdentifier) {
-    const inputElement = document.getElementById(inputId);
-    if (!inputElement) {
-        console.error('No element found with ID:', inputId);
-        return;
+class DOMCleanup {
+    static #observers = new Map();
+
+    /**
+     * Create a MutationObserver to watch for element removal.
+     * @param {Element} targetElement - The element to watch for removal.
+     * @param {Function} cleanupFunction - The function to call when the element is removed.
+     */
+    static createObserver(targetElement, cleanupFunction) {
+        const observer = new MutationObserver((mutations) => {
+            const targetRemoved = mutations.some((mutation) =>
+                Array.from(mutation.removedNodes).includes(targetElement)
+            );
+
+            if (targetRemoved) {
+                cleanupFunction();
+                this.disconnectObserver(targetElement);
+            }
+        });
+
+        observer.observe(targetElement.parentNode, { childList: true });
+        this.#observers.set(targetElement, observer);
     }
+
+    /**
+     * Disconnect and delete a specific MutationObserver.
+     * @param {Element} targetElement - The target element associated with the observer to disconnect.
+     */
+    static disconnectObserver(targetElement) {
+        if (this.#observers.has(targetElement)) {
+            const observer = this.#observers.get(targetElement);
+            observer.disconnect();
+            this.#observers.delete(targetElement);
+        }
+    }
+}
+window.DOMCleanup = DOMCleanup;
+
+
+class TimerHelper {
+    static #TimersDictionary = new Map();
     
+    static createTimer(element, interval, onTickFunction)
+    {
+        const timerId = setInterval(onTickFunction, interval);
+        this.#TimersDictionary.set(element, timerId);
+        
+        const timersDictionary = this.#TimersDictionary;
+
+        DOMCleanup.createObserver(element, function ()
+        {
+            const timerId = timersDictionary.get(element);
+            timersDictionary.delete(element);
+
+            clearInterval(timerId);
+        });
+    }
+}
+window.TimerHelper = TimerHelper;
+
+function RegisterNumericInputEvent(inputElement) {
     const eventListener = function (event) {
         const inputValue = event.target.value;
         const numericValue = inputValue.replace(/[^0-9.,]|([.,][0-9]+)[.,]/g, '$1');
@@ -19,6 +73,8 @@ function RegisterNumericInputEvent(inputId, dotnetIdentifier) {
     inputElement.addEventListener('input', eventListener);
 }
 
+
+
 function LockScroll() {
     document.body.style.overflow = "hidden";
 }
@@ -26,6 +82,7 @@ function LockScroll() {
 function UnlockScroll() {
     document.body.style.overflow = "auto";
 }
+
 
 function DisplayDrawer(drawerRootId)
 {
@@ -47,6 +104,7 @@ function DisplayDrawer(drawerRootId)
     drawerElement.classList.remove("translate-x-[-1000%]");
 }
 
+
 function CloseDrawer(drawerRootId)
 {
     const element = document.getElementById(drawerRootId);
@@ -64,25 +122,12 @@ function CloseDrawer(drawerRootId)
 }
 
 
-
-const imageGalleryTimersDictionary = new Map();
-function RegisterImageGalleryTimer(dotnetIdentifier, interval)
+function SetUpImageGalleryTimer(dotnetIdentifier, element, interval)
 {
-    const timerId = setInterval(async () => {
+    TimerHelper.createTimer(element, interval, async function () {
         //console.log('Timer tick!');
-
         await dotnetIdentifier.invokeMethodAsync('InvokeNextFromJs');
-    }, interval);
-
-    imageGalleryTimersDictionary.set(dotnetIdentifier._id, timerId);
-}
-
-function UnRegisterImageGalleryTimer(dotnetIdentifier)
-{
-    const timerId = imageGalleryTimersDictionary.get(dotnetIdentifier._id);
-    imageGalleryTimersDictionary.delete(dotnetIdentifier);
-
-    clearInterval(timerId);
+    });
 }
 
 
