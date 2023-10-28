@@ -3,9 +3,6 @@
 public abstract class TextInputBase<T> : InputBase<T>
 {
 	[Parameter]
-	public string? Placeholder { get; set; }
-
-	[Parameter]
 	public int MaxLength { get; set; } = 524288;
 
 	[Parameter]

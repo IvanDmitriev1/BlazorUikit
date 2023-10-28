@@ -54,6 +54,7 @@
 
     [Parameter]
     public EventCallback AdornmentClick { get; set; }
+    
 
     string InputCss => AdornmentPlacement switch
     {
@@ -76,7 +77,7 @@
         if (_input is null || _input.Text == Text)
             return;
 
-        _input.Text = Text;
+        //_input.Text = Text;
         AllowRender();
     }
 

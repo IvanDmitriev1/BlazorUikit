@@ -137,4 +137,28 @@ public class DefaultThemeProvider : IThemeProvider
         Color.Inherit => "focus-within:ring-inherit",
         _ => "focus-within:ring-dark-5 dark:focus-within:ring-dark-gray-5"
     };
+
+    public string ToFillCss(Color color) => color switch
+    {
+        Color.Custom => string.Empty,
+        Color.Inherit => "fill-inherit",
+        Color.Primary => "fill-dark dark:fill-white",
+        Color.Secondary => "fill-white dark:fill-dark",
+        Color.Error => "fill-error-light",
+        Color.Successful => "fill-successful",
+        Color.Warning => "fill-warning",
+        _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
+    };
+
+    public string ToStrokeCss(Color color) => color switch
+    {
+        Color.Custom => string.Empty,
+        Color.Inherit => "stroke-inherit",
+        Color.Primary => "stroke-dark dark:stroke-white",
+        Color.Secondary => "stroke-white dark:stroke-dark",
+        Color.Error => "stroke-error-light",
+        Color.Successful => "stroke-successful",
+        Color.Warning => "stroke-warning",
+        _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
+    };
 }

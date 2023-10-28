@@ -10,4 +10,7 @@ public abstract class InputBase<T> : ValidationComponentBase<T>
 
     [Parameter]
     public string? Label { get; set; }
+    
+    [Parameter]
+    public string? Placeholder { get; set; }
 }
