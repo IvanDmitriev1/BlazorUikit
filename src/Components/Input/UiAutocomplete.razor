@@ -44,8 +44,7 @@
                     {
                         @ProgressIndicatorInPopoverTemplate
                     }
-                    
-                    @if (_items.Count > 0)
+                    else if (_items.Count > 0)
                     {
                         <UiList T="T"
                                 @bind-SelectedValue="CurrentValue">
@@ -67,16 +66,15 @@
                                         @item.ConvertToString()
                                     }
                                 </UiListItem>
-
-                                @if (_itemsReturned > MaxItems && MoreItemsTemplate is not null)
-                                {
-                                    @MoreItemsTemplate
-                                }
-
-                                if (AfterItemsTemplate is not null)
-                                {
-                                    @AfterItemsTemplate
-                                }
+                            }
+                            
+                            @if (_itemsReturned > MaxItems && MoreItemsTemplate is not null)
+                            {
+                                @MoreItemsTemplate
+                            }
+                            @if (AfterItemsTemplate is not null)
+                            {
+                                @AfterItemsTemplate
                             }
                         </UiList>
                     }

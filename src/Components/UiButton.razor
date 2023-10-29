@@ -65,21 +65,21 @@
     public ButtonIconPosition IconPosition { get; set; } = ButtonIconPosition.Content;
 
     private RenderFragment IconRenderFragment =>
-        @<UiKitIcon Class="@_iconCss" Icon="Icon" Size="Size"/>;
+        @<UiKitIcon Class="@IconCss" Icon="Icon" Size="Size"/>;
 
     private string HtmlTag { get; set; } = "button";
-    
-    private string? _iconCss;
+
+    private string? IconCss => IconPosition switch
+    {
+        ButtonIconPosition.Content => null,
+        ButtonIconPosition.Left => "mr-2.5",
+        ButtonIconPosition.Right => "ml-2.5",
+        _ => throw new ArgumentOutOfRangeException()
+    };
     
     protected override void OnInitialized()
     {
-        _iconCss = IconPosition switch
-        {
-            ButtonIconPosition.Content => null,
-            ButtonIconPosition.Left => "mr-2.5",
-            ButtonIconPosition.Right => "ml-2.5",
-            _ => throw new ArgumentOutOfRangeException()
-        };
+        CacheCss = true;
     }
 
     protected override void OnParametersSet()
@@ -116,12 +116,7 @@
         
         cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundDisabledCss, Disabled);
         cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss, Disabled);
-
-        if (Disabled)
-        {
-            return;
-        }
-
+        
         var swappedColor = Color == Color.Primary ? Color.Secondary : Color;
         
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundCss(Color), Variant == Variant.Filled);
