@@ -34,9 +34,9 @@ public abstract class ValueInputBase<T> : TextInputBase<T>
             _ = ValueChanged.InvokeAsync(value);
 
             NotifyEditContext();
-            CurrentText = ConvertValueToString();
-
             OnValueChanged();
+            
+            CurrentText = ConvertValueToString();
         }
     }
 

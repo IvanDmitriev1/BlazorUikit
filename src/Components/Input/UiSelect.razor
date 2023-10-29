@@ -2,6 +2,7 @@
 @typeparam T where T : notnull
 @using CommunityToolkit.HighPerformance.Helpers
 @inherits ValueInputBase<T?>
+@implements IExplicitHide
 
 <InputField Disabled="false"
             FullWidth="true"
@@ -49,9 +50,9 @@
                     {
                         @foreach (var item in Items)
                         {
-                            <UiSelectItem T="T" Value="item">
+                            <UiListItem T="T" Value="item">
                                 @ItemTemplate(item)
-                            </UiSelectItem>
+                            </UiListItem>
                         }
                     }
                     else

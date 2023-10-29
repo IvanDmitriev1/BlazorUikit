@@ -58,9 +58,11 @@ class TimerHelper {
         
         const timerId = setInterval(function ()
         {
+            //Why MutationObserver not working
             if(!document.body.contains(element))
             {
                 deleteTimerWithCleanUp();
+                DOMCleanup.disconnectObserver(element);
                 return;
             }
             
@@ -104,7 +106,6 @@ function SetUpInputDebounceInterval(element, interval, dotnetIdentifier)
     });
 }
 
-
 function RegisterNumericInputEvent(inputElement) {
     const eventListener = function (event) {
         const inputValue = event.target.value;
@@ -119,6 +120,16 @@ function RegisterNumericInputEvent(inputElement) {
 
     inputElement.addEventListener('input', eventListener);
 }
+
+function RegisterEnterKeyEvent(element, dotnetIdentifier) {
+    element.addEventListener('keydown', async function (event) {
+        if (event.key === 'Enter' || event.key === 'Done' || event.keyCode === 13)
+        {
+            await dotnetIdentifier.invokeMethodAsync('OnEnterKey', element.value);
+        }
+    });
+}
+
 
 
 function LockScroll() {
@@ -198,8 +209,4 @@ function OpenModalDialog(dialog, preventDismissOnOverlayClick)
             dialog.close()
         }
     });
-}
-
-function ReplaceClass(element, oldClas, newClass) {
-    element.classList.replace(oldClas, newClass);
 }

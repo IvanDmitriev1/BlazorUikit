@@ -1,5 +1,6 @@
 ﻿@namespace BlazorUiKit.Components
 @typeparam T where T : notnull
+
 @inherits UiListItemBase<T>
 
 <li aria-selected="@Selected.ToHtml()"
@@ -11,6 +12,9 @@
 </li>
 
 @code {
+    
+    [CascadingParameter]
+    protected IExplicitHide? ExplicitHide { get; set; }
     
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
@@ -34,6 +38,11 @@
         if (!Disabled && !Selected)
         {
             List?.SetSelectedValue(Value);
+        }
+        
+        if (Selected && ExplicitHide is not null)
+        {
+            ExplicitHide.ExplicitHide();
         }
     }
 }

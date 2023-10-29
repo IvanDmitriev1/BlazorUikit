@@ -1,9 +1,12 @@
 ﻿@namespace BlazorUiKit.Components
-@inherits UiKitComponentBase
+@using System.Collections.Frozen
+@inherits UiKitRenderComponentBase
 
 @inject IJSRuntime JsRuntime
 
-<div @ref="_element" class="@ComponentCss">
+<div @ref="_element"
+     aria-hidden="@NotOpen.ToHtml()"
+     class="@ComponentCss">
     @ChildContent
 </div>
 
@@ -36,14 +39,17 @@
             
             Open = value;
             _ = OpenChanged.InvokeAsync(value);
+            AllowRender();
         }
     }
 
+    private bool NotOpen => !Open;
+    
     private ElementReference _element;
     
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass("pointer-events-none opacity-0");
+        cssBuilder.AddClass("opacity-100 aria-hidden:pointer-events-none aria-hidden:opacity-0");
         cssBuilder.AddClass("transition-opacity duration-200");
         cssBuilder.AddClass("absolute");
         cssBuilder.AddClass("drop-shadow-lg");
@@ -60,29 +66,14 @@
         CacheCss = true;
     }
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
-        if (!IsJsRuntimeAvailable)
-        {
-            return;
-        }
-        
-        if (Open)
-        {
-            await JsRuntime.ReplaceClass(_element, "opacity-0", "opacity-100");
-            await JsRuntime.ReplaceClass(_element, "pointer-events-none", "pointer-events-auto");
-        }
-        else
-        {
-            await JsRuntime.ReplaceClass(_element, "opacity-100", "opacity-0");
-            await JsRuntime.ReplaceClass(_element, "pointer-events-auto", "pointer-events-none");
-        }
+        AllowRender();
     }
+    
 
-    private async Task Hide()
+    private void Hide()
     {
         CurrentOpen = false;
-        await JsRuntime.ReplaceClass(_element, "opacity-100", "opacity-0");
-        await JsRuntime.ReplaceClass(_element, "pointer-events-auto", "pointer-events-none");
     }
 }
