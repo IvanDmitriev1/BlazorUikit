@@ -1,9 +1,7 @@
 ﻿@namespace BlazorUiKit.Components
 @inherits UiKitRenderComponentBase
-@implements IDisposable
 
 @inject IDialogService DialogService
-@inject NavigationManager NavigationManager
 
 @foreach (var (key, dialogReference) in DialogService.DialogsById)
 {
@@ -12,26 +10,14 @@
 
 @code
 {
-    IDisposable? _locationChangingRegistration;
-
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) { }
 
     public void Refresh() => StateHasChangedWithRendering();
     public Task RefreshAsync() => InvokeAsync(StateHasChangedWithRendering);
 
-    public void Dispose()
-    {
-        _locationChangingRegistration?.Dispose();
-    }
-
     protected override void OnInitialized()
     {
         DialogService.AddDialogProvider(this);
-    }
-
-    protected override void OnFirstRender()
-    {
-        _locationChangingRegistration = NavigationManager.RegisterLocationChangingHandler(OnLocationChanging);
     }
 
     private ValueTask OnLocationChanging(LocationChangingContext arg)

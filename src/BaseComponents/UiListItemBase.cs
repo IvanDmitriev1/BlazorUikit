@@ -27,7 +27,6 @@ public abstract class UiListItemBase<T> : UiKitRenderComponentBase, IUiListItem<
             
             _selected = value;
             AllowRender();
-            StateHasChanged();
         }
     }
 

@@ -1,6 +1,6 @@
 ﻿@namespace BlazorUiKit.Components
 @typeparam T where T : notnull
-@inherits UiKitComponentBase
+@inherits UiKitRenderComponentBase
 @implements IUiList<T>
 
 <CascadingValue Value="this" IsFixed="true">
@@ -45,6 +45,7 @@
 
             SelectedValue = value;
             _ = SelectedValueChanged.InvokeAsync(value);
+            AllowRender();
 
             SetSelectedItem(value);
 
@@ -74,6 +75,7 @@
 
         OnSelectedValueChanged(_previousSelectedValue);
         _previousSelectedValue = SelectedValue;
+        AllowRender();
     }
 
     public void RegisterListItem(IUiListItem<T> item)

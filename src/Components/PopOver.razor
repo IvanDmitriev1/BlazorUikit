@@ -1,5 +1,5 @@
 ﻿@namespace BlazorUiKit.Components
-@inherits UiKitRenderComponentBase
+@inherits UiKitComponentBase
 
 @inject IJSRuntime JsRuntime
 
@@ -36,15 +36,16 @@
             if (Open == value)
                 return;
 
+            _previousOpen = value;
             Open = value;
             _ = OpenChanged.InvokeAsync(value);
-            AllowRender();
         }
     }
 
     private bool NotOpen => !Open;
 
     private ElementReference _element;
+    private bool _previousOpen;
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
@@ -64,13 +65,7 @@
     {
         CacheCss = true;
     }
-
-    protected override void OnParametersSet()
-    {
-        AllowRender();
-    }
     
-
     private void Hide()
     {
         CurrentOpen = false;
