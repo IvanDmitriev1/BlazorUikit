@@ -1,5 +1,4 @@
 ﻿@namespace BlazorUiKit.Components
-@using System.Collections.Frozen
 @inherits UiKitRenderComponentBase
 
 @inject IJSRuntime JsRuntime
@@ -16,19 +15,19 @@
 }
 
 @code {
-    
+
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
     public bool AutoHide { get; set; } = true;
-    
+
     [Parameter, EditorRequired]
     public bool Open { get; set; }
-    
+
     [Parameter]
     public EventCallback<bool> OpenChanged { get; set; }
-    
+
     protected bool CurrentOpen
     {
         get => Open;
@@ -36,7 +35,7 @@
         {
             if (Open == value)
                 return;
-            
+
             Open = value;
             _ = OpenChanged.InvokeAsync(value);
             AllowRender();
@@ -44,9 +43,9 @@
     }
 
     private bool NotOpen => !Open;
-    
+
     private ElementReference _element;
-    
+
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("opacity-100 aria-hidden:pointer-events-none aria-hidden:opacity-0");
@@ -56,8 +55,8 @@
         cssBuilder.AddClass("select-none");
         cssBuilder.AddClass("z-20");
         cssBuilder.AddClass("w-full max-h-[300px]");
-        cssBuilder.AddClass("overflow-y-auto");
-        
+        cssBuilder.AddClass("overflow-y-auto touch-pan-y");
+
         cssBuilder.AddClass(ThemeManager.ThemeProvider.PageBackgroundCss);
     }
 

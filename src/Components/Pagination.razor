@@ -2,11 +2,11 @@
 @inherits UiKitComponentBase
 
 <div class="@ComponentCss">
-    <UiButton   Icon="@TablerIcon.ChevronLeft"
-                Color="Color.Secondary"
-                Disabled="Selected == 1"
-                Size="Size.Large"
-                @onclick="() => CurrentSelected--" />
+    <UiButton Icon="@TablerIcon.ChevronLeft"
+              Color="Color.Secondary"
+              Disabled="Selected == 1"
+              Size="Size.Large"
+              @onclick="() => CurrentSelected--" />
 
     <Stack Class="gap-2.5" AlignItems="AlignItems.Center">
         <NumericField T="int"
@@ -21,10 +21,10 @@
     </Stack>            
 
     <UiButton Icon="@TablerIcon.ChevronRight"
-                Color="Color.Secondary"
-                Disabled="Selected >= Count"
-                Size="Size.Large"
-                @onclick="() => CurrentSelected++" />
+              Color="Color.Secondary"
+              Disabled="Selected >= Count"
+              Size="Size.Large"
+              @onclick="() => CurrentSelected++" />
 </div>
 
 

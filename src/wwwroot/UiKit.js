@@ -1,3 +1,24 @@
+Blazor.addEventListener('enhancedload', () => {
+    ApplayTheme();
+
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+});
+
+function ApplayTheme()
+{
+    const isDarkTheme = localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+    if (isDarkTheme)
+    {
+        document.documentElement.classList.add('dark');
+    }
+    else
+    {
+        document.documentElement.classList.remove('dark');
+    }
+}
+
+
 class DOMCleanup {
     static #observers = new Map();
 
@@ -46,7 +67,7 @@ class TimerHelper {
 
     static createTimer(element, interval, onTickFunction, onCleanup = null)
     {
-        const deleteTimerWithCleanUp = function ()
+        const deleteTimerWithCleanUp = () =>
         {
             TimerHelper.deleteTimer(element);
 
@@ -56,7 +77,7 @@ class TimerHelper {
             }
         }
         
-        const timerId = setInterval(function ()
+        const timerId = setInterval(() =>
         {
             //Why MutationObserver not working
             if(!document.body.contains(element))
@@ -85,10 +106,12 @@ class TimerHelper {
 window.TimerHelper = TimerHelper;
 
 
+
 window.InputDebounceDictionary = new Map();
 function SetUpInputDebounceInterval(element, interval, dotnetIdentifier)
 {
-    TimerHelper.createTimer(element, interval, async function () {
+    TimerHelper.createTimer(element, interval, async () =>
+    {
         console.log('Timer tick!');
         const inputValue = element.value;
 
@@ -100,14 +123,15 @@ function SetUpInputDebounceInterval(element, interval, dotnetIdentifier)
 
         window.InputDebounceDictionary.set(element, inputValue);
         await dotnetIdentifier.invokeMethodAsync('ChangeCurrentText', inputValue);
-    }, function ()
+    }, () =>
     {
         window.InputDebounceDictionary.delete(element);
     });
 }
 
 function RegisterNumericInputEvent(inputElement) {
-    const eventListener = function (event) {
+    const eventListener = (event) =>
+    {
         const inputValue = event.target.value;
         const numericValue = inputValue.replace(/[^0-9.,]|([.,][0-9]+)[.,]/g, '$1');
         
@@ -122,7 +146,8 @@ function RegisterNumericInputEvent(inputElement) {
 }
 
 function RegisterEnterKeyEvent(element, dotnetIdentifier) {
-    element.addEventListener('keydown', async function (event) {
+    element.addEventListener('keydown', async (event) =>
+    {
         if (event.key === 'Enter' || event.key === 'Done' || event.keyCode === 13)
         {
             await dotnetIdentifier.invokeMethodAsync('OnEnterKey', element.value);
@@ -152,7 +177,7 @@ function DisplayDrawer(drawerRootId)
     
     const overlayElement = element.children[0];
     overlayElement.classList.replace("hidden", "flex");
-    overlayElement.addEventListener('click', function(event) {
+    overlayElement.addEventListener('click', (event) => {
         event.stopPropagation();
         CloseDrawer(drawerRootId);
     });
@@ -181,7 +206,7 @@ function CloseDrawer(drawerRootId)
 
 function SetUpImageGalleryTimer(element, interval, dotnetIdentifier)
 {
-    TimerHelper.createTimer(element, interval, async function () {
+    TimerHelper.createTimer(element, interval, async () => {
         //console.log('Timer tick!');
         await dotnetIdentifier.invokeMethodAsync('InvokeNextFromJs');
     });

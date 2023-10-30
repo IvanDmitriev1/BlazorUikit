@@ -64,6 +64,7 @@
     [Parameter]
     public ButtonIconPosition IconPosition { get; set; } = ButtonIconPosition.Content;
 
+
     private RenderFragment IconRenderFragment =>
         @<UiKitIcon Class="@IconCss" Icon="Icon" Size="Size"/>;
 
@@ -80,10 +81,7 @@
     protected override void OnInitialized()
     {
         CacheCss = true;
-    }
 
-    protected override void OnParametersSet()
-    {
         if (Disabled)
         {
             HtmlTag = "button";
@@ -95,6 +93,11 @@
         {
             HtmlTag = "a";
         }
+    }
+
+    protected override void OnParametersSet()
+    {
+        
     }
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
@@ -114,8 +117,8 @@
         
         cssBuilder.AddClass("p-1.5", Icon != TablerIcon.None && IconPosition == ButtonIconPosition.Content);
         
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundDisabledCss, Disabled);
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss, Disabled);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundDisabledCss);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss);
         
         var swappedColor = Color == Color.Primary ? Color.Secondary : Color;
         
