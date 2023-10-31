@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using BlazorUiKit.Abstractions.Dialog;
+﻿using BlazorUiKit.Abstractions.Dialog;
 
 namespace BlazorUiKit.Components;
 
@@ -13,6 +12,8 @@ internal abstract class DialogReferenceBase : IDialogReferenceBase
 
 	public RenderFragment DialogContent { get; protected set; } = null!;
 	public DialogBase? ActualDialog { get; set; }
+	
+	protected bool IsCanceledOrClosed { get; set; }
 
 	public abstract void Cancel();
 
@@ -37,18 +38,26 @@ internal abstract class DialogReference : DialogReferenceBase, IDialogReference
 
 	public override void Cancel()
 	{
-		_tcs.TrySetCanceled();
+		if (IsCanceledOrClosed)
+			return;
+
+		_tcs.SetCanceled();
 		DialogService.RemoveDialog(Id);
+		IsCanceledOrClosed = true;
 	}
 
 	public void Close()
 	{
-		if (ActualDialog?.OnClosing() == false)
-		{
+		if (IsCanceledOrClosed)
 			return;
-		}
+
+		ActualDialog?.OnClosing();
+
+		if (ActualDialog?.CanClose != true)
+			return;
 
 		_tcs.TrySetResult();
 		DialogService.RemoveDialog(Id);
+		IsCanceledOrClosed = true;
 	}
 }

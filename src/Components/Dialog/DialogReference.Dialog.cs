@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using BlazorUiKit.Abstractions.Dialog;
+﻿using BlazorUiKit.Abstractions.Dialog;
 
 namespace BlazorUiKit.Components;
 

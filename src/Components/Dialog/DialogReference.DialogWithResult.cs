@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using BlazorUiKit.Abstractions.Dialog;
+﻿using BlazorUiKit.Abstractions.Dialog;
 
 namespace BlazorUiKit.Components;
 
@@ -17,18 +16,26 @@ internal sealed class DialogReference<[DynamicallyAccessedMembers(DynamicallyAcc
 
 	public override void Cancel()
 	{
-		_tcs.TrySetCanceled();
+		if (IsCanceledOrClosed)
+			return;
+
+		IsCanceledOrClosed = true;
+		_tcs.SetCanceled();
 		DialogService.RemoveDialog(Id);
 	}
 
 	public void Close(TResult result)
 	{
-		if (ActualDialog?.OnClosing() == false)
-		{
+		if (IsCanceledOrClosed)
 			return;
-		}
+		
+		ActualDialog?.OnClosing();
+		
+		if (ActualDialog?.CanClose != true)
+			return;
 
+		_tcs.SetResult(result);
 		DialogService.RemoveDialog(Id);
-		_tcs.TrySetResult(result);
+		IsCanceledOrClosed = true;
 	}
 }

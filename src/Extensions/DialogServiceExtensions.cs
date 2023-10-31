@@ -1,16 +1,18 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using BlazorUiKit.Abstractions.Dialog;
+﻿using BlazorUiKit.Abstractions.Dialog;
+using Fody;
 
 namespace BlazorUiKit.Extensions;
 
+[ConfigureAwait(false)]
 public static class DialogServiceExtensions
 {
 	public static async Task ShowAsyncWithResult(this IDialogService dialogService, DialogDisplayOptions options, RenderFragment renderFragment, CancellationToken cancellationToken = default)
 	{
 		try
 		{
-			var dialogReference = await dialogService.ShowAsync(options, renderFragment);
-			await using var cancellationTokenRegistration = cancellationToken.Register(dialogReference.Cancel);
+			var dialogReference = dialogService.Show(options, renderFragment);
+			await using var cancellationTokenRegistration =
+				cancellationToken.Register(dialogReference.Cancel, false);
 
 			await dialogReference.CompletionTask;
 		}
@@ -26,8 +28,9 @@ public static class DialogServiceExtensions
 	{
 		try
 		{
-			var dialogReference = await dialogService.ShowAsync(options, dialogParameters);
-			await using var cancellationTokenRegistration = cancellationToken.Register(dialogReference.Cancel);
+			var dialogReference = dialogService.Show(options, dialogParameters);
+			await using var cancellationTokenRegistration =
+				cancellationToken.Register(dialogReference.Cancel, false);
 
 			await dialogReference.CompletionTask;
 		}
@@ -43,8 +46,9 @@ public static class DialogServiceExtensions
 	{
 		try
 		{
-			var dialogReference = await dialogService.ShowAsync<TDialog, TResult>(options, dialogParameters);
-			await using var cancellationTokenRegistration = cancellationToken.Register(dialogReference.Cancel);
+			var dialogReference = dialogService.Show<TDialog, TResult>(options, dialogParameters);
+			await using var cancellationTokenRegistration =
+				cancellationToken.Register(dialogReference.Cancel, false);
 
 			return await dialogReference.CompletionTask;
 		}

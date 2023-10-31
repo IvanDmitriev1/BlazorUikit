@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace BlazorUiKit.Abstractions.Dialog;
+﻿namespace BlazorUiKit.Abstractions.Dialog;
 
 public interface IDialogReferenceBase
 {
