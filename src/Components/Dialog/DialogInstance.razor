@@ -45,8 +45,5 @@
         cssBuilder.AddClass("backdrop:bg-main-dark-background/60");
     }
 
-    protected override async Task OnFirstRenderAsync()
-    {
-        await JsRuntime.InvokeVoidAsync("OpenModalDialog", _element, DialogReference.DisplayOptions.PreventDismissOnOverlayClick);
-    }
+    protected override Task OnFirstRenderAsync() => JsRuntime.InvokeVoidAsync("OpenModalDialog", _element, DialogReference.DisplayOptions.PreventDismissOnOverlayClick).AsTask();
 }

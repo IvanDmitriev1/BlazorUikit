@@ -77,9 +77,9 @@
     }
 
     input {
-        @apply focus:!outline-none active:!outline-none bg-transparent placeholder-dark-40 dark:placeholder-dark-gray-30;
+        @apply w-full focus:!outline-none active:!outline-none bg-transparent placeholder-dark-40 dark:placeholder-dark-gray-30;
     }
     textarea {
-        @apply bg-transparent;
+        @apply bg-transparent w-full;
     }
 }

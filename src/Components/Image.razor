@@ -1,31 +1,53 @@
 ﻿@namespace BlazorUiKit.Components
-@inherits UiKitComponentBase
+@inherits UiKitRenderComponentBase
 
 <div class="@Class">
-    <img src="@Src" alt="@Description" class="@BuildImgCss()"/>
+    <img src="@Src" alt="@Description" class="@ComponentCss"/>
 </div>
 
 @code {
 
     [Parameter, EditorRequired]
-    public string Src { get; set; } = null!;
+    public string Src
+    {
+        get => _src;
+        set
+        {
+            _previousSrc = _src;
+            _src = value;
+        }
+    }
 
     [Parameter]
     public string Description { get; set; } = string.Empty;
 
     [Parameter]
     public ObjectFit ObjectFit { get; set; } = ObjectFit.Cover;
-    
-    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder){}
 
-    private string BuildImgCss()
+    private string _src = null!;
+    private string _previousSrc = null!;
+    
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        using var cssBuilder = new CssBuilder(stackalloc char[128]);
         cssBuilder.AddClass(BorderRadius.Default.ToTailwindcss());
         cssBuilder.AddClass("flex");
         cssBuilder.AddClass(ObjectFit.ToTailwindCss());
         cssBuilder.AddClass("select-none");
-        
-        return cssBuilder.ToString();
     }
+
+    protected override void OnInitialized()
+    {
+        IncludeClassCss = false;
+        CacheCss = true;
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (_previousSrc == Src)
+            return;
+
+        _previousSrc = Src;
+        AllowRender();
+    }
+
 }

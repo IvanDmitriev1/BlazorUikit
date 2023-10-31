@@ -4,6 +4,9 @@ Blazor.addEventListener('enhancedload', () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 });
 
+window.matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change',ApplayTheme);
+
 function ApplayTheme()
 {
     const isDarkTheme = localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -112,9 +115,7 @@ function SetUpInputDebounceInterval(element, interval, dotnetIdentifier)
 {
     TimerHelper.createTimer(element, interval, async () =>
     {
-        console.log('Timer tick!');
         const inputValue = element.value;
-
         const previouseValue = window.InputDebounceDictionary.get(element);
         
         if (inputValue === null || inputValue === "" || previouseValue === inputValue) {
@@ -207,7 +208,6 @@ function CloseDrawer(drawerRootId)
 function SetUpImageGalleryTimer(element, interval, dotnetIdentifier)
 {
     TimerHelper.createTimer(element, interval, async () => {
-        //console.log('Timer tick!');
         await dotnetIdentifier.invokeMethodAsync('InvokeNextFromJs');
     });
 }

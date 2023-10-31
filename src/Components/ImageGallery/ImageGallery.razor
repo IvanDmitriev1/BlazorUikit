@@ -1,5 +1,5 @@
 ﻿@namespace BlazorUiKit.Components
-@inherits UiKitComponentBase
+@inherits UiKitRenderComponentBase
 @implements IDisposable
 
 @inject IJSRuntime JsRuntime
@@ -69,6 +69,7 @@
             
             _currentIndex = value;
             _selectedImageUrl = ImagesUrls[value];
+            AllowRender();
         }
     }
     
@@ -108,12 +109,6 @@
     [JSInvokable]
     public void InvokeNextFromJs()
     {
-        //Problem with blazor wasm
-        /*var timeBetweenChanges = Stopwatch.GetElapsedTime(_timestamp);
-        
-        if (timeBetweenChanges <= AutoCycleTime)
-            return;*/
-        
         CurrentIndex++;
         StateHasChanged();
     }
@@ -121,19 +116,16 @@
     private void OnSelectedValueChanged(string value)
     {
         _selectedImageUrl = value;
-        //_timestamp = Stopwatch.GetTimestamp();
     }
     
     private void Previous()
     {
         CurrentIndex--;
-        //_timestamp = Stopwatch.GetTimestamp();
     }
     
     private void Next()
     {
         CurrentIndex++;
-        //_timestamp = Stopwatch.GetTimestamp();
     }
 
     private void OnSwipe(SwipeDirection direction)
