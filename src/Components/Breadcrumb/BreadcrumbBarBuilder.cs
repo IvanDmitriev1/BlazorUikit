@@ -1,6 +1,4 @@
-﻿using Blazor.TablerIcons;
-
-namespace BlazorUiKit.Components;
+﻿namespace BlazorUiKit.Components;
 
 public static class BreadcrumbBarBuilder
 {

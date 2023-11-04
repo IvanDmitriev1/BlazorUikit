@@ -1,6 +1,4 @@
-﻿using BlazorUiKit.Abstractions.Dialog;
-
-namespace BlazorUiKit.Components;
+﻿namespace BlazorUiKit.Components;
 
 internal sealed class DialogReference<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog, TResult> : DialogReferenceBase, IDialogReference<TDialog, TResult>
 	where TDialog : DialogBase<TDialog, TResult>

@@ -1,4 +1,4 @@
-﻿namespace BlazorUiKit.Abstractions.Breadcrumb;
+﻿namespace BlazorUiKit.Components;
 
 public interface IBreadcrumbBarStaticPage
 {

@@ -1,7 +1,4 @@
-﻿using Blazor.TablerIcons;
-using BlazorUiKit.Abstractions.Breadcrumb;
-
-namespace BlazorUiKit.Components;
+﻿namespace BlazorUiKit.Components;
 
 internal class BreadcrumbService : IBreadcrumbService
 {

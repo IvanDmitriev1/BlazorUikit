@@ -1,5 +1,4 @@
-﻿using BlazorUiKit.Abstractions.Breadcrumb;
-using BlazorUiKit.Abstractions.Dialog;
+﻿using BlazorUiKit.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorUiKit.Extensions;
