@@ -14,9 +14,7 @@ internal class BreadcrumbService : IBreadcrumbService
 		if (_breadcrumbNavigation is null)
 			return;
 
-		var configuration = BreadcrumbBarConfigurationBuilder.GetOrCreateConfiguration<T>();
-		var renderFragments = BreadcrumbBarBuilder.GetOrCreateRenderFragmentFromStaticBreadcrumb(configuration, separationIcon);
-
+		var renderFragments = BreadcrumbBarBuilder.GetOrCreate<T>(separationIcon);
 		_breadcrumbNavigation.Add(renderFragments);
 	}
 
@@ -25,9 +23,7 @@ internal class BreadcrumbService : IBreadcrumbService
 		if (_breadcrumbNavigation is null)
 			return;
 
-		var configuration = BreadcrumbBarConfigurationBuilder.CreateConfiguration(value);
-		var renderFragments = BreadcrumbBarBuilder.CreateRenderFragments(configuration, separationIcon);
-
+		var renderFragments = BreadcrumbBarBuilder.Create(value, separationIcon);
 		_breadcrumbNavigation.Add(renderFragments);
 	}
 }
