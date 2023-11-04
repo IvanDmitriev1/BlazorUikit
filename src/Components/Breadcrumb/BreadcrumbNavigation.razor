@@ -1,0 +1,42 @@
+﻿@namespace BlazorUiKit.Components
+@implements IDisposable
+
+@inject IBreadcrumbService BreadcrumbService
+
+@if (_breadcrumbs is not null)
+{
+    <nav class="@Class">
+        <ol class="flex items-center gap-2">
+            @foreach (var breadcrumbItem in _breadcrumbs)
+            {
+                <li>
+                    @breadcrumbItem
+                </li>
+            }
+        </ol>
+    </nav>
+}
+
+@code{
+
+    [Parameter]
+    public string? Class { get; set; }
+
+    private RenderFragment[]? _breadcrumbs;
+
+    public void Dispose()
+    {
+        BreadcrumbService.RemoveBreadcrumbNavigation();
+    }
+
+    protected override void OnInitialized()
+    {
+        BreadcrumbService.AddBreadcrumbNavigation(this);
+    }
+
+    public void Add(RenderFragment[] fragments)
+    {
+        _breadcrumbs = fragments;
+        StateHasChanged();
+    }
+}
