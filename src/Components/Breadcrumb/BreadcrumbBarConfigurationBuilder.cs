@@ -17,7 +17,7 @@ public sealed class BreadcrumbBarConfigurationBuilder
 
 	private static readonly Dictionary<Type, BreadcrumbBarConfiguration> BreadcrumbBarConfigurations = new();
 
-	private readonly List<BreadcrumbBarBuilderParameters> _parameters = new();
+	private readonly List<BreadcrumbBarBuilderParameters> _parameters = new(1);
 	private BreadcrumbBarConfiguration? _parentBarConfiguration;
 
 	public static BreadcrumbBarConfiguration GetOrCreateConfiguration<T>() where T : IBreadcrumbBarStaticPage

@@ -5,8 +5,6 @@ namespace BlazorUiKit.Components;
 
 internal class BreadcrumbService : IBreadcrumbService
 {
-	private static readonly Dictionary<Type, RenderFragment[]> RenderFragmentsByBreadcrumbBarType = new();
-
 	private BreadcrumbNavigation? _breadcrumbNavigation;
 
 	public void SetBreadcrumbNavigation(BreadcrumbNavigation breadcrumbNavigation)
@@ -24,15 +22,8 @@ internal class BreadcrumbService : IBreadcrumbService
 		if (_breadcrumbNavigation is null)
 			return;
 
-		if (RenderFragmentsByBreadcrumbBarType.TryGetValue(typeof(T), out var renderFragments))
-		{
-			_breadcrumbNavigation.Add(renderFragments);
-			return;
-		}
-
 		var configuration = BreadcrumbBarConfigurationBuilder.GetOrCreateConfiguration<T>();
-		renderFragments = BreadcrumbBarBuilder.GetOrCreateRenderFragmentFromStaticBreadcrumb(configuration, separationIcon);
-		RenderFragmentsByBreadcrumbBarType.Add(typeof(T), renderFragments);
+		var renderFragments = BreadcrumbBarBuilder.GetOrCreateRenderFragmentFromStaticBreadcrumb(configuration, separationIcon);
 
 		_breadcrumbNavigation.Add(renderFragments);
 	}
