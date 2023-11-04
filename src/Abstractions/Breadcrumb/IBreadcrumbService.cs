@@ -1,9 +1,12 @@
-﻿namespace BlazorUiKit.Abstractions.Breadcrumb;
+﻿using Blazor.TablerIcons;
+
+namespace BlazorUiKit.Abstractions.Breadcrumb;
 
 public interface IBreadcrumbService
 {
-    void AddBreadcrumbNavigation(BreadcrumbNavigation breadcrumbNavigation);
+    void SetBreadcrumbNavigation(BreadcrumbNavigation breadcrumbNavigation);
     void RemoveBreadcrumbNavigation();
 
-    void Set<T>() where T : IBreadcrumbBarPage;
+    void Set<T>(TablerIcon separationIcon) where T : IBreadcrumbBarStaticPage;
+	void Set<T>(T value, TablerIcon separationIcon) where T : IBreadcrumbBarInteractivePage;
 }

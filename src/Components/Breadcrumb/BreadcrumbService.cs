@@ -1,4 +1,5 @@
-﻿using BlazorUiKit.Abstractions.Breadcrumb;
+﻿using Blazor.TablerIcons;
+using BlazorUiKit.Abstractions.Breadcrumb;
 
 namespace BlazorUiKit.Components;
 
@@ -8,7 +9,7 @@ internal class BreadcrumbService : IBreadcrumbService
 
 	private BreadcrumbNavigation? _breadcrumbNavigation;
 
-	public void AddBreadcrumbNavigation(BreadcrumbNavigation breadcrumbNavigation)
+	public void SetBreadcrumbNavigation(BreadcrumbNavigation breadcrumbNavigation)
 	{
 		_breadcrumbNavigation = breadcrumbNavigation;
 	}
@@ -18,7 +19,7 @@ internal class BreadcrumbService : IBreadcrumbService
 		_breadcrumbNavigation = null;
 	}
 
-	public void Set<T>() where T : IBreadcrumbBarPage
+	public void Set<T>(TablerIcon separationIcon) where T : IBreadcrumbBarStaticPage
 	{
 		if (_breadcrumbNavigation is null)
 			return;
@@ -29,11 +30,20 @@ internal class BreadcrumbService : IBreadcrumbService
 			return;
 		}
 
-		var builder = new BreadcrumbBarBuilder();
-		T.ConfigureBreadcrumbs(builder);
-
-		renderFragments = builder.Build();
+		var configuration = BreadcrumbBarConfigurationBuilder.GetOrCreateConfiguration<T>();
+		renderFragments = BreadcrumbBarBuilder.GetOrCreateRenderFragmentFromStaticBreadcrumb(configuration, separationIcon);
 		RenderFragmentsByBreadcrumbBarType.Add(typeof(T), renderFragments);
+
+		_breadcrumbNavigation.Add(renderFragments);
+	}
+
+	public void Set<T>(T value, TablerIcon separationIcon) where T : IBreadcrumbBarInteractivePage
+	{
+		if (_breadcrumbNavigation is null)
+			return;
+
+		var configuration = BreadcrumbBarConfigurationBuilder.CreateConfiguration(value);
+		var renderFragments = BreadcrumbBarBuilder.CreateRenderFragments(configuration, separationIcon);
 
 		_breadcrumbNavigation.Add(renderFragments);
 	}

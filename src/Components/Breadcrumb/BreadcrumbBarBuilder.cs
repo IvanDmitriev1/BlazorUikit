@@ -1,52 +1,67 @@
-﻿using System.Buffers;
-using Blazor.TablerIcons;
-using BlazorUiKit.Abstractions.Breadcrumb;
-using CommunityToolkit.HighPerformance.Buffers;
+﻿using Blazor.TablerIcons;
 
 namespace BlazorUiKit.Components;
 
-public sealed class BreadcrumbBarBuilder
+public static class BreadcrumbBarBuilder
 {
-	private record struct BreadcrumbBarBuilderParameters
-		(string Title, string Href, NavLinkMatch LinkMatch);
+	private static readonly Dictionary<BreadcrumbBarConfiguration, RenderFragment[]> RenderFragments = new();
 
-	private readonly List<BreadcrumbBarBuilderParameters> _parameters = new();
-	private TablerIcon _icon = TablerIcon.None;
-
-	public void AddBase<T>() where T : IBreadcrumbBarPage
+	public static RenderFragment[] GetOrCreateRenderFragmentFromStaticBreadcrumb
+		(BreadcrumbBarConfiguration configuration, TablerIcon separationIcon)
 	{
-		T.ConfigureBreadcrumbs(this);
+		if (RenderFragments.TryGetValue(configuration, out var renderFragments))
+			return renderFragments;
+
+		renderFragments = CreateRenderFragments(configuration, separationIcon);
+
+		RenderFragments.Add(configuration, renderFragments);
+		return renderFragments;
 	}
 
-	public void SetSeparationIcon(TablerIcon icon)
+	public static RenderFragment[] CreateRenderFragments
+		(BreadcrumbBarConfiguration configuration, TablerIcon separationIcon)
 	{
-		_icon = icon;
-	}
-
-	public void AddBreadcrumbItem(string title, string href, NavLinkMatch linkMatch = NavLinkMatch.Prefix)
-	{
-		_parameters.Add(new BreadcrumbBarBuilderParameters(title, href, linkMatch));
-	}
-
-	public RenderFragment[] Build()
-	{
-		var separationIconRenderFragment = SeparationIconRenderFragment(_icon);
-		var fragments = new RenderFragment[_parameters.Count * 2 - 1];
-
-		for (int i = 0; i < _parameters.Count; i++)
+		RenderFragment[]? parentRenderFragments = null;
+		if (configuration.ParentBarConfiguration is not null)
 		{
-			fragments[i * 2] = TitleRenderFragment(_parameters[i]);
+			parentRenderFragments =
+				GetOrCreateRenderFragmentFromStaticBreadcrumb(configuration.ParentBarConfiguration, separationIcon);
 		}
 
-		for (int i = 1; i < fragments.Length; i += 2)
+		var separationIconRenderFragment = SeparationIconRenderFragment(separationIcon);
+		RenderFragment[] renderFragments;
+
+		if (parentRenderFragments is not null)
 		{
-			fragments[i] = separationIconRenderFragment;
+			renderFragments = new RenderFragment[parentRenderFragments.Length + 1 + (configuration.Parameters.Count * 2 - 1)];
+			Array.Copy(parentRenderFragments, renderFragments, parentRenderFragments.Length);
+
+			renderFragments[parentRenderFragments.Length] = separationIconRenderFragment;
+		}
+		else
+		{
+			renderFragments = new RenderFragment[configuration.Parameters.Count * 2 - 1];
 		}
 
-		return fragments;
+		int startingIndex = parentRenderFragments?.Length > 0 ? parentRenderFragments.Length + 1 : 0;
+
+		int renderFragmentsIndex = startingIndex;
+		foreach (var parameter in configuration.Parameters)
+		{
+			renderFragments[renderFragmentsIndex] = LinkRenderFragment(parameter);
+			renderFragmentsIndex += 2;
+		}
+
+		for (int i = startingIndex + 1; i < renderFragments.Length; i += 2)
+		{
+			renderFragments[i] = separationIconRenderFragment;
+		}
+
+		return renderFragments;
 	}
 
-	private static readonly RenderFragment<BreadcrumbBarBuilderParameters> TitleRenderFragment = parameters => builder =>
+
+	private static readonly RenderFragment<BreadcrumbBarBuilderParameters> LinkRenderFragment = parameters => builder =>
 	{
 		int seq = 0;
 
