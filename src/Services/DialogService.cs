@@ -5,7 +5,7 @@ internal class DialogService : IDialogService
     private static readonly IDictionary<string, object> EmptyParameters = new Dictionary<string, object>();
     private DialogProvider? _dialogProvider;
 
-    public void AddDialogProvider(DialogProvider dialogProvider)
+    public void SetDialogProvider(DialogProvider dialogProvider)
     {
         _dialogProvider = dialogProvider;
     }

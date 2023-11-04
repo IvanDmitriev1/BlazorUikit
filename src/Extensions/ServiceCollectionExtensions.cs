@@ -7,8 +7,8 @@ public static class ServiceCollectionExtensions
 {
 	public static IServiceCollection AddUiKitServices(this IServiceCollection services)
 	{
-		services.AddScoped<IDialogService, DialogService>();
-		services.AddScoped<IBreadcrumbService, BreadcrumbService>();
+		services.AddCascadingValue<IDialogService>(static _ => new DialogService());
+		services.AddCascadingValue<IBreadcrumbService>(static _ => new BreadcrumbService());
 
 		return services;
 	}

@@ -9,11 +9,6 @@ internal class BreadcrumbService : IBreadcrumbService
 		_breadcrumbNavigation = breadcrumbNavigation;
 	}
 
-	public void RemoveBreadcrumbNavigation()
-	{
-		_breadcrumbNavigation = null;
-	}
-
 	public void Set<T>(TablerIcon separationIcon) where T : IBreadcrumbBarStaticPage
 	{
 		if (_breadcrumbNavigation is null)

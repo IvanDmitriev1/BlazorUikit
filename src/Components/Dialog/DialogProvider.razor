@@ -1,7 +1,6 @@
 ﻿@namespace BlazorUiKit.Components
 @inherits UiKitRenderComponentBase
 
-@inject IDialogService DialogService
 @inject IJSRuntime JsRuntime
 
 @foreach (var (key, dialogReference) in _dialogsById)
@@ -11,6 +10,9 @@
 
 @code
 {
+    [CascadingParameter]
+    private IDialogService DialogService { get; set; } = null!;
+
     public int DisplayedDialogs => _dialogsById.Count;
     
     private readonly Dictionary<Guid, IDialogReferenceBase> _dialogsById = new();
@@ -19,7 +21,7 @@
     
     protected override void OnFirstRender()
     {
-        DialogService.AddDialogProvider(this);
+        DialogService.SetDialogProvider(this);
     }
 
     public void AddDialog(IDialogReferenceBase dialogReference)

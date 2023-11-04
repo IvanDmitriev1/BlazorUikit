@@ -1,7 +1,4 @@
 ﻿@namespace BlazorUiKit.Components
-@implements IDisposable
-
-@inject IBreadcrumbService BreadcrumbService
 
 @if (_breadcrumbs is not null)
 {
@@ -19,15 +16,13 @@
 
 @code{
 
+    [CascadingParameter]
+    private IBreadcrumbService BreadcrumbService { get; set; } = null!;
+
     [Parameter]
     public string? Class { get; set; }
 
     private RenderFragment[]? _breadcrumbs;
-
-    public void Dispose()
-    {
-        BreadcrumbService.RemoveBreadcrumbNavigation();
-    }
 
     protected override void OnInitialized()
     {

@@ -2,7 +2,7 @@
 
 public interface IDialogService
 {
-    void AddDialogProvider(DialogProvider dialogProvider);
+    void SetDialogProvider(DialogProvider dialogProvider);
     void RemoveDialog(Guid id);
 
     IDialogReference Show
