@@ -17,16 +17,26 @@ public class UiText : UiKitElementComponentBase
 	[Parameter]
 	public TextOverflow TextOverflow { get; set; }
 
+	[Parameter]
+	public bool Disabled { get; set; }
+
 	protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
 	{
-		cssBuilder.AddClass(Typo.ToTailwindCss());
 		cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color));
+		cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss);
+		cssBuilder.AddClass(Typo.ToTailwindCss());
 		cssBuilder.AddClass(Align.ToTailwindCss());
 		cssBuilder.AddClass(TextOverflow.ToTailwindCss());
+		cssBuilder.AddClass("aria-disabled:select-none");
 	}
 
 	protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
 	{
+		if (Disabled)
+		{
+			builder.AddAttribute(seq++, "aria-disabled", "true");
+		}
+
 		builder.AddContent(seq++, ChildContent);
 	}
 
@@ -39,6 +49,4 @@ public class UiText : UiKitElementComponentBase
 	{
 		HtmlTag = Typo.ToHtmlTag();
 	}
-
-	protected override bool ShouldRender() => !IsJsRuntimeAvailable;
 }

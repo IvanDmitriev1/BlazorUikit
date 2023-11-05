@@ -8,30 +8,45 @@ public sealed class UiLink : UiText
 	[Parameter]
 	public NavLinkMatch Match { get; set; } = NavLinkMatch.Prefix;
 
+	[Parameter]
+	public Underline Underline { get; set; } = Underline.Hover;
+
 	[Inject]
 	private NavigationManager NavigationManager { get; set; } = default!;
+
+
+	private bool _isActive;
 
 	protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
 	{
 		base.AddComponentCssClasses(ref cssBuilder);
 
 		cssBuilder.AddClass("font-normal");
-		cssBuilder.AddClass("font-semibold", IsActive());
+		cssBuilder.AddClass("hover:underline underline-offset-4", Underline == Underline.Hover && !_isActive);
+		cssBuilder.AddClass("font-semibold", _isActive);
 	}
 
 	protected override void OnParametersSet()
 	{
 		HtmlTag = "a";
+
+		_isActive = MatchIsActive();
 	}
 
 	protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
 	{
 		builder.AddAttribute(seq++, "href", Href);
 
+		if (_isActive)
+		{
+			builder.AddAttribute(3, "aria-current", "page");
+		}
+
 		base.OnBuildingRenderTree(builder, ref seq);
 	}
 
-	private bool IsActive()
+
+	private bool MatchIsActive()
 	{
 		var absoluteHref = NavigationManager.ToAbsoluteUri(Href).AbsoluteUri;
 		var currentUriAbsolute = NavigationManager.Uri;
@@ -70,22 +85,18 @@ public sealed class UiLink : UiText
 	private static bool IsStrictlyPrefixWithSeparator(string value, string prefix)
 	{
 		var prefixLength = prefix.Length;
-		if (value.Length > prefixLength)
-		{
-			return value.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
-				   && (
-					   // Only match when there's a separator character either at the end of the
-					   // prefix or right after it.
-					   // Example: "/abc" is treated as a prefix of "/abc/def" but not "/abcdef"
-					   // Example: "/abc/" is treated as a prefix of "/abc/def" but not "/abcdef"
-					   prefixLength == 0
-					   || !char.IsLetterOrDigit(prefix[prefixLength - 1])
-					   || !char.IsLetterOrDigit(value[prefixLength])
-				   );
-		}
-		else
-		{
+		if (value.Length <= prefixLength)
 			return false;
-		}
+
+		return value.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+			   && (
+				   // Only match when there's a separator character either at the end of the
+				   // prefix or right after it.
+				   // Example: "/abc" is treated as a prefix of "/abc/def" but not "/abcdef"
+				   // Example: "/abc/" is treated as a prefix of "/abc/def" but not "/abcdef"
+				   prefixLength == 0
+				   || !char.IsLetterOrDigit(prefix[prefixLength - 1])
+				   || !char.IsLetterOrDigit(value[prefixLength])
+			   );
 	}
 }
