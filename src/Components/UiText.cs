@@ -1,7 +1,10 @@
 ﻿namespace BlazorUiKit.Components;
 
-public class UiText : UiKitElementWithChildComponentBase
+public class UiText : UiKitElementComponentBase
 {
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
+
 	[Parameter]
 	public Typo Typo { get; set; } = Typo.Regular;
 
@@ -22,6 +25,11 @@ public class UiText : UiKitElementWithChildComponentBase
 		cssBuilder.AddClass(TextOverflow.ToTailwindCss());
 	}
 
+	protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
+	{
+		builder.AddContent(seq++, ChildContent);
+	}
+
 	protected override void OnInitialized()
 	{
 		CacheCss = true;
@@ -31,4 +39,6 @@ public class UiText : UiKitElementWithChildComponentBase
 	{
 		HtmlTag = Typo.ToHtmlTag();
 	}
+
+	protected override bool ShouldRender() => !IsJsRuntimeAvailable;
 }

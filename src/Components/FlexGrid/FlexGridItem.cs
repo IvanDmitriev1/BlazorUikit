@@ -1,7 +1,10 @@
 ﻿namespace BlazorUiKit.Components;
 
-public sealed class FlexGridItem : UiKitElementWithChildComponentBase
+public sealed class FlexGridItem : UiKitElementComponentBase
 {
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
+
 	[Parameter] public int Xs { get; set; }
 	[Parameter] public int Sm { get; set; }
 	[Parameter] public int Md { get; set; }
@@ -19,6 +22,11 @@ public sealed class FlexGridItem : UiKitElementWithChildComponentBase
 		cssBuilder.AddClass(GetMdFlexBias(Md));
 		cssBuilder.AddClass(GetLgFlexBias(Lg));
 		cssBuilder.AddClass(GetXlFlexBias(Xl));
+	}
+
+	protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
+	{
+		builder.AddContent(seq++, ChildContent);
 	}
 
 	protected override void OnInitialized()

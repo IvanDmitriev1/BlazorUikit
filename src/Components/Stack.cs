@@ -1,7 +1,10 @@
 ﻿namespace BlazorUiKit.Components;
 
-public sealed class Stack : UiKitElementWithChildComponentBase
+public sealed class Stack : UiKitElementComponentBase
 {
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
+
 	[Parameter]
 	public Direction Direction { get; set; } = Direction.Row;
 
@@ -16,7 +19,7 @@ public sealed class Stack : UiKitElementWithChildComponentBase
 
 	[Parameter]
 	public bool SetDefaultDisplay { get; set; } = true;
-	
+
 	[Parameter]
 	public bool AsCard { get; set; }
 
@@ -30,5 +33,15 @@ public sealed class Stack : UiKitElementWithChildComponentBase
 
 		cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundCardCss, AsCard);
 		cssBuilder.AddClass("rounded border border-dark-gray shadow", AsCard);
+	}
+
+	protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
+	{
+		builder.AddContent(seq++, ChildContent);
+	}
+
+	protected override void OnInitialized()
+	{
+		CacheCss = true;
 	}
 }

@@ -18,4 +18,6 @@ public sealed class Skeleton : UiKitElementComponentBase
 		HtmlTag = "span";
 		CacheCss = true;
 	}
+
+	protected override bool ShouldRender() => !IsJsRuntimeAvailable;
 }

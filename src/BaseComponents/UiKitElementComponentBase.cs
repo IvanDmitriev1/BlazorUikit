@@ -24,8 +24,6 @@ public abstract class UiKitElementComponentBase : UiKitComponentBase
 		OnBuildingRenderTree(builder, ref seq);
 
 		builder.AddElementReferenceCapture(seq++, ElementReferenceCaptureAction);
-
-		//Close
 		builder.CloseElement();
 	}
 

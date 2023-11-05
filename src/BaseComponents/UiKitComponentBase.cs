@@ -31,6 +31,7 @@ public abstract class UiKitComponentBase : ComponentBase
     protected override Task OnAfterRenderAsync
         (bool firstRender) => firstRender ? OnFirstRenderAsync() : Task.CompletedTask;
 
+
     private string GetComponentCss()
     {
         if (CacheCss && !string.IsNullOrWhiteSpace(_componentCss))
