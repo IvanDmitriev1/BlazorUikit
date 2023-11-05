@@ -13,15 +13,7 @@
         
         @if (PageHrefTemplate is not null)
         {
-            <InputField Disabled="false"
-                        Label="@string.Empty"
-                        Errors="@(Array.Empty<string>())"
-                        ValidationCss="@string.Empty"
-                        FullWidth="false"
-                        AdornmentPlacement="AdornmentPlacement.None"
-                        Class="w-24 p-2 text-center !text-[24px] justify-center">
-                @Selected
-            </InputField>
+            <UiText Class="!text-[25px]">@Selected</UiText>
         }
         else
         {
