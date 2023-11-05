@@ -3,10 +3,10 @@
 @if (_breadcrumbs is not null)
 {
     <nav class="@Class">
-        <ol class="flex items-center gap-2">
+        <ol class="flex items-center flex-wrap sm:flex-nowrap gap-2">
             @foreach (var breadcrumbItem in _breadcrumbs)
             {
-                <li>
+                <li class="text-center">
                     @breadcrumbItem
                 </li>
             }

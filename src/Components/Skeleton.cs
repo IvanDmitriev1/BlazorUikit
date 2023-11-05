@@ -7,15 +7,18 @@ public sealed class Skeleton : UiKitElementComponentBase
 
 	protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
 	{
-		cssBuilder.AddClass("block");
-		cssBuilder.AddClass("bg-dark-gray-5");
 		cssBuilder.AddClass("rounded");
+		cssBuilder.AddClass("animate-pulse");
 		cssBuilder.AddClass("w-full", FullWidth);
+	}
+
+	protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
+	{
+
 	}
 
 	protected override void OnInitialized()
 	{
-		HtmlTag = "span";
 		CacheCss = true;
 	}
 

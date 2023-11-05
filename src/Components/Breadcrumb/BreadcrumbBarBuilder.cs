@@ -74,8 +74,10 @@ public static class BreadcrumbBarBuilder
 	private static readonly RenderFragment<BreadcrumbBarBuilderParameters> LinkRenderFragment = parameters => builder =>
 	{
 		int seq = 0;
+		const string linkClass = "leading-4";
 
 		builder.OpenComponent<UiLink>(seq++);
+		builder.AddAttribute(seq++, "class", linkClass);
 		builder.AddComponentParameter(seq++, nameof(UiLink.Href), parameters.Href);
 		builder.AddComponentParameter(seq++, nameof(UiLink.Typo), Typo.Header);
 		builder.AddComponentParameter(seq++, nameof(UiLink.Match), parameters.LinkMatch);
