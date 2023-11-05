@@ -6,29 +6,54 @@
               Color="Color.Secondary"
               Disabled="Selected == 1"
               Size="Size.Large"
+              Href="@NavigateBackwardsHref"
               @onclick="() => CurrentSelected--" />
-
-    <Stack Class="gap-2.5" AlignItems="AlignItems.Center">
-        <NumericField T="int"
-                      InputCss="w-24 !p-2 text-center !text-[24px]"
-                      Min="1"
-                      Max="Count"
-                      MaxLength="@_maxLength"
-                      Value="@Selected"
-                      ValueChanged="value => CurrentSelected = value"/>
     
-        <UiText Class="!text-[25px]">/ @Count</UiText>
-    </Stack>            
+    <div class="flex flex-col sm:flex-row gap-2.5 items-center">
+        
+        @if (PageHrefTemplate is not null)
+        {
+            <InputField Disabled="false"
+                        Label="@string.Empty"
+                        Errors="@(Array.Empty<string>())"
+                        ValidationCss="@string.Empty"
+                        FullWidth="false"
+                        AdornmentPlacement="AdornmentPlacement.None"
+                        Class="w-24 p-2 text-center !text-[24px] justify-center">
+                @Selected
+            </InputField>
+        }
+        else
+        {
+            <NumericField T="int"
+                          InputCss="w-24 !p-2 text-center !text-[24px]"
+                          Min="1"
+                          Max="Count"
+                          MaxLength="@_maxLength"
+                          Value="@Selected"
+                          ValueChanged="value => CurrentSelected = value"/>
+        }
+
+        <UiText Class="!text-[25px] hidden sm:block">/</UiText>
+        <UiText Class="!text-[25px]">@Count</UiText>
+    </div>
 
     <UiButton Icon="@TablerIcon.ChevronRight"
               Color="Color.Secondary"
               Disabled="Selected >= Count"
               Size="Size.Large"
+              Href="@NavigateForwardHref"
               @onclick="() => CurrentSelected++" />
 </div>
 
 
 @code {
+
+    [SupplyParameterFromForm]
+    public int Model { get; set; }
+
+    [Parameter]
+    public string? PageHrefTemplate { get; set; }
 
     [Parameter]
     public int Count { get; set; } = 1;
@@ -57,11 +82,14 @@
             var hasValueChanged = !EqualityComparer<int>.Default.Equals(value, Selected);
             if (!hasValueChanged)
                 return;
-
+            
             Selected = value;
             _ = SelectedChanged.InvokeAsync(value);
         }
     }
+
+    private string? NavigateForwardHref => PageHrefTemplate is not null ? $"{PageHrefTemplate}{Selected + 1}" : null;
+    private string? NavigateBackwardsHref => PageHrefTemplate is not null ? $"{PageHrefTemplate}{Selected - 1 }" : null;
 
     int _maxLength;
 
@@ -74,4 +102,10 @@
     {
         _maxLength = Count.GetDigitsCount();
     }
+
+    private void Callback(EditContext obj)
+    {
+        
+    }
+
 }

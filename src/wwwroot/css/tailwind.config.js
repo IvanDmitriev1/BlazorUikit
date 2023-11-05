@@ -30,7 +30,7 @@ module.exports = {
         '90': "rgba(0, 0, 0, 0.90)",
       },
       'main-dark-background': "#242424",
-      'main-light-background':"#fbfbfb",
+      'main-light-background':"#f0f0f0",
       'white': "#FFFFFF",
       'yellow': "#FFB341",
       'blue': "rgba(0, 102, 255, 0.30)",
