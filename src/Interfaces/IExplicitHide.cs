@@ -1,4 +1,4 @@
-﻿namespace BlazorUiKit.Abstractions;
+﻿namespace BlazorUiKit.Interfaces;
 
 public interface IExplicitHide
 {

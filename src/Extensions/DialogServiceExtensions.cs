@@ -1,5 +1,4 @@
-﻿using BlazorUiKit.Abstractions.Dialog;
-using Fody;
+﻿using Fody;
 
 namespace BlazorUiKit.Extensions;
 

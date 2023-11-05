@@ -1,6 +1,5 @@
 ﻿@namespace BlazorUiKit.Components
 @typeparam T where T : notnull
-@using CommunityToolkit.HighPerformance.Helpers
 @inherits ValueInputBase<T?>
 @implements IExplicitHide
 
@@ -95,7 +94,6 @@
     private static readonly string PlaceHolderCss = $"{ThemeManager.ThemeProvider.TextPlaceholderCss} select-none";
 
     private bool _isOpen;
-    private bool _isMouseOverList;
     private IUiListItem<T>? _selectedListItem;
     private string _listCss = string.Empty;
     private ElementReference _element;

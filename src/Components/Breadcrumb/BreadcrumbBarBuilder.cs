@@ -1,31 +1,41 @@
-﻿using Blazor.TablerIcons;
-
-namespace BlazorUiKit.Components;
+﻿namespace BlazorUiKit.Components;
 
 public static class BreadcrumbBarBuilder
 {
 	private static readonly Dictionary<BreadcrumbBarConfiguration, RenderFragment[]> RenderFragments = new();
 
-	public static RenderFragment[] GetOrCreateRenderFragmentFromStaticBreadcrumb
+	public static RenderFragment[] GetOrCreate<T>(TablerIcon separationIcon) where T : IBreadcrumbBarStaticPage
+	{
+		var config = BreadcrumbBarConfigurationBuilder.GetOrCreateConfiguration<T>();
+		return GetOrCreateInternal(config, separationIcon);
+	}
+
+	public static RenderFragment[] Create<T>(T value, TablerIcon separationIcon) where T : IBreadcrumbBarInteractivePage
+	{
+		var config = BreadcrumbBarConfigurationBuilder.CreateConfiguration(value);
+		return CreateInternal(config, separationIcon);
+	}
+
+	private static RenderFragment[] GetOrCreateInternal
 		(BreadcrumbBarConfiguration configuration, TablerIcon separationIcon)
 	{
 		if (RenderFragments.TryGetValue(configuration, out var renderFragments))
 			return renderFragments;
 
-		renderFragments = CreateRenderFragments(configuration, separationIcon);
+		renderFragments = CreateInternal(configuration, separationIcon);
 
 		RenderFragments.Add(configuration, renderFragments);
 		return renderFragments;
 	}
 
-	public static RenderFragment[] CreateRenderFragments
+	private static RenderFragment[] CreateInternal
 		(BreadcrumbBarConfiguration configuration, TablerIcon separationIcon)
 	{
 		RenderFragment[]? parentRenderFragments = null;
 		if (configuration.ParentBarConfiguration is not null)
 		{
 			parentRenderFragments =
-				GetOrCreateRenderFragmentFromStaticBreadcrumb(configuration.ParentBarConfiguration, separationIcon);
+				GetOrCreateInternal(configuration.ParentBarConfiguration, separationIcon);
 		}
 
 		var separationIconRenderFragment = SeparationIconRenderFragment(separationIcon);

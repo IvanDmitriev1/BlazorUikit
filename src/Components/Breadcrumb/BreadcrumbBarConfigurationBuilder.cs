@@ -1,6 +1,4 @@
-﻿using BlazorUiKit.Abstractions.Breadcrumb;
-
-namespace BlazorUiKit.Components;
+﻿namespace BlazorUiKit.Components;
 
 public record struct BreadcrumbBarBuilderParameters
 	(string Title, string Href, NavLinkMatch LinkMatch);

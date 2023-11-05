@@ -1,7 +1,10 @@
 ﻿namespace BlazorUiKit.Components;
 
-public sealed class FlexGrid : UiKitElementWithChildComponentBase
+public sealed class FlexGrid : UiKitElementComponentBase
 {
+	[Parameter]
+	public RenderFragment? ChildContent { get; set; }
+
 	[Parameter]
 	public Justify Justify { get; set; } = Justify.Start;
 
@@ -9,6 +12,11 @@ public sealed class FlexGrid : UiKitElementWithChildComponentBase
 	{
 		cssBuilder.AddClass("flex flex-wrap");
 		cssBuilder.AddClass(Justify.ToTailwindCss());
+	}
+
+	protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
+	{
+		builder.AddContent(seq++, ChildContent);
 	}
 
 	protected override void OnInitialized()

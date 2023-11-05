@@ -1,4 +1,4 @@
-﻿namespace BlazorUiKit.Abstractions.Dialog;
+﻿namespace BlazorUiKit.Components;
 
 public interface IDialogReferenceBase
 {

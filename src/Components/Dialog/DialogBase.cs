@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using BlazorUiKit.Abstractions.Dialog;
 
 namespace BlazorUiKit.Components;
 

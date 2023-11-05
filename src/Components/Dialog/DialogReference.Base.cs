@@ -1,6 +1,4 @@
-﻿using BlazorUiKit.Abstractions.Dialog;
-
-namespace BlazorUiKit.Components;
+﻿namespace BlazorUiKit.Components;
 
 internal abstract class DialogReferenceBase : IDialogReferenceBase
 {

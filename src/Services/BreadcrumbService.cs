@@ -1,7 +1,4 @@
-﻿using Blazor.TablerIcons;
-using BlazorUiKit.Abstractions.Breadcrumb;
-
-namespace BlazorUiKit.Components;
+﻿namespace BlazorUiKit.Components;
 
 internal class BreadcrumbService : IBreadcrumbService
 {
@@ -12,19 +9,12 @@ internal class BreadcrumbService : IBreadcrumbService
 		_breadcrumbNavigation = breadcrumbNavigation;
 	}
 
-	public void RemoveBreadcrumbNavigation()
-	{
-		_breadcrumbNavigation = null;
-	}
-
 	public void Set<T>(TablerIcon separationIcon) where T : IBreadcrumbBarStaticPage
 	{
 		if (_breadcrumbNavigation is null)
 			return;
 
-		var configuration = BreadcrumbBarConfigurationBuilder.GetOrCreateConfiguration<T>();
-		var renderFragments = BreadcrumbBarBuilder.GetOrCreateRenderFragmentFromStaticBreadcrumb(configuration, separationIcon);
-
+		var renderFragments = BreadcrumbBarBuilder.GetOrCreate<T>(separationIcon);
 		_breadcrumbNavigation.Add(renderFragments);
 	}
 
@@ -33,9 +23,7 @@ internal class BreadcrumbService : IBreadcrumbService
 		if (_breadcrumbNavigation is null)
 			return;
 
-		var configuration = BreadcrumbBarConfigurationBuilder.CreateConfiguration(value);
-		var renderFragments = BreadcrumbBarBuilder.CreateRenderFragments(configuration, separationIcon);
-
+		var renderFragments = BreadcrumbBarBuilder.Create(value, separationIcon);
 		_breadcrumbNavigation.Add(renderFragments);
 	}
 }
