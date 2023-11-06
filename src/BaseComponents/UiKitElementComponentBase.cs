@@ -2,10 +2,8 @@
 
 public abstract class UiKitElementComponentBase : UiKitComponentBase
 {
-	[Parameter]
-	public string HtmlTag { get; set; } = "div";
-
 	public ElementReference ElementReference { get; private set; }
+	protected string ElementTag { get; set; } = "div";
 
 	protected virtual void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq) { }
 
@@ -13,12 +11,12 @@ public abstract class UiKitElementComponentBase : UiKitComponentBase
 	{
 		int seq = 0;
 
-		builder.OpenElement(seq++, HtmlTag);
+		builder.OpenElement(seq++, ElementTag);
 		builder.AddAttribute(seq++, "class", ComponentCss);
 
 		// StopPropagation
 		// the order matters. This has to be before content is added
-		if (HtmlTag == "button")
+		if (ElementTag == "button")
 			builder.AddEventStopPropagationAttribute(seq++, "onclick", true);
 
 		OnBuildingRenderTree(builder, ref seq);

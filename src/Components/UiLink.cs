@@ -28,7 +28,7 @@ public sealed class UiLink : UiText
 
 	protected override void OnParametersSet()
 	{
-		HtmlTag = "a";
+		ElementTag = "a";
 
 		_isActive = MatchIsActive();
 	}

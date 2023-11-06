@@ -6,6 +6,13 @@ public class UiText : UiKitElementComponentBase
 	public RenderFragment? ChildContent { get; set; }
 
 	[Parameter]
+	public string HtmlTag
+	{
+		get => ElementTag;
+		set => ElementTag = value;
+	}
+    
+	[Parameter]
 	public Typo Typo { get; set; } = Typo.Regular;
 
 	[Parameter]
@@ -42,6 +49,6 @@ public class UiText : UiKitElementComponentBase
 
 	protected override void OnParametersSet()
 	{
-		HtmlTag = Typo.ToHtmlTag();
+		ElementTag = Typo.ToHtmlTag();
 	}
 }

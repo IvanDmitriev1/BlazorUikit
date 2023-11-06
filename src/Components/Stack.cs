@@ -6,6 +6,13 @@ public sealed class Stack : UiKitElementComponentBase
 	public RenderFragment? ChildContent { get; set; }
 
 	[Parameter]
+	public string HtmlTag
+	{
+		get => ElementTag;
+		set => ElementTag = value;
+	}
+	
+	[Parameter]
 	public Direction Direction { get; set; } = Direction.Row;
 
 	[Parameter]

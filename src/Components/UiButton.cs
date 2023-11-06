@@ -1,103 +1,41 @@
-﻿@namespace BlazorUiKit.Components
-@inherits UiKitComponentBase
+﻿namespace BlazorUiKit.Components;
 
-<Element @attributes="@UserAttributes"
-         Class="@ComponentCss"
-         HtmlTag="@HtmlTag"
-         type="@Type.ToHtml()"
-         href="@Href"
-         target="@HrefTarget.ToHtml()"
-         disabled="@Disabled">
-    
-    @if (IconPosition == ButtonIconPosition.Left)
-    {
-        @IconRenderFragment
-    }
-    
-    @if (IconPosition == ButtonIconPosition.Content && Icon != TablerIcon.None)
-    {
-        @IconRenderFragment
-    }
-    else
-    {
-        @ChildContent
-    }
-    
-    @if (IconPosition == ButtonIconPosition.Right)
-    {
-        @IconRenderFragment
-    }
-</Element>
-
-@code
+public class UiButton : UiKitElementComponentBase
 {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UserAttributes { get; set; }
     
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-
+    
     [Parameter]
     public string? Href { get; set; }
-
+    
     [Parameter]
     public HrefTarget HrefTarget { get; set; } = HrefTarget.Self;
-
+    
     [Parameter]
     public bool Disabled { get; set; }
-
+    
     [Parameter]
     public ButtonType Type { get; set; } = ButtonType.Button;
-
+    
     [Parameter]
     public Color Color { get; set; } = Color.Primary;
-
+    
     [Parameter]
     public Variant Variant { get; set; } = Variant.Filled;
-
+    
     [Parameter]
     public Size Size { get; set; } = Size.Medium;
-
+    
     [Parameter]
     public TablerIcon Icon { get; set; } = TablerIcon.None;
-
+    
     [Parameter]
     public ButtonIconPosition IconPosition { get; set; } = ButtonIconPosition.Content;
 
-
-    private RenderFragment IconRenderFragment =>
-        @<UiKitIcon Class="@IconCss" Icon="Icon" Size="Size"/>;
-
-    private string HtmlTag { get; set; } = "button";
-
-    private string? IconCss => IconPosition switch
-    {
-        ButtonIconPosition.Content => null,
-        ButtonIconPosition.Left => "mr-2.5",
-        ButtonIconPosition.Right => "ml-2.5",
-        _ => throw new ArgumentOutOfRangeException()
-    };
     
-    protected override void OnInitialized()
-    {
-        if (Disabled)
-        {
-            HtmlTag = "button";
-            Href = null;
-            return;
-        }
-
-        if (!string.IsNullOrWhiteSpace(Href))
-        {
-            HtmlTag = "a";
-        }
-    }
-
-    protected override void OnParametersSet()
-    {
-        
-    }
-
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("inline-flex justify-center items-center");
@@ -105,7 +43,6 @@
         cssBuilder.AddClass("transition duration-300");
         cssBuilder.AddClass("select-none rounded");
         cssBuilder.AddClass("border border-dark-gray-5 shadow-sm", Variant == Variant.Filled);
-
         cssBuilder.AddClass(Size switch{
             Size.Custom => string.Empty,
             Size.Small => "py-2.5 px-3",
@@ -129,4 +66,73 @@
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextHoverCss(swappedColor));
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextActiveCss(Color));
     }
+    
+    protected override void OnInitialized()
+    {
+        if (Disabled)
+        {
+            ElementTag = "button";
+            Href = null;
+            return;
+        }
+
+        ElementTag = !string.IsNullOrWhiteSpace(Href) ? "a" : "button";
+    }
+
+    protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
+    {
+        builder.AddMultipleAttributes(seq++, UserAttributes);
+        builder.AddAttribute(seq++, "type", Type.ToHtml());
+        builder.AddAttribute(seq++, "href", Href);
+        builder.AddAttribute(seq++, "target", HrefTarget.ToHtml());
+        builder.AddAttribute(seq++, "disabled", Disabled);
+        
+        builder.AddContent(seq++, ContentRenderFragment());
+    }
+
+    private RenderFragment ContentRenderFragment() => builder =>
+    {
+        int seq = 0;
+        var icon = IconRenderFragment();
+
+        if (IconPosition == ButtonIconPosition.Left)
+        {
+            builder.AddContent(seq++, icon);
+        }
+
+        if (IconPosition == ButtonIconPosition.Content && Icon != TablerIcon.None)
+        {
+            builder.AddContent(seq++, icon);
+        }
+        else
+        {
+            builder.AddContent(seq++, ChildContent);
+        }
+            
+        if (IconPosition == ButtonIconPosition.Right)
+        {
+            builder.AddContent(seq++, icon);
+        }
+    };
+    
+    private RenderFragment IconRenderFragment() => builder =>
+    {
+        int seq = 0;
+        
+        var cssClass = IconPosition switch
+        {
+            ButtonIconPosition.Content => null,
+            ButtonIconPosition.Left => "mr-2.5",
+            ButtonIconPosition.Right => "ml-2.5",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+        
+        builder.OpenComponent<UiKitIcon>(seq++);
+
+        builder.AddComponentParameter(seq++, nameof(UiKitIcon.Class), cssClass);
+        builder.AddComponentParameter(seq++, nameof(UiKitIcon.Icon), Icon);
+        builder.AddComponentParameter(seq++, nameof(UiKitIcon.Size), Size);
+
+        builder.CloseComponent();
+    };
 }
