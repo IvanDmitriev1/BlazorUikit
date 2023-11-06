@@ -13,37 +13,11 @@
 </li>
 
 @code {
-    
-    [CascadingParameter]
-    protected IExplicitHide? ExplicitHide { get; set; }
-    
+
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass("transition");
-        cssBuilder.AddClass("rounded");
+        base.AddComponentCssClasses(ref cssBuilder);
+        
         cssBuilder.AddClass("p-4");
-        cssBuilder.AddClass("select-none");
-        
-        cssBuilder.AddClass("cursor-pointer");
-        cssBuilder.AddClass("aria-disabled:cursor-not-allowed");
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss);
-        
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundActiveCss(Color.Primary));
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextActiveCss(Color.Primary));
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(Color.Primary));
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color.Primary));
-    }
-
-    private void OnClickHandler()
-    {
-        if (!Disabled && !Selected)
-        {
-            List?.SetSelectedValue(Value);
-        }
-        
-        if (Selected && ExplicitHide is not null)
-        {
-            ExplicitHide.ExplicitHide();
-        }
     }
 }

@@ -75,7 +75,7 @@
 
     public void RegisterListItem(IUiListItem<T> item)
     {
-        _itemsDictionary.Add(item.Value, item);
+        _itemsDictionary.TryAdd(item.Value, item);
 
         if (EqualityComparer<T>.Default.Equals(item.Value, SelectedValue))
         {

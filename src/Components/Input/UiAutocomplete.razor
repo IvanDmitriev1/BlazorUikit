@@ -56,16 +56,23 @@
 
                             @foreach (var item in _items)
                             {
-                                <UiListItem @key="item" T="T" Value="item">
-                                    @if (ItemTemplate is not null)
-                                    {
-                                        @ItemTemplate(item)
-                                    }
-                                    else
-                                    {
-                                        @item.ConvertToString()
-                                    }
-                                </UiListItem>
+                                if (ItemWithContainerTemplate is not null)
+                                {
+                                    @ItemWithContainerTemplate(item)
+                                }
+                                else
+                                {
+                                    <UiListItem @key="item" T="T" Value="item">
+                                        @if (ItemTemplate is not null)
+                                        {
+                                            @ItemTemplate(item)
+                                        }
+                                        else
+                                        {
+                                            @item.ConvertToString()
+                                        }
+                                    </UiListItem>
+                                }
                             }
                             
                             @if (_itemsReturned > MaxItems && MoreItemsTemplate is not null)
@@ -104,6 +111,9 @@
     #endregion
 
     #region RenderFragments
+
+    [Parameter]
+    public RenderFragment<T>? ItemWithContainerTemplate { get; set; }
 
     [Parameter]
     public RenderFragment<T>? ItemTemplate { get; set; }
