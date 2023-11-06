@@ -18,9 +18,4 @@ public sealed class FlexGrid : UiKitElementComponentBase
 	{
 		builder.AddContent(seq++, ChildContent);
 	}
-
-	protected override void OnInitialized()
-	{
-		CacheCss = true;
-	}
 }

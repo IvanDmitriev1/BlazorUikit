@@ -29,11 +29,6 @@ public sealed class FlexGridItem : UiKitElementComponentBase
 		builder.AddContent(seq++, ChildContent);
 	}
 
-	protected override void OnInitialized()
-	{
-		CacheCss = true;
-	}
-
 	private static string GetXsFlexBias(int value) => value switch
 	{
 		0  => string.Empty,

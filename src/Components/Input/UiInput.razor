@@ -5,27 +5,26 @@
 
 @if (Lines > 1)
 {
-    <textarea
-            class="@_inputCss @ComponentCss resize-none outline-none"
-            @ref="ElementReference"
-            @attributes="UserAttributes"
-            type="@InputType.ToHtml()"
-            placeholder="@Placeholder"
-            value="@_internalText"
-            rows="@Lines"
-            disabled="@Disabled"
-            readonly="@ReadOnly"
-            inputmode="@InputMode.ToHtml()"
-            maxlength="@MaxLength"
+    <textarea class="@ComponentCss @_inputCss"
+              @ref="ElementReference"
+              @attributes="UserAttributes"
+              type="@InputType.ToHtml()"
+              placeholder="@Placeholder"
+              value="@_internalText"
+              rows="@Lines"
+              disabled="@Disabled"
+              readonly="@ReadOnly"
+              inputmode="@InputMode.ToHtml()"
+              maxlength="@MaxLength"
 
-            @oninput="OnInput"
-            @onchange="OnChange">
+              @oninput="OnInput"
+              @onchange="OnChange">
     @Text
 </textarea>
 }
 else
 {
-    <input class="@ComponentCss"
+    <input class="@ComponentCss @_inputCss"
            @ref="ElementReference"
            @attributes="UserAttributes"
            type="@InputType.ToHtml()"
@@ -59,7 +58,7 @@ else
     public TimeSpan DebounceInterval { get; set; }
     
     public ElementReference ElementReference { get; private set; }
-    
+
     DotNetObjectReference<UiInput>? _objRef;
     string? _internalText;
     bool _isFocused;
@@ -67,12 +66,11 @@ else
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass("input-control");
-        
+        cssBuilder.AddClass("peer/input");
         cssBuilder.AddClass("flex-auto");
         cssBuilder.AddClass("py-4");
 
-        cssBuilder.AddClass(_inputCss);
+        cssBuilder.AddClass("resize-none outline-none", Lines > 1);
     }
 
     protected override void OnDispose()
@@ -137,8 +135,6 @@ else
 
     protected override void OnTextChanged()
     {
-        base.OnTextChanged();
-
         UpdateInputCss();
     }
 

@@ -40,7 +40,6 @@ public abstract class UiListItemBase<T> : UiKitRenderComponentBase, IUiListItem<
 
     protected override void OnInitialized()
     {
-        CacheCss = true;
         List?.RegisterListItem(this);
     }
     

@@ -42,10 +42,11 @@ else
     private string ComponentCss()
     {
         using var cssBuilder = new CssBuilder(stackalloc char[55]);
-        
+
+        cssBuilder.AddClass("block");
         cssBuilder.AddClass("my-auto");
         
-        cssBuilder.AddClass("input-adornment-left", AdornmentPlacement == AdornmentPlacement.Start);
+        cssBuilder.AddClass("peer/adornment-left", AdornmentPlacement == AdornmentPlacement.Start);
         cssBuilder.AddClass("ml-3.5", AdornmentPlacement == AdornmentPlacement.Start);
         
         cssBuilder.AddClass("mr-1.5", AdornmentPlacement == AdornmentPlacement.End && AdornmentClick.HasDelegate);

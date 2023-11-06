@@ -21,11 +21,6 @@
 
     private TablerIcon _currentIcon;
 
-    protected override void OnInitialized()
-    {
-        CacheCss = true;
-    }
-
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass(Size switch{

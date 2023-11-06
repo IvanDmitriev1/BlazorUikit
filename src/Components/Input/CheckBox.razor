@@ -3,7 +3,7 @@
 
 <div class="@Class">
     <label class="inline-flex items-center cursor-pointer">
-        <span class="@ComponentCss">
+        <span class="@ComponentCss @ValidationCss">
             <input type="checkbox" class="absolute opacity-0 cursor-pointer peer" @bind="CurrentChecked" />
             <UiKitIcon Class="invisible peer-checked:visible" Icon="@TablerIcon.Check" />
         </span>
@@ -63,8 +63,7 @@
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass(ValidationCss);
-        cssBuilder.AddClass("p-1.5 my-1.5");
+        cssBuilder.AddClass("p-1.5");
         cssBuilder.AddClass("inline-flex relative");
         cssBuilder.AddClass("transition duration-300");
         cssBuilder.AddClass("justify-center items-center overflow-hidden");

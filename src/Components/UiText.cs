@@ -40,11 +40,6 @@ public class UiText : UiKitElementComponentBase
 		builder.AddContent(seq++, ChildContent);
 	}
 
-	protected override void OnInitialized()
-	{
-		CacheCss = true;
-	}
-
 	protected override void OnParametersSet()
 	{
 		HtmlTag = Typo.ToHtmlTag();

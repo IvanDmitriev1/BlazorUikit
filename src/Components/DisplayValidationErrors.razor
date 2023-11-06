@@ -3,19 +3,12 @@
 @code
 {
     public static readonly RenderFragment<IReadOnlyList<string>> DisplayValidationErrorsFragment = errors =>
-        @<Stack Class="@CreateCss(errors)" Direction="Direction.Column">
+        @<Stack Class="@Css" Direction="Direction.Column">
             @foreach (var error in errors)
             {
                 <UiText Color="Color.Inherit" HtmlTag="span">@error</UiText>
             }
         </Stack>;
 
-    private static string CreateCss(IReadOnlyCollection<string> list)
-    {
-        using var cssBuilder = new CssBuilder(stackalloc char[50]);
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color.Error));
-        cssBuilder.AddClass("mt-1", list.Count > 0);
-
-        return cssBuilder.ToString();
-    }
+    private static readonly string Css = $"{ThemeManager.ThemeProvider.ToTextCss(Color.Error)} empty:hidden mt-1";
 }

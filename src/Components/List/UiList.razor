@@ -63,11 +63,6 @@
         cssBuilder.AddClass("rounded w-full");
     }
 
-    protected override void OnInitialized()
-    {
-        CacheCss = true;
-    }
-
     protected override void OnParametersSet()
     {
         if (EqualityComparer<T>.Default.Equals(_previousSelectedValue, SelectedValue))

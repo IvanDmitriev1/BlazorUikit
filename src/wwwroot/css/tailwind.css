@@ -11,30 +11,6 @@
     .valid {
         @apply outline outline-2 outline-successful;
     }
-
-    .input-control-label {
-        @apply absolute px-1.5 top-0 left-4 translate-y-4 origin-top-left text-label-large duration-200 pointer-events-none z-10 select-none;
-    }
-    
-    .input-control{
-        
-    }
-
-    .has-text {
-    }
-    
-    .input-adornment-left {
-        
-    }
-    
-    .input-field .input-control:focus + .input-control-label,
-    .input-field .input-control:disabled + .input-control-label,
-    .input-field .input-control:placeholder-shown + .input-control-label,
-    .input-field .input-control:not(:placeholder-shown):not(:empty) + .input-control-label,
-    .input-field .input-control.has-text + .input-control-label,
-    .input-adornment-left ~ .input-control-label {
-        @apply translate-y-[-10px] text-label-small;
-    }
 }
 
 @layer utilities {

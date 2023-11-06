@@ -37,11 +37,6 @@
         cssBuilder.AddClass(ThemeManager.ThemeProvider.PageBackgroundCss);
     }
 
-    protected override void OnInitialized()
-    {
-        CacheCss = true;
-    }
-
     private static string OverlayCssBuilder()
     {
         using var cssBuilder = new CssBuilder(stackalloc char[128]);

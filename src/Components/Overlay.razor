@@ -39,11 +39,6 @@
         cssBuilder.AddClass("bg-main-dark-background/60", !HiddenVariant);
     }
 
-    protected override void OnInitialized()
-    {
-        CacheCss = true;
-    }
-
     public ValueTask DisposeAsync()
     {
         if (!IsJsRuntimeAvailable || !LockScroll)

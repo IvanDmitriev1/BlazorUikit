@@ -17,10 +17,5 @@ public sealed class Skeleton : UiKitElementComponentBase
 
 	}
 
-	protected override void OnInitialized()
-	{
-		CacheCss = true;
-	}
-
 	protected override bool ShouldRender() => !IsJsRuntimeAvailable;
 }
