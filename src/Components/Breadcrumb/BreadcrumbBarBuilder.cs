@@ -1,75 +1,47 @@
 ﻿namespace BlazorUiKit.Components;
 
-public static class BreadcrumbBarBuilder
+internal record struct BreadcrumbBarBuilderParameters
+	(string Title, string Href, NavLinkMatch LinkMatch);
+
+public class BreadcrumbBarBuilder
 {
-	private static readonly Dictionary<BreadcrumbBarConfiguration, RenderFragment[]> RenderFragments = new();
+	private readonly List<BreadcrumbBarBuilderParameters> _parameters = new(1);
+	private TablerIcon _icon;
 
-	public static RenderFragment[] GetOrCreate<T>(TablerIcon separationIcon) where T : IBreadcrumbBarStaticPage
+	public void SetIcon(TablerIcon icon)
 	{
-		var config = BreadcrumbBarConfigurationBuilder.GetOrCreateConfiguration<T>();
-		return GetOrCreateInternal(config, separationIcon);
+		_icon = icon;
 	}
 
-	public static RenderFragment[] Create<T>(T value, TablerIcon separationIcon) where T : IBreadcrumbBarInteractivePage
+	public void AddParent<T>() where T : IBreadcrumbBarStaticPage
 	{
-		var config = BreadcrumbBarConfigurationBuilder.CreateConfiguration(value);
-		return CreateInternal(config, separationIcon);
+		T.ConfigureBreadcrumbs(this);
 	}
 
-	private static RenderFragment[] GetOrCreateInternal
-		(BreadcrumbBarConfiguration configuration, TablerIcon separationIcon)
+	public void AddItem(string title, string href, NavLinkMatch linkMatch = NavLinkMatch.Prefix)
 	{
-		if (RenderFragments.TryGetValue(configuration, out var renderFragments))
-			return renderFragments;
-
-		renderFragments = CreateInternal(configuration, separationIcon);
-
-		RenderFragments.Add(configuration, renderFragments);
-		return renderFragments;
+		_parameters.Add(new BreadcrumbBarBuilderParameters(title, href, linkMatch));
 	}
 
-	private static RenderFragment[] CreateInternal
-		(BreadcrumbBarConfiguration configuration, TablerIcon separationIcon)
+	public RenderFragment[] Build()
 	{
-		RenderFragment[]? parentRenderFragments = null;
-		if (configuration.ParentBarConfiguration is not null)
+		var separationIconRenderFragment = SeparationIconRenderFragment(_icon);
+		RenderFragment[] fragments = new RenderFragment[_parameters.Count * 2 - 1];
+
+		int renderFragmentsIndex = 0;
+		foreach (var parameter in _parameters)
 		{
-			parentRenderFragments =
-				GetOrCreateInternal(configuration.ParentBarConfiguration, separationIcon);
-		}
-
-		var separationIconRenderFragment = SeparationIconRenderFragment(separationIcon);
-		RenderFragment[] renderFragments;
-
-		if (parentRenderFragments is not null)
-		{
-			renderFragments = new RenderFragment[parentRenderFragments.Length + 1 + (configuration.Parameters.Count * 2 - 1)];
-			Array.Copy(parentRenderFragments, renderFragments, parentRenderFragments.Length);
-
-			renderFragments[parentRenderFragments.Length] = separationIconRenderFragment;
-		}
-		else
-		{
-			renderFragments = new RenderFragment[configuration.Parameters.Count * 2 - 1];
-		}
-
-		int startingIndex = parentRenderFragments?.Length > 0 ? parentRenderFragments.Length + 1 : 0;
-
-		int renderFragmentsIndex = startingIndex;
-		foreach (var parameter in configuration.Parameters)
-		{
-			renderFragments[renderFragmentsIndex] = LinkRenderFragment(parameter);
+			fragments[renderFragmentsIndex] = LinkRenderFragment(parameter);
 			renderFragmentsIndex += 2;
 		}
 
-		for (int i = startingIndex + 1; i < renderFragments.Length; i += 2)
+		for (int i = 1; i < fragments.Length; i += 2)
 		{
-			renderFragments[i] = separationIconRenderFragment;
+			fragments[i] = separationIconRenderFragment;
 		}
 
-		return renderFragments;
+		return fragments;
 	}
-
 
 	private static readonly RenderFragment<BreadcrumbBarBuilderParameters> LinkRenderFragment = parameters => builder =>
 	{

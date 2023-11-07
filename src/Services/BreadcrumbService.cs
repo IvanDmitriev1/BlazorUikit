@@ -2,6 +2,8 @@
 
 internal class BreadcrumbService : IBreadcrumbService
 {
+	private static readonly Dictionary<Type, RenderFragment[]> StaticBreadcrumbBars = new();
+
 	private BreadcrumbNavigation? _breadcrumbNavigation;
 
 	public void SetBreadcrumbNavigation(BreadcrumbNavigation breadcrumbNavigation)
@@ -9,21 +11,33 @@ internal class BreadcrumbService : IBreadcrumbService
 		_breadcrumbNavigation = breadcrumbNavigation;
 	}
 
-	public void Set<T>(TablerIcon separationIcon) where T : IBreadcrumbBarStaticPage
+	public void Set<T>() where T : IBreadcrumbBarStaticPage
 	{
 		if (_breadcrumbNavigation is null)
 			return;
 
-		var renderFragments = BreadcrumbBarBuilder.GetOrCreate<T>(separationIcon);
+		if (StaticBreadcrumbBars.TryGetValue(typeof(T), out var renderFragments))
+		{
+			_breadcrumbNavigation.Add(renderFragments);
+			return;
+		}
+
+		var builder = new BreadcrumbBarBuilder();
+		T.ConfigureBreadcrumbs(builder);
+
+		renderFragments = builder.Build();
+		StaticBreadcrumbBars.Add(typeof(T), renderFragments);
 		_breadcrumbNavigation.Add(renderFragments);
 	}
 
-	public void Set<T>(T value, TablerIcon separationIcon) where T : IBreadcrumbBarInteractivePage
+	public void Set<T>(T value) where T : IBreadcrumbBarInteractivePage
 	{
 		if (_breadcrumbNavigation is null)
 			return;
 
-		var renderFragments = BreadcrumbBarBuilder.Create(value, separationIcon);
+		var builder = new BreadcrumbBarBuilder();
+		value.ConfigureBreadcrumbs(builder);
+		var renderFragments = builder.Build();
 		_breadcrumbNavigation.Add(renderFragments);
 	}
 }

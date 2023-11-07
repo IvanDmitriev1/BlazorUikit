@@ -2,10 +2,10 @@
 
 public interface IBreadcrumbBarStaticPage
 {
-    static abstract void ConfigureBreadcrumbs(BreadcrumbBarConfigurationBuilder configurationBuilder);
+    static abstract void ConfigureBreadcrumbs(BreadcrumbBarBuilder builder);
 }
 
 public interface IBreadcrumbBarInteractivePage
 {
-    void ConfigureBreadcrumbs(BreadcrumbBarConfigurationBuilder builder);
+    void ConfigureBreadcrumbs(BreadcrumbBarBuilder builder);
 }
