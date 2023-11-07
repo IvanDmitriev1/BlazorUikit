@@ -3,7 +3,7 @@
 internal record struct BreadcrumbBarBuilderParameters
 	(string Title, string Href, NavLinkMatch LinkMatch);
 
-public class BreadcrumbBarBuilder
+public sealed class BreadcrumbBarBuilder
 {
 	private readonly List<BreadcrumbBarBuilderParameters> _parameters = new(1);
 	private TablerIcon _icon;
@@ -25,7 +25,7 @@ public class BreadcrumbBarBuilder
 
 	public RenderFragment[] Build()
 	{
-		var separationIconRenderFragment = SeparationIconRenderFragment(_icon);
+		var separationIconRenderFragment = UiKitIcon.SmallIconRenderFragment(_icon);
 		RenderFragment[] fragments = new RenderFragment[_parameters.Count * 2 - 1];
 
 		int renderFragmentsIndex = 0;
@@ -46,24 +46,12 @@ public class BreadcrumbBarBuilder
 	private static readonly RenderFragment<BreadcrumbBarBuilderParameters> LinkRenderFragment = parameters => builder =>
 	{
 		int seq = 0;
-		const string linkClass = "leading-4";
 
 		builder.OpenComponent<UiLink>(seq++);
-		builder.AddAttribute(seq++, "class", linkClass);
 		builder.AddComponentParameter(seq++, nameof(UiLink.Href), parameters.Href);
 		builder.AddComponentParameter(seq++, nameof(UiLink.Typo), Typo.Header);
 		builder.AddComponentParameter(seq++, nameof(UiLink.Match), parameters.LinkMatch);
 		builder.AddComponentParameter(seq++, nameof(UiLink.ChildContent), StringToRenderFragment(parameters.Title));
-		builder.CloseComponent();
-	};
-
-	private static readonly RenderFragment<TablerIcon> SeparationIconRenderFragment = icon => builder =>
-	{
-		int seq = 0;
-
-		builder.OpenComponent<UiKitIcon>(seq++);
-		builder.AddComponentParameter(seq++, nameof(UiKitIcon.Icon), icon);
-		builder.AddComponentParameter(seq++, nameof(UiKitIcon.Size), Size.Small);
 		builder.CloseComponent();
 	};
 

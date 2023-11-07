@@ -119,20 +119,23 @@ public class UiButton : UiKitElementComponentBase
     {
         int seq = 0;
         
-        var cssClass = IconPosition switch
+        var iconPositionCss = IconPosition switch
         {
             ButtonIconPosition.Content => null,
             ButtonIconPosition.Left => "mr-2.5",
             ButtonIconPosition.Right => "ml-2.5",
             _ => throw new ArgumentOutOfRangeException()
         };
-        
-        builder.OpenComponent<UiKitIcon>(seq++);
 
-        builder.AddComponentParameter(seq++, nameof(UiKitIcon.Class), cssClass);
-        builder.AddComponentParameter(seq++, nameof(UiKitIcon.Icon), Icon);
-        builder.AddComponentParameter(seq++, nameof(UiKitIcon.Size), Size);
+        using var cssBuilder = new CssBuilder(stackalloc char[55]);
+        cssBuilder.AddClass(iconPositionCss);
+        cssBuilder.AddClass(Size.ToIconSize());
 
-        builder.CloseComponent();
+        builder.OpenElement(seq++, "span");
+
+        builder.AddAttribute(seq++, "class", cssBuilder.ToString());
+        builder.AddContent(seq++, Icon.ToRenderFragment());
+
+        builder.CloseElement();
     };
 }

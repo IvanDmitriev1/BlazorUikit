@@ -7,14 +7,21 @@
 
 @code {
 
+    public static readonly RenderFragment<TablerIcon> SmallIconRenderFragment = icon =>
+        @<span class="@Size.Small.ToIconSize()">
+            @icon.ToRenderFragment()
+        </span>;
+
+    public static readonly RenderFragment<TablerIcon> MediumIconRenderFragment = icon =>
+        @<span class="@Size.Medium.ToIconSize()">
+            @icon.ToRenderFragment()
+        </span>;
+
     [Parameter, EditorRequired]
     public TablerIcon Icon { get; set; }
 
     [Parameter]
     public Size Size { get; set; } = Size.Medium;
-
-    [Parameter]
-    public string ViewBox { get; set; } = "0 0 24 24";
 
     [Parameter]
     public Color Color { get; set; } = Color.Inherit;
@@ -23,13 +30,7 @@
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass(Size switch{
-            Size.Custom => string.Empty,
-            Size.Small => "text-[1.5rem]",
-            Size.Medium => "text-[2rem]",
-            Size.Large => "text-[2.5rem]",
-            _ => throw new ArgumentOutOfRangeException()});
-        
+        cssBuilder.AddClass(Size.ToIconSize());
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color));
     }
 
