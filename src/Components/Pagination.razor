@@ -15,11 +15,14 @@
                 <li>
                     @if (state == -1)
                     {
-                        <span class="@ThemeManager.ThemeProvider.TextDisabledCss">...</span>
+                        @UiKitIcon.IconRenderFragment((TablerIcon.Dots, Size.Small.ToIconSize()))
                     }
                     else if (Selected == state)
                     {
-                        <UiButton Size="Size.Medium" Disabled="true">@state</UiButton>
+                        <UiButton Size="Size.Medium"
+                                  Disabled="true">
+                            @state
+                        </UiButton>
                     }
                     else
                     {
