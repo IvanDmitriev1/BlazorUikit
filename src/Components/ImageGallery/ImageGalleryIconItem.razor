@@ -3,7 +3,7 @@
 @inherits UiListItemBase<T>
 
 <li class="@ComponentCss" @onclick="OnClick" @onclick:stopPropagation="true">
-    @UiKitIcon.MediumIconRenderFragment(IconType)
+    @UiKitIcon.IconRenderFragment((IconType, Size.Medium.ToIconSize()))
 </li>
 
 @code {

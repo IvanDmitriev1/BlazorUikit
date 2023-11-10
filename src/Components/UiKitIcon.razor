@@ -7,14 +7,9 @@
 
 @code {
 
-    public static readonly RenderFragment<TablerIcon> SmallIconRenderFragment = icon =>
-        @<span class="@Size.Small.ToIconSize()">
-            @icon.ToRenderFragment()
-        </span>;
-
-    public static readonly RenderFragment<TablerIcon> MediumIconRenderFragment = icon =>
-        @<span class="@Size.Medium.ToIconSize()">
-            @icon.ToRenderFragment()
+    public static readonly RenderFragment<(TablerIcon, string)> IconRenderFragment = valueTuple =>
+        @<span class="@valueTuple.Item2">
+            @valueTuple.Item1.ToRenderFragment()
         </span>;
 
     [Parameter, EditorRequired]

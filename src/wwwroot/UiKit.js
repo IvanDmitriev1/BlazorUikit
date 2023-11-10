@@ -1,13 +1,13 @@
 Blazor.addEventListener('enhancedload', () => {
-    ApplayTheme();
+    ApplyTheme();
 
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 });
 
 window.matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change',ApplayTheme);
+    .addEventListener('change',ApplyTheme);
 
-function ApplayTheme()
+function ApplyTheme()
 {
     const isDarkTheme = localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
@@ -224,14 +224,15 @@ function OpenModalDialog(dialog, preventDismissOnOverlayClick)
         return;
     
     dialog.addEventListener("click", e => {
-        const dialogDimensions = dialog.getBoundingClientRect()
+        const dialogDimensions = dialog.getBoundingClientRect();
+
         if (
             e.clientX < dialogDimensions.left ||
             e.clientX > dialogDimensions.right ||
             e.clientY < dialogDimensions.top ||
             e.clientY > dialogDimensions.bottom
         ) {
-            dialog.close()
+            dialog.close();
         }
     });
 }

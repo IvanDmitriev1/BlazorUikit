@@ -25,7 +25,7 @@ public sealed class BreadcrumbBarBuilder
 
 	public RenderFragment[] Build()
 	{
-		var separationIconRenderFragment = UiKitIcon.SmallIconRenderFragment(_icon);
+		var separationIconRenderFragment = UiKitIcon.IconRenderFragment((_icon, Size.Small.ToIconSize()));
 		RenderFragment[] fragments = new RenderFragment[_parameters.Count * 2 - 1];
 
 		int renderFragmentsIndex = 0;
