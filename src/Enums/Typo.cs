@@ -24,13 +24,13 @@ public static class TypoExtensions
 		Typo.H4      => "h4",
 		Typo.H5      => "h5",
 		Typo.H6      => "h6",
-		Typo.Header  => "p",
+		Typo.Header  => "span",
 		Typo.Regular => "p",
 		Typo.Small   => "span",
 		Typo.Heading => "span",
 		_            => throw new ArgumentOutOfRangeException(nameof(typo), typo, null)
 	};
-	
+
 	public static string ToTailwindCss(this Typo typo) => typo switch
 	{
 		Typo.H1      => string.Empty,

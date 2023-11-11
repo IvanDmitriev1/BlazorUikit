@@ -11,7 +11,7 @@ public class UiText : UiKitElementComponentBase
 		get => ElementTag;
 		set => ElementTag = value;
 	}
-    
+
 	[Parameter]
 	public Typo Typo { get; set; } = Typo.Regular;
 

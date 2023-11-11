@@ -22,8 +22,9 @@ public sealed class UiLink : UiText
 		base.AddComponentCssClasses(ref cssBuilder);
 
 		cssBuilder.AddClass("font-normal");
-		cssBuilder.AddClass("hover:underline underline-offset-4", Underline == Underline.Hover && !_isActive);
-		cssBuilder.AddClass("font-semibold", _isActive);
+		cssBuilder.AddClass("hover:underline underline-offset-4", Underline == Underline.Hover);
+		cssBuilder.AddClass("aria-currentPage:font-semibold");
+		cssBuilder.AddClass("aria-currentPage:no-underline");
 	}
 
 	protected override void OnParametersSet()
@@ -39,7 +40,7 @@ public sealed class UiLink : UiText
 
 		if (_isActive)
 		{
-			builder.AddAttribute(3, "aria-current", "page");
+			builder.AddAttribute(seq++, "aria-current", "page");
 		}
 
 		base.OnBuildingRenderTree(builder, ref seq);

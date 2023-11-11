@@ -81,6 +81,9 @@ module.exports = {
       none: 'none',
     },
     extend: {
+      aria: {
+        currentPage: 'current="page"',
+      },
       outlineWidth: {
         6: "6px",
       },

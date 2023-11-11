@@ -42,13 +42,14 @@ public class UiButton : UiKitElementComponentBase
         cssBuilder.AddClass("focus:ring focus:outline-none");
         cssBuilder.AddClass("transition duration-300");
         cssBuilder.AddClass("select-none rounded");
-        cssBuilder.AddClass("border border-dark-gray-5 shadow-sm", Variant == Variant.Filled);
-        cssBuilder.AddClass(Size switch{
+        cssBuilder.AddClass(Size switch
+        {
             Size.Custom => string.Empty,
-            Size.Small => "py-2.5 px-3",
+            Size.Small  => "py-2.5 px-3",
             Size.Medium => "py-4 px-5 font-bold",
-            Size.Large => "py-5 px-6 font-bold text-header",
-            _ => throw new ArgumentOutOfRangeException()}, IconPosition != ButtonIconPosition.Content || Icon == TablerIcon.None);
+            Size.Large  => "py-5 px-6 font-bold text-header",
+            _           => throw new ArgumentOutOfRangeException()
+        }, IconPosition != ButtonIconPosition.Content || Icon == TablerIcon.None);
         
         cssBuilder.AddClass("p-1.5", Icon != TablerIcon.None && IconPosition == ButtonIconPosition.Content);
         
@@ -57,10 +58,13 @@ public class UiButton : UiKitElementComponentBase
         
         var swappedColor = Color == Color.Primary ? Color.Secondary : Color;
         
+        cssBuilder.AddClass("border shadow-sm", Variant == Variant.Filled);
+        cssBuilder.AddClass("hover:shadow-sm", Variant == Variant.Text);
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundCss(Color), Variant == Variant.Filled);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderCss(Color.Primary), Variant == Variant.Filled);
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(swappedColor));
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundActiveCss(Color));
-            
+
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToRingFocusCss(Color));
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color));
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextHoverCss(swappedColor));
