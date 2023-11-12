@@ -2,8 +2,8 @@
 
 internal sealed class RenderFragmentDialogReference : DialogReference
 {
-	public RenderFragmentDialogReference(RenderFragment renderFragment)
-	{
-		DialogContent = renderFragment;
-	}
+    public RenderFragmentDialogReference(RenderFragment renderFragment)
+    {
+        DialogContent = renderFragment;
+    }
 }

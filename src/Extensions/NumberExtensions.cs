@@ -8,7 +8,7 @@ public static class NumberExtensions
     {
         if (number == TNum.Zero)
             return 1;
-        
+
         int digits = 0;
         var ten = TNum.CreateTruncating(10);
 

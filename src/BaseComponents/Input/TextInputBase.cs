@@ -2,35 +2,35 @@
 
 public abstract class TextInputBase<T> : InputBase<T>
 {
-	[Parameter]
-	public int MaxLength { get; set; } = 524288;
+    [Parameter]
+    public int MaxLength { get; set; } = 524288;
 
-	[Parameter]
-	public int Lines { get; set; } = 1;
-	
-	[Parameter]
-	public InputMode InputMode { get; set; } = InputMode.Text;
+    [Parameter]
+    public int Lines { get; set; } = 1;
 
-	[Parameter]
-	public string? Text { get; set; }
+    [Parameter]
+    public InputMode InputMode { get; set; } = InputMode.Text;
 
-	[Parameter]
-	public EventCallback<string?> TextChanged { get; set; }
+    [Parameter]
+    public string? Text { get; set; }
 
-	protected string? CurrentText
-	{
-		get => Text;
-		set
-		{
-			var hasChanged = !EqualityComparer<string>.Default.Equals(value, Text);
-			if (!hasChanged)
-				return;
+    [Parameter]
+    public EventCallback<string?> TextChanged { get; set; }
 
-			Text = value;
-			_ = TextChanged.InvokeAsync(value);
-			OnTextChanged();
-		}
-	}
+    protected string? CurrentText
+    {
+        get => Text;
+        set
+        {
+            var hasChanged = !EqualityComparer<string>.Default.Equals(value, Text);
+            if (!hasChanged)
+                return;
 
-	protected virtual void OnTextChanged() { }
+            Text = value;
+            _ = TextChanged.InvokeAsync(value);
+            OnTextChanged();
+        }
+    }
+
+    protected virtual void OnTextChanged() { }
 }

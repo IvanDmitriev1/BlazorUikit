@@ -2,17 +2,17 @@
 
 public class DefaultThemeProvider : IThemeProvider
 {
-    private DefaultThemeProvider() {}
+    private DefaultThemeProvider() { }
 
     public static IThemeProvider Instance { get; } = new DefaultThemeProvider();
-    
+
     public string PageBackgroundCss { get; } = "bg-main-light-background dark:bg-main-dark-background";
     public string PageTextCss { get; } = "text-dark dark:text-white text-regular font-inter";
 
     #region Background
 
     public string BackgroundCardCss { get; } = "bg-white dark:bg-dark-gray-5";
-    
+
     public string ToBackgroundCss(Color color) => color switch
     {
         Color.Custom => string.Empty,

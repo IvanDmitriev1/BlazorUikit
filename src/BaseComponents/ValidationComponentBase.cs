@@ -1,11 +1,11 @@
-﻿using System.Linq.Expressions;
-using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using System.Linq.Expressions;
 
 namespace BlazorUiKit.BaseComponents;
 
 public abstract class ValidationComponentBase<T> : UiKitRenderComponentBase, IDisposable
 {
-	[CascadingParameter]
+    [CascadingParameter]
     private EditContext? CascadedEditContext { get; set; }
 
     protected Expression<Func<T>>? For { get; set; }
@@ -18,8 +18,8 @@ public abstract class ValidationComponentBase<T> : UiKitRenderComponentBase, IDi
     private FieldIdentifier _fieldIdentifier;
     private readonly List<string> _errors = new();
 
-    protected virtual void OnDispose() {}
-    
+    protected virtual void OnDispose() { }
+
     public void Dispose()
     {
         GC.SuppressFinalize(this);

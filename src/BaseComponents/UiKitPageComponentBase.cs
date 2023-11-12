@@ -10,7 +10,7 @@ public abstract class UiKitPageComponentBase : ComponentBase, IDisposable
     private CancellationTokenSource? _cts;
     private PersistingComponentStateSubscription _persistingSubscription;
 
-    protected virtual void OnDispose() {}
+    protected virtual void OnDispose() { }
     protected virtual Task OnPersistData() => Task.CompletedTask;
 
     public void Dispose()

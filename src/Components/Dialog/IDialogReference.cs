@@ -21,7 +21,7 @@ public interface IDialogReference : IDialogReferenceBase
 
 public interface IDialogReference<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog> : IDialogReference
 {
-    
+
 }
 
 public interface IDialogReference<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog, TResult> : IDialogReferenceBase

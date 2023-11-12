@@ -4,38 +4,38 @@ public class UiButton : UiKitElementComponentBase
 {
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? UserAttributes { get; set; }
-    
+
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-    
+
     [Parameter]
     public string? Href { get; set; }
-    
+
     [Parameter]
     public HrefTarget HrefTarget { get; set; } = HrefTarget.Self;
-    
+
     [Parameter]
     public bool Disabled { get; set; }
-    
+
     [Parameter]
     public ButtonType Type { get; set; } = ButtonType.Button;
-    
+
     [Parameter]
     public Color Color { get; set; } = Color.Primary;
-    
+
     [Parameter]
     public Variant Variant { get; set; } = Variant.Filled;
-    
+
     [Parameter]
     public Size Size { get; set; } = Size.Medium;
-    
+
     [Parameter]
     public TablerIcon Icon { get; set; } = TablerIcon.None;
-    
+
     [Parameter]
     public ButtonIconPosition IconPosition { get; set; } = ButtonIconPosition.Content;
 
-    
+
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("inline-flex justify-center items-center");
@@ -45,19 +45,19 @@ public class UiButton : UiKitElementComponentBase
         cssBuilder.AddClass(Size switch
         {
             Size.Custom => string.Empty,
-            Size.Small  => "py-2.5 px-3",
+            Size.Small => "py-2.5 px-3",
             Size.Medium => "py-4 px-5 font-bold",
-            Size.Large  => "py-5 px-6 font-bold text-header",
-            _           => throw new ArgumentOutOfRangeException()
+            Size.Large => "py-5 px-6 font-bold text-header",
+            _ => throw new ArgumentOutOfRangeException()
         }, IconPosition != ButtonIconPosition.Content || Icon == TablerIcon.None);
-        
+
         cssBuilder.AddClass("p-1.5", Icon != TablerIcon.None && IconPosition == ButtonIconPosition.Content);
-        
+
         cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundDisabledCss);
         cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss);
-        
+
         var swappedColor = Color == Color.Primary ? Color.Secondary : Color;
-        
+
         cssBuilder.AddClass("border shadow-sm", Variant == Variant.Filled);
         cssBuilder.AddClass("hover:shadow-sm", Variant == Variant.Text);
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundCss(Color), Variant == Variant.Filled);
@@ -70,7 +70,7 @@ public class UiButton : UiKitElementComponentBase
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextHoverCss(swappedColor));
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextActiveCss(Color));
     }
-    
+
     protected override void OnInitialized()
     {
         if (Disabled)
@@ -90,7 +90,7 @@ public class UiButton : UiKitElementComponentBase
         builder.AddAttribute(seq++, "href", Href);
         builder.AddAttribute(seq++, "target", HrefTarget.ToHtml());
         builder.AddAttribute(seq++, "disabled", Disabled);
-        
+
         builder.AddContent(seq++, ContentRenderFragment());
     }
 
@@ -112,17 +112,17 @@ public class UiButton : UiKitElementComponentBase
         {
             builder.AddContent(seq++, ChildContent);
         }
-            
+
         if (IconPosition == ButtonIconPosition.Right)
         {
             builder.AddContent(seq++, icon);
         }
     };
-    
+
     private RenderFragment IconRenderFragment() => builder =>
     {
         int seq = 0;
-        
+
         var iconPositionCss = IconPosition switch
         {
             ButtonIconPosition.Content => null,

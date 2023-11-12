@@ -13,7 +13,7 @@ public abstract class UiKitComponentBase : ComponentBase
 
     protected abstract void AddComponentCssClasses(ref CssBuilder cssBuilder);
 
-    protected virtual void OnFirstRender () { }
+    protected virtual void OnFirstRender() { }
     protected virtual Task OnFirstRenderAsync() => Task.CompletedTask;
 
     protected override void OnAfterRender(bool firstRender)
@@ -30,7 +30,7 @@ public abstract class UiKitComponentBase : ComponentBase
 
     private string BuildComponentCss()
     {
-        if(!string.IsNullOrWhiteSpace(_componentCss))
+        if (!string.IsNullOrWhiteSpace(_componentCss))
         {
             return _componentCss;
         }

@@ -1,6 +1,4 @@
-﻿using BlazorUiKit.Interfaces;
-
-namespace BlazorUiKit.BaseComponents;
+﻿namespace BlazorUiKit.BaseComponents;
 
 public abstract class UiListItemBase<T> : UiKitRenderComponentBase, IUiListItem<T>
     where T : notnull
@@ -80,7 +78,7 @@ public abstract class UiListItemBase<T> : UiKitRenderComponentBase, IUiListItem<
         {
             List?.SetSelectedValue(Value);
         }
-        
+
         if (Selected && ExplicitHide is not null)
         {
             ExplicitHide.ExplicitHide();

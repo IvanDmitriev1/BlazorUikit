@@ -35,7 +35,7 @@ public abstract class ValueInputBase<T> : TextInputBase<T>
 
             NotifyEditContext();
             OnValueChanged();
-            
+
             CurrentText = ConvertValueToString();
         }
     }

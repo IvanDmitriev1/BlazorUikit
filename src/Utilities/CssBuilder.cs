@@ -6,44 +6,44 @@ namespace BlazorUiKit.Utilities;
 
 public ref struct CssBuilder
 {
-	public CssBuilder(Span<char> initialBuffer)
-	{
-		_stringBuilder = new ValueStringBuilder(initialBuffer);
-	}
+    public CssBuilder(Span<char> initialBuffer)
+    {
+        _stringBuilder = new ValueStringBuilder(initialBuffer);
+    }
 
-	public CssBuilder()
-	{
-		_stringBuilder = new ValueStringBuilder();
-	}
+    public CssBuilder()
+    {
+        _stringBuilder = new ValueStringBuilder();
+    }
 
-	private ValueStringBuilder _stringBuilder;
+    private ValueStringBuilder _stringBuilder;
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public readonly void Dispose() => _stringBuilder.Dispose();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly void Dispose() => _stringBuilder.Dispose();
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public override string ToString()
-	{
-		return StringPool.Shared.GetOrAdd(_stringBuilder.AsSpan());
-	}
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public override string ToString()
+    {
+        return StringPool.Shared.GetOrAdd(_stringBuilder.AsSpan());
+    }
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void AddClass(scoped ReadOnlySpan<char> value)
-	{
-		if (value.IsEmpty)
-			return;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void AddClass(scoped ReadOnlySpan<char> value)
+    {
+        if (value.IsEmpty)
+            return;
 
-		_stringBuilder.Append(' ');
-		_stringBuilder.Append(value);
-	}
+        _stringBuilder.Append(' ');
+        _stringBuilder.Append(value);
+    }
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void AddClass(scoped ReadOnlySpan<char> value, bool condition)
-	{
-		if (!condition || value.IsEmpty)
-			return;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void AddClass(scoped ReadOnlySpan<char> value, bool condition)
+    {
+        if (!condition || value.IsEmpty)
+            return;
 
-		_stringBuilder.Append(' ');
-		_stringBuilder.Append(value);
-	}
+        _stringBuilder.Append(' ');
+        _stringBuilder.Append(value);
+    }
 }

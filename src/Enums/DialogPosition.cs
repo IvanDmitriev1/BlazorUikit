@@ -13,7 +13,7 @@ public static class DialogPositionExtensions
     {
         DialogPosition.Custom => string.Empty,
         DialogPosition.Center => $"flex items-center",
-        DialogPosition.Left   => $"flex items-left",
-        _                     => throw new ArgumentOutOfRangeException(nameof(dialogPosition), dialogPosition, null)
+        DialogPosition.Left => $"flex items-left",
+        _ => throw new ArgumentOutOfRangeException(nameof(dialogPosition), dialogPosition, null)
     };
 }

@@ -8,14 +8,14 @@ public abstract class DialogBase : ComponentBase, IDisposable
     protected IDialogReferenceBase DialogReferenceBase { get; set; } = null!;
 
     public bool CanClose { get; set; } = true;
-    
+
     public void Dispose()
     {
         GC.SuppressFinalize(this);
 
         DialogReferenceBase.ActualDialog = null;
         DialogReferenceBase.Cancel();
-        
+
         OnDispose();
     }
 
@@ -26,7 +26,7 @@ public abstract class DialogBase : ComponentBase, IDisposable
         DialogReferenceBase.ActualDialog = this;
     }
 
-    public virtual void OnClosing() {}
+    public virtual void OnClosing() { }
 }
 
 public abstract class DialogBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TSelf> : DialogBase
