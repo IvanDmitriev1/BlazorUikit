@@ -7,6 +7,13 @@
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>full</TrimMode>
   </PropertyGroup>
+
+  <!--Strage issue-->
+  <Target Name="_FixRootAssembly" AfterTargets="PrepareForILLink">
+    <ItemGroup>
+      <TrimmerRootAssembly Update="@(TrimmerRootAssembly)" Condition=" '%(TrimmerRootAssembly.RootMode)' == 'EntryPoint' " RootMode="Library" />
+    </ItemGroup>
+  </Target>
   
   <Import Project="Tailwindcss.Build.targets" />
 
