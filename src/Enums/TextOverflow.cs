@@ -2,16 +2,16 @@
 
 public enum TextOverflow
 {
-	None,
-	Truncate,
+    None,
+    Truncate,
 }
 
 public static class TextOverflowExtensions
 {
-	public static string ToTailwindCss(this TextOverflow textOverflow) => textOverflow switch
-	{
-		TextOverflow.None     => string.Empty,
-		TextOverflow.Truncate => "truncate",
-		_                     => throw new ArgumentOutOfRangeException(nameof(textOverflow), textOverflow, null)
-	};
+    public static string ToTailwindCss(this TextOverflow textOverflow) => textOverflow switch
+    {
+        TextOverflow.None => string.Empty,
+        TextOverflow.Truncate => "truncate",
+        _ => throw new ArgumentOutOfRangeException(nameof(textOverflow), textOverflow, null)
+    };
 }

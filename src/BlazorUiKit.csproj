@@ -1,12 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0;net8.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>full</TrimMode>
   </PropertyGroup>
+
+  <!--Strage issue-->
+  <Target Name="_FixRootAssembly" AfterTargets="PrepareForILLink">
+    <ItemGroup>
+      <TrimmerRootAssembly Update="@(TrimmerRootAssembly)" Condition=" '%(TrimmerRootAssembly.RootMode)' == 'EntryPoint' " RootMode="Library" />
+    </ItemGroup>
+  </Target>
   
   <Import Project="Tailwindcss.Build.targets" />
 
@@ -15,14 +22,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.*" Condition="'$(TargetFramework)' == 'net7.0'" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0-rc.2.*" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.*" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazor.TablerIcons" Version="1.0.0-alpha.1" />
-    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.1" />
-    <PackageReference Include="LinkDotNet.StringBuilder" Version="1.18.2" />
+    <PackageReference Include="Blazor.TablerIcons" Version="1.0.0-alpha.2" />
+    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.2" />
+    <PackageReference Include="LinkDotNet.StringBuilder" Version="1.18.6" />
   </ItemGroup>
 
 </Project>

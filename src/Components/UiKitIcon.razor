@@ -7,29 +7,25 @@
 
 @code {
 
+    public static readonly RenderFragment<(TablerIcon, string)> IconRenderFragment = valueTuple =>
+        @<span class="@valueTuple.Item2">
+            @valueTuple.Item1.ToRenderFragment()
+        </span>;
+
     [Parameter, EditorRequired]
-    public TablerIconType Icon { get; set; }
+    public TablerIcon Icon { get; set; }
 
     [Parameter]
     public Size Size { get; set; } = Size.Medium;
 
     [Parameter]
-    public string ViewBox { get; set; } = "0 0 24 24";
-
-    [Parameter]
     public Color Color { get; set; } = Color.Inherit;
 
-    private bool _firstRendered;
-    private TablerIconType _currentIcon;
-
-    protected override void OnInitialized()
-    {
-        CacheCss = true;
-    }
+    private TablerIcon _currentIcon;
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToIconSizeCss(Size));
+        cssBuilder.AddClass(Size.ToIconSize());
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color));
     }
 

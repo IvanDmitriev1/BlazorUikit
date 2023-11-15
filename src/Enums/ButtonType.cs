@@ -12,6 +12,6 @@ public static class ButtonTypeExtensions
     {
         ButtonType.Button => "button",
         ButtonType.Submit => "submit",
-        _                 => throw new ArgumentOutOfRangeException(nameof(buttonType), buttonType, null)
+        _ => throw new ArgumentOutOfRangeException(nameof(buttonType), buttonType, null)
     };
 }

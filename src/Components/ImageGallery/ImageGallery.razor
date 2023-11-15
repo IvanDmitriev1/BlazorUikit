@@ -1,38 +1,42 @@
 ﻿@namespace BlazorUiKit.Components
-@inherits UiKitComponentBase
-@implements IAsyncDisposable
+@inherits UiKitRenderComponentBase
+@implements IDisposable
 
 @inject IJSRuntime JsRuntime
 
-<Stack HtmlTag="section" Class="@ComponentCss" Direction="Direction.Row">
-    <IconButton Icon="@TablerIconType.ArrowLeft" Class="hidden md:block" OnClick="Previous"/>
-    
-    <SwipeArea Class="flex-1 flex flex-col items-center" OnSwipeEnd="OnSwipe">
-        <Image Src="@_selectedImageUrl" Class="@ImageContainerCss"/>
+<Stack @ref="_rootElement"
+       HtmlTag="section"
+       Class="@ComponentCss"
+       Direction="Direction.Column">
+       
+    <SwipeArea Class="flex items-center gap-5" OnSwipeEnd="OnSwipe">
+        <UiButton Icon="@TablerIcon.ArrowLeft" Class="hidden md:block" @onclick="Previous" />
 
-        @if (ShowPreviews)
-        {
-            <UiList T="string" Direction="Direction.Row" Class="gap-3 items-center md:justify-center flex-wrap md:flex-nowrap" SelectedValue="@_selectedImageUrl" SelectedValueChanged="OnSelectedValueChanged">
-                @foreach (var imageUrl in ImagesUrls)
-                {
-                    <ImageGalleryItem Value="@imageUrl">
-                        <Image Src="@imageUrl" Class="w-[100px] h-full"/>
-                    </ImageGalleryItem>
-                }
-            </UiList>
-        }
-        else
-        {
-            <UiList T="string" Direction="Direction.Row" Class="gap-3 items-center justify-center" SelectedValue="@_selectedImageUrl" SelectedValueChanged="OnSelectedValueChanged">
-                @foreach (var imageUrl in ImagesUrls)
-                {
-                    <ImageGalleryIconItem Value="@imageUrl" />
-                }
-            </UiList>
-        }
+        <Image Src="@_selectedImageUrl" Class="@ImageContainerCss" />
+
+        <UiButton Icon="@TablerIcon.ArrowRight" Class="hidden md:block" @onclick="Next" />
     </SwipeArea>
     
-    <IconButton Icon="@TablerIconType.ArrowRight" Class="hidden md:block" OnClick="Next"/>
+    @if (ShowPreviews)
+    {
+        <UiList T="string" Direction="Direction.Row" Class="gap-3 items-center md:justify-center flex-wrap md:flex-nowrap" SelectedValue="@_selectedImageUrl" SelectedValueChanged="OnSelectedValueChanged">
+            @foreach (var imageUrl in ImagesUrls)
+            {
+                <ImageGalleryItem Value="@imageUrl">
+                    <Image Src="@imageUrl" Class="w-[100px] h-full"/>
+                </ImageGalleryItem>
+            }
+        </UiList>
+    }
+    else
+    {
+        <UiList T="string" Direction="Direction.Row" Class="gap-3 items-center justify-center" SelectedValue="@_selectedImageUrl" SelectedValueChanged="OnSelectedValueChanged">
+            @foreach (var imageUrl in ImagesUrls)
+            {
+                <ImageGalleryIconItem Value="@imageUrl"/>
+            }
+        </UiList>
+    }
 </Stack>
 
 @code {
@@ -66,35 +70,23 @@
             
             _currentIndex = value;
             _selectedImageUrl = ImagesUrls[value];
+            AllowRender();
         }
     }
     
     DotNetObjectReference<ImageGallery>? _objRef;
+    Stack? _rootElement;
     string _selectedImageUrl = string.Empty;
     int _currentIndex = 0;
-    Int64 _timestamp;
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass("p-1 sm:p-3.5 gap-3.5");
         cssBuilder.AddClass(AlignItems.Center.ToTailwindCss());
-        cssBuilder.AddClass("rounded");
     }
     
-    public async ValueTask DisposeAsync()
+    public void Dispose()
     {
-        if (!IsJsRuntimeAvailable || _objRef is null)
-            return;
-
-        try
-        {
-            await JsRuntime.InvokeVoidAsync("UnRegisterImageGalleryTimer", _objRef);
-            _objRef.Dispose();
-        }
-        catch (JSDisconnectedException)
-        {
-            
-        }
+        _objRef?.Dispose();
     }
 
     protected override void OnInitialized()
@@ -102,24 +94,18 @@
         _selectedImageUrl = ImagesUrls[0];
     }
 
-    protected override async Task OnFirstRenderAsync()
+    protected override Task OnFirstRenderAsync()
     {
         if (AutoCycleTime == TimeSpan.Zero)
-            return;
+            return Task.CompletedTask;
         
         _objRef = DotNetObjectReference.Create(this);
-        await JsRuntime.InvokeVoidAsync("RegisterImageGalleryTimer", _objRef, AutoCycleTime.TotalMilliseconds);
+        return JsRuntime.InvokeVoidAsync("SetUpImageGalleryTimer", _rootElement!.ElementReference, AutoCycleTime.TotalMilliseconds, _objRef).AsTask();
     }
 
     [JSInvokable]
     public void InvokeNextFromJs()
     {
-        //Problem with blazor wasm
-        /*var timeBetweenChanges = Stopwatch.GetElapsedTime(_timestamp);
-        
-        if (timeBetweenChanges <= AutoCycleTime)
-            return;*/
-        
         CurrentIndex++;
         StateHasChanged();
     }
@@ -127,19 +113,16 @@
     private void OnSelectedValueChanged(string value)
     {
         _selectedImageUrl = value;
-        //_timestamp = Stopwatch.GetTimestamp();
     }
     
     private void Previous()
     {
         CurrentIndex--;
-        //_timestamp = Stopwatch.GetTimestamp();
     }
     
     private void Next()
     {
         CurrentIndex++;
-        //_timestamp = Stopwatch.GetTimestamp();
     }
 
     private void OnSwipe(SwipeDirection direction)

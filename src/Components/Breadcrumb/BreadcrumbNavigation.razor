@@ -1,0 +1,38 @@
+﻿@namespace BlazorUiKit.Components
+
+@if (_breadcrumbs is not null)
+{
+    <nav class="@Class">
+        <ol class="flex items-center flex-wrap sm:flex-nowrap gap-2">
+            @foreach (var breadcrumbItem in _breadcrumbs)
+            {
+                <li class="text-center">
+                    @breadcrumbItem
+                </li>
+            }
+        </ol>
+    </nav>
+}
+
+@code{
+
+    [CascadingParameter]
+    private IBreadcrumbService BreadcrumbService { get; set; } = null!;
+
+    [Parameter]
+    public string? Class { get; set; }
+
+    private RenderFragment[]? _breadcrumbs;
+
+    protected override void OnInitialized()
+    {
+
+        BreadcrumbService.SetBreadcrumbNavigation(this);
+    }
+
+    public void Add(RenderFragment[] fragments)
+    {
+        _breadcrumbs = fragments;
+        StateHasChanged();
+    }
+}

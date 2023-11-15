@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace BlazorUiKit.Abstractions.Dialog;
+﻿namespace BlazorUiKit.Components;
 
 public interface IDialogReferenceBase
 {
@@ -23,7 +21,7 @@ public interface IDialogReference : IDialogReferenceBase
 
 public interface IDialogReference<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog> : IDialogReference
 {
-    
+
 }
 
 public interface IDialogReference<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TDialog, TResult> : IDialogReferenceBase

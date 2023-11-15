@@ -1,0 +1,116 @@
+﻿@namespace BlazorUiKit.Components
+@inherits UiKitComponentBase
+
+<div class="@ContainerBuilderCss()">
+    <div class="@ComponentCss @ValidationCss">
+        @if (AdornmentPlacement == AdornmentPlacement.Start)
+        {
+            @AdornmentRenderFragment
+        }
+        
+        @InputRenderFragment
+        
+        @if (!string.IsNullOrEmpty(Label) && ShowLabel)
+        {
+            <label class="@LabelClass">@Label</label>
+        }
+        
+        @ChildContent
+        
+        @if (AdornmentPlacement == AdornmentPlacement.End)
+        {
+            @AdornmentRenderFragment
+        }
+    </div>
+
+    @DisplayValidationErrors.DisplayValidationErrorsFragment(Errors)
+</div>
+
+@code
+{
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    
+    [Parameter]
+    public RenderFragment? InputRenderFragment { get; set; }
+    
+    [Parameter, EditorRequired]
+    public string? ValidationCss { get; set; }
+    
+    [Parameter, EditorRequired]
+    public bool Disabled { get; set; }
+
+    [Parameter, EditorRequired]
+    public bool FullWidth { get; set; }
+
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool ShowLabel { get; set; } = true;
+    
+    [Parameter, EditorRequired]
+    public IReadOnlyList<string> Errors { get; set; } = Array.Empty<string>();
+    
+    [Parameter, EditorRequired]
+    public AdornmentPlacement AdornmentPlacement { get; set; }
+    
+    [Parameter]
+    public RenderFragment? AdornmentRenderFragment { get; set; }
+
+    private static readonly string LabelClass = InputLabelCssBuilder();
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass("inline-flex relative");
+        cssBuilder.AddClass("active:!outline-none");
+        cssBuilder.AddClass("focus-within:ring");
+        cssBuilder.AddClass("rounded border shadow-sm");
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundCss(Color.Primary));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderCss(Color.Primary));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderFocusWithinCss(Color.Primary));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToRingFocusWithinCss(Color.Primary));
+        
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(Color.Primary), !Disabled);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundDisabledCss);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss);
+        cssBuilder.AddClass("w-full", FullWidth);
+    }
+
+    private string ContainerBuilderCss()
+    {
+        using var cssBuilder = new CssBuilder(stackalloc char[55]);
+
+        cssBuilder.AddClass("w-full", FullWidth);
+        cssBuilder.AddClass("mt-3.5", !string.IsNullOrEmpty(Label));
+        
+        return cssBuilder.ToString();
+    }
+
+    private static string InputLabelCssBuilder()
+    {
+        using var cssBuilder = new CssBuilder(stackalloc char[100]);
+
+        cssBuilder.AddClass("absolute top-0 left-4 z-10");
+        cssBuilder.AddClass("origin-top-left duration-200");
+        cssBuilder.AddClass("pointer-events-none select-none");
+        cssBuilder.AddClass("px-1.5");
+        cssBuilder.AddClass("translate-y-4 text-label-large");
+
+        //Adornment left
+        cssBuilder.AddClass("peer-[.block]/adornment-left:translate-y-[-10px]");
+        cssBuilder.AddClass("peer-[.block]/adornment-left:text-label-small");
+
+        //Input
+        cssBuilder.AddClass("peer-focus/input:translate-y-[-10px]");
+        cssBuilder.AddClass("peer-focus/input:text-label-small");
+
+        cssBuilder.AddClass("peer-placeholder-shown/input:translate-y-[-10px]");
+        cssBuilder.AddClass("peer-placeholder-shown/input:text-label-small");
+
+        cssBuilder.AddClass("peer-[.has-text]/input:translate-y-[-10px]");
+        cssBuilder.AddClass("peer-[.has-text]/input:text-label-small");
+
+        return cssBuilder.ToString();
+    }
+}

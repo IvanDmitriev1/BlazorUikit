@@ -1,29 +1,54 @@
 ﻿namespace BlazorUiKit.Components;
 
-public class UiText : UiKitElementWithChildComponentBase
+public class UiText : UiKitElementComponentBase
 {
-	[Parameter]
-	public Typo Typo { get; set; } = Typo.Regular;
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
-	[Parameter]
-	public Color Color { get; set; } = Color.Primary;
+    [Parameter]
+    public string HtmlTag
+    {
+        get => ElementTag;
+        set => ElementTag = value;
+    }
 
-	[Parameter]
-	public Align Align { get; set; }
+    [Parameter]
+    public Typo Typo { get; set; } = Typo.Regular;
 
-	[Parameter]
-	public TextOverflow TextOverflow { get; set; }
+    [Parameter]
+    public Color Color { get; set; } = Color.Primary;
 
-	protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
-	{
-		cssBuilder.AddClass(Typo.ToTailwindCss());
-		cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color));
-		cssBuilder.AddClass(Align.ToTailwindCss());
-		cssBuilder.AddClass(TextOverflow.ToTailwindCss());
-	}
+    [Parameter]
+    public Align Align { get; set; }
 
-	protected override void OnParametersSet()
-	{
-		HtmlTag = Typo.ToHtmlTag();
-	}
+    [Parameter]
+    public TextOverflow TextOverflow { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss);
+        cssBuilder.AddClass(Typo.ToTailwindCss());
+        cssBuilder.AddClass(Align.ToTailwindCss());
+        cssBuilder.AddClass(TextOverflow.ToTailwindCss());
+        cssBuilder.AddClass("aria-disabled:select-none");
+    }
+
+    protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
+    {
+        if (Disabled)
+        {
+            builder.AddAttribute(seq++, "aria-disabled", "true");
+        }
+
+        builder.AddContent(seq++, ChildContent);
+    }
+
+    protected override void OnParametersSet()
+    {
+        ElementTag = Typo.ToHtmlTag();
+    }
 }

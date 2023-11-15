@@ -1,30 +1,31 @@
 ﻿@namespace BlazorUiKit.Components
 @inherits TextInputBase<string>
 
+@inject IJSRuntime JsRuntime
+
 @if (Lines > 1)
 {
-    <textarea
-            class="@_inputCss @ComponentCss resize-none outline-none"
-            @ref="_elementReference"
-            @attributes="UserAttributes"
-            type="@InputType.ToHtml()"
-            placeholder="@Placeholder"
-            value="@_internalText"
-            rows="@Lines"
-            disabled="@Disabled"
-            readonly="@ReadOnly"
-            inputmode="@InputMode.ToHtml()"
-            maxlength="@MaxLength"
+    <textarea class="@ComponentCss @_inputCss"
+              @ref="ElementReference"
+              @attributes="UserAttributes"
+              type="@InputType.ToHtml()"
+              placeholder="@Placeholder"
+              value="@_internalText"
+              rows="@Lines"
+              disabled="@Disabled"
+              readonly="@ReadOnly"
+              inputmode="@InputMode.ToHtml()"
+              maxlength="@MaxLength"
 
-            @oninput="OnInput"
-            @onchange="OnChange">
+              @oninput="OnInput"
+              @onchange="OnChange">
     @Text
 </textarea>
 }
 else
 {
-    <input class="@_inputCss @ComponentCss"
-           @ref="_elementReference"
+    <input class="@ComponentCss @_inputCss"
+           @ref="ElementReference"
            @attributes="UserAttributes"
            type="@InputType.ToHtml()"
            placeholder="@Placeholder"
@@ -38,28 +39,54 @@ else
            @onchange="OnChange" />
 }
 
-@if (!string.IsNullOrEmpty(Label))
-{
-    <label class="input-control-label">@Label</label>
-}
-
 @code {
 
+    /// <summary>
+    /// UserAttributes carries all attributes you add to the component that don't match any of its parameters.
+    /// They will be splatted onto the underlying HTML tag.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> UserAttributes { get; set; } = new();
+    
     [Parameter]
     public InputType InputType { get; set; } = InputType.Text;
-
+    
     [Parameter]
     public bool Immediate { get; set; }
+    
+    [Parameter]
+    public TimeSpan DebounceInterval { get; set; }
+    
+    public ElementReference ElementReference { get; private set; }
 
-    ElementReference _elementReference;
+    DotNetObjectReference<UiInput>? _objRef;
     string? _internalText;
     bool _isFocused;
     string _inputCss = string.Empty;
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
+        cssBuilder.AddClass("peer/input");
         cssBuilder.AddClass("flex-auto");
         cssBuilder.AddClass("py-4");
+
+        cssBuilder.AddClass("resize-none outline-none", Lines > 1);
+    }
+
+    protected override void OnDispose()
+    {
+        _objRef?.Dispose();
+    }
+
+    protected override Task OnFirstRenderAsync()
+    {
+        if (DebounceInterval == TimeSpan.Zero)
+        {
+            return Task.CompletedTask;
+        }
+        
+        _objRef = DotNetObjectReference.Create(this);
+        return JsRuntime.InvokeVoidAsync("SetUpInputDebounceInterval", ElementReference, DebounceInterval.TotalMilliseconds, _objRef).AsTask();
     }
 
     protected override void OnParametersSet()
@@ -83,6 +110,12 @@ else
         AllowRender();
     }
 
+    [JSInvokable]
+    public void ChangeCurrentText(string newValue)
+    {
+        CurrentText = newValue;
+    }
+
     private void OnInput(ChangeEventArgs obj)
     {
         if (!Immediate)
@@ -102,8 +135,6 @@ else
 
     protected override void OnTextChanged()
     {
-        base.OnTextChanged();
-
         UpdateInputCss();
     }
 

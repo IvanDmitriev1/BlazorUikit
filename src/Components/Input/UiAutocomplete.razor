@@ -1,0 +1,308 @@
+﻿@namespace BlazorUiKit.Components
+@typeparam T where T : notnull
+@inherits ValueInputBase<T?>
+@implements IExplicitHide
+
+@inject IJSRuntime JsRuntime
+
+<InputField Disabled="@Disabled"
+            FullWidth="true" 
+            Errors="@Errors"
+            Label="@Label"
+            AdornmentPlacement="@AdornmentPlacement"
+            ValidationCss="@ValidationCss"
+            Class="@ComponentCss">
+    <AdornmentRenderFragment>
+        <InputAdornment Icon="@AdornmentIcon"
+                        Size="@AdornmentSize"
+                        AdornmentPlacement="@AdornmentPlacement"
+                        AdornmentClick="OnSearchAsync" />
+    </AdornmentRenderFragment>
+    
+    <InputRenderFragment>
+        <UiInput @ref="@_input"
+                 Class="p-3.5"
+                 Disabled="@Disabled"
+                 InputMode="@InputMode"
+                 ReadOnly="@ReadOnly"
+                 Placeholder="@Placeholder"
+                 MaxLength="@MaxLength"
+                 Lines="@Lines"
+                 InputType="@InputType.Text"
+                 DebounceInterval="@DebounceInterval"
+                 Immediate="@Immediate"
+                 
+                 Text="@Text"
+                 TextChanged="text => CurrentText = text"/>
+    </InputRenderFragment>
+    
+    <ChildContent>
+        <PopOver @bind-Open="IsOpen" Class="top-12 mt-2.5">
+            <CascadingValue TValue="IExplicitHide" IsFixed="true" Value="this">
+                <div class="@ThemeManager.ThemeProvider.ToBackgroundCss(Color.Primary)">
+                    @if (_isLoading && ProgressIndicatorInPopoverTemplate is not null)
+                    {
+                        @ProgressIndicatorInPopoverTemplate
+                    }
+                    else if (_items.Count > 0)
+                    {
+                        <UiList T="T"
+                                @bind-SelectedValue="CurrentValue">
+
+                            @if (BeforeItemsTemplate is not null)
+                            {
+                                @BeforeItemsTemplate
+                            }
+
+                            @foreach (var item in _items)
+                            {
+                                if (ItemWithContainerTemplate is not null)
+                                {
+                                    @ItemWithContainerTemplate(item)
+                                }
+                                else
+                                {
+                                    <UiListItem @key="item" T="T" Value="item">
+                                        @if (ItemTemplate is not null)
+                                        {
+                                            @ItemTemplate(item)
+                                        }
+                                        else
+                                        {
+                                            @item.ConvertToString()
+                                        }
+                                    </UiListItem>
+                                }
+                            }
+                            
+                            @if (_itemsReturned > MaxItems && MoreItemsTemplate is not null)
+                            {
+                                @MoreItemsTemplate
+                            }
+                            @if (AfterItemsTemplate is not null)
+                            {
+                                @AfterItemsTemplate
+                            }
+                        </UiList>
+                    }
+                    else if (_items.Count == 0 && NoItemsTemplate is not null)
+                    {
+                        @NoItemsTemplate
+                    }
+                </div>
+            </CascadingValue>
+        </PopOver>
+    </ChildContent>
+</InputField>
+
+@code {
+
+    #region Adornment
+
+    [Parameter]
+    public AdornmentPlacement AdornmentPlacement { get; set; } = Enums.AdornmentPlacement.End;
+
+    [Parameter]
+    public TablerIcon AdornmentIcon { get; set; } = TablerIcon.Search;
+
+    [Parameter]
+    public Size AdornmentSize { get; set; } = Size.Medium;
+
+    #endregion
+
+    #region RenderFragments
+
+    [Parameter]
+    public RenderFragment<T>? ItemWithContainerTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment<T>? ItemTemplate { get; set; }
+    
+    [Parameter]
+    public RenderFragment? NoItemsTemplate { get; set; }
+    
+    [Parameter]
+    public RenderFragment? MoreItemsTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment? BeforeItemsTemplate { get; set; }
+    
+    [Parameter]
+    public RenderFragment? AfterItemsTemplate { get; set; }
+    
+    [Parameter]
+    public RenderFragment? ProgressIndicatorInPopoverTemplate { get; set; }
+
+    #endregion
+    
+    [Parameter]
+    public bool Immediate { get; set; }
+    
+    [Parameter]
+    public TimeSpan DebounceInterval { get; set; }
+    
+    
+    [Parameter]
+    public required Func<string, CancellationToken, Task<IReadOnlyList<T>>> SearchFunc { get; set; }
+    
+    [Parameter]
+    public required Func<T?, string?> ToStringFunc { get; set; }
+    
+    
+    private bool IsOpen
+    {
+        get => _isOpen;
+        set
+        {
+            if (_isOpen == value)
+                return;
+            
+            _isOpen = value;
+            AllowRender();
+        }
+    }
+        
+    private const int MaxItems = 10;
+    
+    UiInput? _input;
+    DotNetObjectReference<UiAutocomplete<T>>? _objRef;
+    private bool _isOpen;
+    private CancellationTokenSource _cancellationTokenSource = new();
+    private List<T> _items = new();
+    private int _itemsReturned;
+    private bool _isLoading;
+    private string _previousText = string.Empty;
+    private bool _isValueChanged;
+    
+    public UiAutocomplete() : base(default){}
+
+    protected override void OnDispose()
+    {
+        _objRef?.Dispose();
+    }
+    
+    protected override async Task OnFirstRenderAsync()
+    {
+        _objRef = DotNetObjectReference.Create(this);
+        await JsRuntime.InvokeVoidAsync("RegisterEnterKeyEvent", _input!.ElementReference, _objRef);
+    }
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass("border-4");
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderCss(Color.Primary));
+    }
+
+    public void ExplicitHide()
+    {
+        IsOpen = false;
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public async Task OnEnterKey(string newText)
+    {
+        if (CurrentText != newText)
+        {
+            CurrentText = newText;
+            return;
+        }
+
+        await OnSearchAsync();
+        StateHasChanged();
+    }
+
+    protected override async void OnTextChanged()
+    {
+        if (_isValueChanged)
+        {
+            _isValueChanged = false;
+            return;
+        }
+        
+        await OnSearchAsync();
+    }
+    
+    protected override void OnValueChanged()
+    {
+        IsOpen = false;
+        _isValueChanged = true;
+    }
+
+    protected override void RefreshValueOrText() {}
+
+    protected override string? ConvertValueToString()
+    {
+        if (Value is string valueStr)
+        {
+            return valueStr;
+        }
+
+        return ToStringFunc(Value);
+    }
+
+    private async ValueTask CancelTokenAsync()
+    {
+        try
+        {
+            await _cancellationTokenSource.CancelAsync();
+        }
+        finally
+        {
+            _cancellationTokenSource.Dispose();
+            _cancellationTokenSource = new CancellationTokenSource();
+        }
+    }
+    
+    private async Task OnSearchAsync()
+    {
+        if (_previousText == Text)
+        {
+            IsOpen = true;
+            return;
+        }
+        
+        if (string.IsNullOrWhiteSpace(Text))
+            return;
+        
+        IsOpen = true;
+        _items.Clear();
+        _previousText = Text;
+        _isLoading = true;
+        StateHasChanged();
+        
+        try
+        {
+            await CancelTokenAsync();
+            
+            var searchItems = await SearchFunc.Invoke(Text, _cancellationTokenSource.Token);
+            int maxItems = searchItems.Count <= MaxItems ? searchItems.Count : MaxItems;
+            
+            if (maxItems > _items.Capacity)
+                _items.Capacity = maxItems;
+
+            _itemsReturned = searchItems.Count;
+
+            for (int i = 0; i < maxItems; i++)
+            {
+                _items.Add(searchItems[i]);
+            }
+        }
+        catch (TaskCanceledException)
+        {
+            return;
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+        catch (Exception ex)
+        {
+            await DispatchExceptionAsync(ex);
+            return;
+        }
+        
+        _isLoading = false;
+        StateHasChangedWithRendering();
+    }
+}

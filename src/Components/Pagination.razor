@@ -2,36 +2,64 @@
 @inherits UiKitComponentBase
 
 <div class="@ComponentCss">
-    <IconButton Icon="@TablerIconType.ChevronLeft"
-                Color="Color.Secondary"
-                Filled="true"
-                Disabled="Selected == 1"
-                Size="Size.Large"
-                OnClick="() => CurrentSelected--" />
+    <div class="flex gap-6 md:gap-3.5 items-center">
+        <UiButton Icon="@TablerIcon.ChevronLeft"
+                  Disabled="Selected == 1"
+                  Size="Size.Large"
+                  Href="@NavigateBackwardsHref"
+                  @onclick="() => CurrentSelected--"/>
 
-    <Stack Class="gap-2.5" AlignItems="AlignItems.Center">
-        <NumericField T="int"
-                      InputCss="w-24 !p-2 text-center !text-[24px]"
-                      Min="1"
-                      Max="Count"
-                      MaxLength="@_maxLength"
-                      Value="@Selected"
-                      ValueChanged="value => CurrentSelected = value"/>
-    
-        <UiText Class="!text-[25px]">/ @Count</UiText>
-    </Stack>            
+        <ol class="hidden md:flex flex-row gap-2.5 items-center">
+            @foreach (var state in GeneratePagination())
+            {
+                <li>
+                    @if (state == -1)
+                    {
+                        @UiKitIcon.IconRenderFragment((TablerIcon.Dots, Size.Small.ToIconSize()))
+                    }
+                    else if (Selected == state)
+                    {
+                        <UiButton Size="Size.Medium"
+                                  Disabled="true">
+                            @state
+                        </UiButton>
+                    }
+                    else
+                    {
+                        <UiButton Href="@NavigateHref(state)"
+                                  @onclick="() => CurrentSelected = state"
+                                  Size="Size.Medium">
+                            @state
+                        </UiButton>
+                    }
+                </li>
+            }
+        </ol>
+        
+        <UiText Class="md:hidden" Align="Align.Center" Typo="Typo.Header">@Selected</UiText>
+        
+        <UiButton Icon="@TablerIcon.ChevronRight"
+                  Disabled="Selected >= Count"
+                  Size="Size.Large"
+                  Href="@NavigateForwardHref"
+                  @onclick="() => CurrentSelected++"/>
+    </div>
 
-    <IconButton Icon="@TablerIconType.ChevronRight"
-                Color="Color.Secondary"
-                Filled="true"
-                Disabled="Selected >= Count"
-                Size="Size.Large"
-                OnClick="() => CurrentSelected++" />
+    <UiText Class="md:hidden mt-2.5" Align="Align.Center" Typo="Typo.Header">of @Count pages</UiText>
 </div>
 
 
 @code {
+    
+    [Parameter]
+    public string? PageHrefTemplate { get; set; }
 
+    [Parameter]
+    public int BoundaryCount { get; set; } = 1;
+
+    [Parameter]
+    public int MiddleCount { get; set; } = 3;
+    
     [Parameter]
     public int Count { get; set; } = 1;
 
@@ -59,21 +87,72 @@
             var hasValueChanged = !EqualityComparer<int>.Default.Equals(value, Selected);
             if (!hasValueChanged)
                 return;
-
+            
             Selected = value;
             _ = SelectedChanged.InvokeAsync(value);
         }
     }
 
-    int _maxLength;
+    private string? NavigateForwardHref => NavigateHref(Selected + 1);
+    private string? NavigateBackwardsHref => NavigateHref(Selected - 1);
+
+    private string? NavigateHref(int page)
+    {
+        if (PageHrefTemplate is null)
+            return null;
+
+        return $"{PageHrefTemplate}{page}";
+    }
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass("flex gap-3");
+        cssBuilder.AddClass("flex flex-col items-center");
     }
 
-    protected override void OnInitialized()
+    private IEnumerable<int> GeneratePagination()
     {
-        _maxLength = Count.GetDigitsCount();
+        int boundariesCount = BoundaryCount * 2 + MiddleCount;
+
+        if (boundariesCount >= Count)
+        {
+            return Enumerable.Range(1, Count);
+        }
+
+        int[] pages = new int[boundariesCount + 2];
+
+        //start boundary
+        for (int i = 0; i < BoundaryCount; i++)
+        {
+            pages[i] = i + 1;
+        }
+
+        //end boundary
+        for (int i = 0; i < BoundaryCount; i++)
+        {
+            pages[pages.Length - i - 1] = Count - i;
+        }
+
+        //calculate start value for middle items
+        int startValue;
+        if (Selected <= BoundaryCount + MiddleCount / 2 + 1)
+            startValue = BoundaryCount + 2;
+        else if (Selected >= Count - BoundaryCount - MiddleCount / 2)
+            startValue = Count - BoundaryCount - MiddleCount;
+        else
+            startValue = Selected - MiddleCount / 2;
+
+        //middle count
+        for (int i = 0; i < MiddleCount; i++)
+        {
+            pages[BoundaryCount + i + 1] = startValue + i;
+        }
+
+        //set start delimiter "..." when selected page is far enough to the end, dots are represented as -1
+        pages[BoundaryCount] = (BoundaryCount + MiddleCount / 2 + 1 < Selected) ? -1 : BoundaryCount + 1;
+
+        //set end delimiter "..." when selected page is far enough to the start, dots are represented as -1
+        pages[pages.Length - BoundaryCount - 1] = (Count - BoundaryCount - MiddleCount / 2 > Selected) ? -1 : Count - BoundaryCount;
+
+        return pages;
     }
 }

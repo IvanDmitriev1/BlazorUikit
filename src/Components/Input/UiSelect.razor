@@ -1,0 +1,121 @@
+﻿@namespace BlazorUiKit.Components
+@typeparam T where T : notnull
+@inherits ValueInputBase<T?>
+@implements IExplicitHide
+
+<InputField Disabled="false"
+            FullWidth="true"
+            Errors="@Errors"
+            ShowLabel="@(_selectedListItem is not null)"
+            Label="@Label"
+            AdornmentPlacement="AdornmentPlacement.End"
+            ValidationCss="@ValidationCss"
+            Class="@Class">
+    <InputRenderFragment>
+        <input type="checkbox"
+               class="absolute opacity-0 cursor-pointer h-full w-full peer/input has-text"
+               @ref="_element"
+               @onchange="() => IsOpen = !IsOpen "/>
+    </InputRenderFragment>
+    
+    <AdornmentRenderFragment>
+        <div class="@ChevronDownCss">
+            @UiKitIcon.IconRenderFragment((TablerIcon.ChevronDown, Size.Medium.ToIconSize()))
+        </div>
+    </AdornmentRenderFragment>
+    
+    <ChildContent>
+        <Stack Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" FullWidth="true">
+            <div class="py-4 pl-3.5 mr-3.5">
+                @if (_selectedListItem is null)
+                {
+                    <label class="@PlaceHolderCss">@Label</label>
+                }
+                else
+                {
+                    @_selectedListItem?.ChildContent
+                }
+            </div>
+        </Stack>
+        
+        <PopOver @bind-Open="_isOpen" Class="top-12 mt-2.5">
+            <CascadingValue Value="this" IsFixed="true">
+                <UiList T="T"
+                        Class="@ThemeManager.ThemeProvider.ToBackgroundCss(Color.Primary)"
+                        @bind-SelectedValue="CurrentValue"
+                        @bind-SelectedItem="_selectedListItem">
+                    
+                    @if (Items is not null && ItemTemplate is not null)
+                    {
+                        @foreach (var item in Items)
+                        {
+                            <UiListItem T="T" Value="item">
+                                @ItemTemplate(item)
+                            </UiListItem>
+                        }
+                    }
+                    else
+                    {
+                        @ChildContent
+                    }
+                </UiList>
+            </CascadingValue>
+        </PopOver>
+    </ChildContent>
+</InputField>
+
+@code {
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    
+    [Parameter]
+    public IReadOnlyCollection<T>? Items { get; set; }
+
+    [Parameter]
+    public RenderFragment<T>? ItemTemplate { get; set; }
+
+    private bool IsOpen
+    {
+        get => _isOpen;
+        set
+        {
+            if (_isOpen == value)
+            {
+                return;
+            }
+            
+            _isOpen = value;
+            AllowRender();
+        }
+    }
+
+    private static readonly string ChevronDownCss = $"{ThemeManager.ThemeProvider.ToBorderCss(Color.Secondary)} border-l p-1.5 m-auto";
+    private static readonly string PlaceHolderCss = $"{ThemeManager.ThemeProvider.TextPlaceholderCss} select-none";
+
+    private bool _isOpen;
+    private IUiListItem<T>? _selectedListItem;
+    private string _listCss = string.Empty;
+    private ElementReference _element;
+
+    public UiSelect() : base(default)
+    {
+        
+    }
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) {}
+
+    protected override void OnValueChanged()
+    {
+        IsOpen = false;
+    }
+    
+    protected override void RefreshValueOrText() { }
+    protected override string ConvertValueToString() => string.Empty;
+    
+    public void ExplicitHide()
+    {
+        IsOpen = false;
+        StateHasChanged();
+    }
+}

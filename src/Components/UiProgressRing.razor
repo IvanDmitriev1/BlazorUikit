@@ -1,0 +1,37 @@
+﻿@namespace BlazorUiKit.Components
+@inherits UiKitRenderComponentBase
+
+<svg class="@ComponentCss" viewBox="0 0 24 24">
+    @if (WithBackground)
+    {
+        <circle class="opacity-25 fill-transparent @ThemeManager.ThemeProvider.ToStrokeCss(Color)" cx="12" cy="12" r="10" stroke-width="4"></circle>    
+    }
+    
+    <path class="@ThemeManager.ThemeProvider.ToFillCss(Color)" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+</svg>
+
+@code {
+
+    [Parameter]
+    public bool WithBackground { get; set; }
+    
+    [Parameter]
+    public Size Size { get; set; } = Size.Medium;
+
+    [Parameter]
+    public Color Color { get; set; } = Color.Primary;
+    
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass("animate-spin");
+        
+        cssBuilder.AddClass(Size switch
+        {
+            Size.Custom => string.Empty,
+            Size.Small => "h-5 w-5",
+            Size.Medium => "h-10 w-10",
+            Size.Large => "h-20 w-20",
+            _ => throw new ArgumentOutOfRangeException()
+        });
+    }
+}

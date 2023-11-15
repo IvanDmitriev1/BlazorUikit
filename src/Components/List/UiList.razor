@@ -1,13 +1,10 @@
 ﻿@namespace BlazorUiKit.Components
 @typeparam T where T : notnull
-@inherits UiKitComponentBase
+@inherits UiKitRenderComponentBase
 @implements IUiList<T>
 
 <CascadingValue Value="this" IsFixed="true">
-    <ul @onmouseover="OnMouseOver"
-        @onmouseout="OnMouseOut"
-        @onclick="OnClick"
-        class="@ComponentCss">
+    <ul class="@ComponentCss" tabindex="0">
         @ChildContent
     </ul>
 </CascadingValue>
@@ -19,16 +16,7 @@
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-
-
-    [Parameter]
-    public EventCallback OnMouseOver { get; set; }
-
-    [Parameter]
-    public EventCallback OnMouseOut { get; set; }
-
-    [Parameter]
-    public EventCallback OnClick { get; set; }
+    
 
 
     [Parameter]
@@ -57,6 +45,7 @@
 
             SelectedValue = value;
             _ = SelectedValueChanged.InvokeAsync(value);
+            AllowRender();
 
             SetSelectedItem(value);
 
@@ -81,11 +70,12 @@
 
         OnSelectedValueChanged(_previousSelectedValue);
         _previousSelectedValue = SelectedValue;
+        AllowRender();
     }
 
     public void RegisterListItem(IUiListItem<T> item)
     {
-        _itemsDictionary.Add(item.Value, item);
+        _itemsDictionary.TryAdd(item.Value, item);
 
         if (EqualityComparer<T>.Default.Equals(item.Value, SelectedValue))
         {

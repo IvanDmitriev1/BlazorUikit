@@ -3,12 +3,12 @@
 @inherits UiListItemBase<T>
 
 <li class="@ComponentCss" @onclick="OnClick" @onclick:stopPropagation="true">
-    <UiKitIcon Icon="@IconType"/>
+    @UiKitIcon.IconRenderFragment((IconType, Size.Medium.ToIconSize()))
 </li>
 
 @code {
 
-    TablerIconType IconType => Selected ? TablerIconType.CircleDot : TablerIconType.Circle;
+    TablerIcon IconType => Selected ? TablerIcon.CircleDot : TablerIcon.Circle;
     
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {

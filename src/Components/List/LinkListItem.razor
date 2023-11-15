@@ -1,0 +1,22 @@
+﻿@namespace BlazorUiKit.Components
+@typeparam T where T : notnull
+
+@inherits UiListItemBase<T>
+
+<li aria-selected="@Selected.ToHtml()"
+    aria-disabled="@Disabled.ToHtml()"
+    tabindex="-1"
+    class="@ComponentCss">
+    <a href="@Href"
+       class="block p-4"
+       @onclick="OnClickHandler"
+       @onclick:stopPropagation="true">
+        @ChildContent
+    </a>
+</li>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public string Href { get; set; } = null!;
+}

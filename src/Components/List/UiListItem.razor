@@ -1,31 +1,23 @@
 ﻿@namespace BlazorUiKit.Components
 @typeparam T where T : notnull
+
 @inherits UiListItemBase<T>
 
-<li class="@ComponentCss" @onclick="OnClick" @onclick:stopPropagation="true">
+<li aria-selected="@Selected.ToHtml()"
+    aria-disabled="@Disabled.ToHtml()"
+    tabindex="-1"
+    class="@ComponentCss"
+    @onclick="OnClickHandler"
+    @onclick:stopPropagation="true">
     @ChildContent
 </li>
 
 @code {
 
-    [Parameter]
-    public RenderFragment ChildContent { get; set; } = null!;
-
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass("rounded");
-        cssBuilder.AddClass("cursor-pointer");
-
+        base.AddComponentCssClasses(ref cssBuilder);
+        
         cssBuilder.AddClass("p-4");
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundActiveCss(Color.Primary, false), Selected);
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextActiveCss(Color.Primary, false), Selected);
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color.Primary), !Selected);
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(Color.Primary), !Selected);
-    }
-    
-    protected virtual Task OnClick()
-    {
-        List?.SetSelectedValue(Value);
-        return Task.CompletedTask;
     }
 }

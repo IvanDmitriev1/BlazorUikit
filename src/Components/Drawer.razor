@@ -6,7 +6,7 @@
     
     <aside class="@ComponentCss" @onclick:stopPropagation="true">
         <Stack Direction="Direction.Row" Class="mb-6">
-            <IconButton Icon="@TablerIconType.X" Size="Size.Large" OnClickJs="CloseDrawer('MainDrawerRoot')" />
+            <UiButton Icon="TablerIcon.X" Size="Size.Large" onclick="CloseDrawer('MainDrawerRoot')"/>
             <div class="grow"></div>
         </Stack>
     

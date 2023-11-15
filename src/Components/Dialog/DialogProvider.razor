@@ -1,49 +1,41 @@
 ﻿@namespace BlazorUiKit.Components
 @inherits UiKitRenderComponentBase
-@implements IDisposable
 
-@inject IDialogService DialogService
-@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
 
-@foreach (var (key, dialogReference) in DialogService.DialogsById)
+@foreach (var (key, dialogReference) in _dialogsById)
 {
-    <DialogInstance @key="key" DialogReference="dialogReference"/>
+    <DialogInstance DialogReference="dialogReference"/>
 }
 
 @code
 {
-    IDisposable? _locationChangingRegistration;
+    [CascadingParameter]
+    private IDialogService DialogService { get; set; } = null!;
 
+    public int DisplayedDialogs => _dialogsById.Count;
+    
+    private readonly Dictionary<Guid, IDialogReferenceBase> _dialogsById = new();
+    
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) { }
-
-    public void Refresh() => StateHasChangedWithRendering();
-    public Task RefreshAsync() => InvokeAsync(StateHasChangedWithRendering);
-
-    public void Dispose()
-    {
-        _locationChangingRegistration?.Dispose();
-    }
-
-    protected override void OnInitialized()
-    {
-        DialogService.AddDialogProvider(this);
-    }
-
+    
     protected override void OnFirstRender()
     {
-        _locationChangingRegistration = NavigationManager.RegisterLocationChangingHandler(OnLocationChanging);
+        DialogService.SetDialogProvider(this);
     }
 
-    private ValueTask OnLocationChanging(LocationChangingContext arg)
+    public void AddDialog(IDialogReferenceBase dialogReference)
     {
-        if (DialogService.DialogsById.Count == 0)
-            return ValueTask.CompletedTask;
+        _dialogsById.Add(dialogReference.Id, dialogReference);
+        StateHasChangedWithRendering();
+    }
 
-        foreach (var (_, dialogReferenceBase) in DialogService.DialogsById)
-        {
-            dialogReferenceBase.Cancel();
-        }
+    public void RemoveDialog(Guid id)
+    {
+        if (!_dialogsById.TryGetValue(id, out _))
+            return;
 
-        return ValueTask.CompletedTask;
+        _dialogsById.Remove(id);
+        StateHasChangedWithRendering();
     }
 }

@@ -1,0 +1,68 @@
+﻿@namespace BlazorUiKit.Components
+@inherits UiKitComponentBase
+
+@inject IJSRuntime JsRuntime
+
+<div @ref="_element"
+     aria-hidden="@NotOpen.ToHtml()"
+     class="@ComponentCss">
+    @ChildContent
+</div>
+
+@if (AutoHide)
+{
+    <Overlay Visible="Open" Class="z-10" HiddenVariant="true" LockScroll="false" OnClick="Hide"/>
+}
+
+@code {
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public bool AutoHide { get; set; } = true;
+
+    [Parameter, EditorRequired]
+    public bool Open { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OpenChanged { get; set; }
+
+    protected bool CurrentOpen
+    {
+        get => Open;
+        set
+        {
+            if (Open == value)
+                return;
+
+            _previousOpen = value;
+            Open = value;
+            _ = OpenChanged.InvokeAsync(value);
+        }
+    }
+
+    private bool NotOpen => !Open;
+
+    private ElementReference _element;
+    private bool _previousOpen;
+
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
+    {
+        cssBuilder.AddClass("opacity-100 aria-hidden:pointer-events-none aria-hidden:opacity-0");
+        cssBuilder.AddClass("transition-opacity duration-200");
+        cssBuilder.AddClass("absolute");
+        cssBuilder.AddClass("drop-shadow-lg");
+        cssBuilder.AddClass("select-none");
+        cssBuilder.AddClass("z-20");
+        cssBuilder.AddClass("w-full max-h-[300px]");
+        cssBuilder.AddClass("overflow-y-auto touch-pan-y");
+
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.PageBackgroundCss);
+    }
+    
+    private void Hide()
+    {
+        CurrentOpen = false;
+    }
+}
