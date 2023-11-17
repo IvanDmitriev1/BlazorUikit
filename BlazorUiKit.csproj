@@ -15,7 +15,8 @@
     </ItemGroup>
   </Target>
   
-  <Import Project="Tailwindcss.Build.targets" />
+  <!--Strage azure pipeline error-->
+  <Import Project="Tailwindcss.Build.targets" Condition="'$(Configuration)' == 'Debug'" />
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />
