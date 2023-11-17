@@ -15,7 +15,8 @@
     </ItemGroup>
   </Target>
   
-  <Import Project="Tailwindcss.Build.targets" />
+  <!--Azure pipelines can't find tailwind.css file-->
+  <Import Project="Tailwindcss.Build.targets" Condition="'$(Configuration)' == 'Debug'" />
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />
