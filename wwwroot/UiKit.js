@@ -1,26 +1,6 @@
 Blazor.addEventListener('enhancedload', () => {
-    ApplyTheme();
-
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 });
-
-window.matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change',ApplyTheme);
-
-function ApplyTheme()
-{
-    const isDarkTheme = localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
-
-    if (isDarkTheme)
-    {
-        document.documentElement.classList.add('dark');
-    }
-    else
-    {
-        document.documentElement.classList.remove('dark');
-    }
-}
-
 
 class DOMCleanup {
     static #observers = new Map();
