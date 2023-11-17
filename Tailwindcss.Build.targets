@@ -4,9 +4,9 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <PathToTailwindcssFiles>./UiKit/src/wwwroot/css</PathToTailwindcssFiles>
+    <PathToTailwindcssFiles>./UiKit/wwwroot/css</PathToTailwindcssFiles>
     <CommandArguments>$(PathToTailwindcssFiles)/tailwind.config.js -i $(PathToTailwindcssFiles)/tailwind.css -o $(PathToTailwindcssFiles)/output.css</CommandArguments>
-    <RelativeWorkingDirectory>$(MSBuildProjectDirectory)/../..</RelativeWorkingDirectory>
+    <RelativeWorkingDirectory>$(MSBuildProjectDirectory)/..</RelativeWorkingDirectory>
   </PropertyGroup>
 
   <Target Name="BuildCss" BeforeTargets="CoreBuild">
