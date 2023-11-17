@@ -10,6 +10,8 @@
   </PropertyGroup>
 
   <Target Name="BuildCss" BeforeTargets="CoreBuild">
+    <Message Text="Variable Value: $(PathToTailwindcssFiles)" Importance="High" />
+    <Message Text="RelativeWorkingDirectory: $(RelativeWorkingDirectory)" Importance="High" />
     <Message Text="Starting tailwindcss. This may take a while..." Importance="High" />
 
     <Exec Command="dotnet tailwindcss -c $(CommandArguments)" IgnoreExitCode="true" Condition="'$(Configuration)' == 'Debug'" WorkingDirectory="$(RelativeWorkingDirectory)">
