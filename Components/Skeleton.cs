@@ -12,7 +12,7 @@ public sealed class Skeleton : UiKitElementComponentBase
         cssBuilder.AddClass("w-full", FullWidth);
     }
 
-    protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
+    protected override void OnElementRenderTree(RenderTreeBuilder builder, ref int seq)
     {
 
     }

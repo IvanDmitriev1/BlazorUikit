@@ -37,7 +37,7 @@ public class UiText : UiKitElementComponentBase
         cssBuilder.AddClass("aria-disabled:select-none");
     }
 
-    protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
+    protected override void OnElementRenderTree(RenderTreeBuilder builder, ref int seq)
     {
         if (Disabled)
         {

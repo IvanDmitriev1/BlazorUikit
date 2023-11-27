@@ -14,7 +14,7 @@ public sealed class FlexGrid : UiKitElementComponentBase
         cssBuilder.AddClass(Justify.ToTailwindCss());
     }
 
-    protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
+    protected override void OnElementRenderTree(RenderTreeBuilder builder, ref int seq)
     {
         builder.AddContent(seq++, ChildContent);
     }

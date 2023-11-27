@@ -5,7 +5,7 @@ public abstract class UiKitElementComponentBase : UiKitComponentBase
     public ElementReference ElementReference { get; private set; }
     protected string ElementTag { get; set; } = "div";
 
-    protected virtual void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq) { }
+    protected virtual void OnElementRenderTree(RenderTreeBuilder builder, ref int seq) { }
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
@@ -19,7 +19,7 @@ public abstract class UiKitElementComponentBase : UiKitComponentBase
         if (ElementTag == "button")
             builder.AddEventStopPropagationAttribute(seq++, "onclick", true);
 
-        OnBuildingRenderTree(builder, ref seq);
+        OnElementRenderTree(builder, ref seq);
 
         builder.AddElementReferenceCapture(seq++, ElementReferenceCaptureAction);
         builder.CloseElement();

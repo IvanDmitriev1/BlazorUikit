@@ -8,15 +8,7 @@
 @code {
 
     [Parameter, EditorRequired]
-    public string Src
-    {
-        get => _src;
-        set
-        {
-            _previousSrc = _src;
-            _src = value;
-        }
-    }
+    public string Src { get; set; } = string.Empty;
 
     [Parameter]
     public string Description { get; set; } = string.Empty;
@@ -24,8 +16,7 @@
     [Parameter]
     public ObjectFit ObjectFit { get; set; } = ObjectFit.Cover;
 
-    private string _src = null!;
-    private string _previousSrc = null!;
+    private string _previousSrc = string.Empty;
     
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {

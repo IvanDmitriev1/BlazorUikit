@@ -83,7 +83,7 @@ public class UiButton : UiKitElementComponentBase
         ElementTag = !string.IsNullOrWhiteSpace(Href) ? "a" : "button";
     }
 
-    protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
+    protected override void OnElementRenderTree(RenderTreeBuilder builder, ref int seq)
     {
         builder.AddMultipleAttributes(seq++, UserAttributes);
         builder.AddAttribute(seq++, "type", Type.ToHtml());

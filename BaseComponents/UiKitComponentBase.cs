@@ -39,10 +39,10 @@ public abstract class UiKitComponentBase : ComponentBase
 
         try
         {
-            AddComponentCssClasses(ref cssBuilder);
-
             if (Class is not null && IncludeClassCss)
                 cssBuilder.AddClass(Class);
+
+            AddComponentCssClasses(ref cssBuilder);
 
             return _componentCss = cssBuilder.ToString();
         }

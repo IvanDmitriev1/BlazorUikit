@@ -34,7 +34,7 @@ public sealed class UiLink : UiText
         _isActive = MatchIsActive();
     }
 
-    protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
+    protected override void OnElementRenderTree(RenderTreeBuilder builder, ref int seq)
     {
         builder.AddAttribute(seq++, "href", Href);
 
@@ -43,7 +43,7 @@ public sealed class UiLink : UiText
             builder.AddAttribute(seq++, "aria-current", "page");
         }
 
-        base.OnBuildingRenderTree(builder, ref seq);
+        base.OnElementRenderTree(builder, ref seq);
     }
 
 

@@ -24,7 +24,7 @@ public sealed class FlexGridItem : UiKitElementComponentBase
         cssBuilder.AddClass(GetXlFlexBias(Xl));
     }
 
-    protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
+    protected override void OnElementRenderTree(RenderTreeBuilder builder, ref int seq)
     {
         builder.AddContent(seq++, ChildContent);
     }

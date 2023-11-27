@@ -25,14 +25,15 @@ public sealed class Stack : UiKitElementComponentBase
     public bool FullWidth { get; set; }
 
     [Parameter]
-    public bool SetDefaultDisplay { get; set; } = true;
-
-    [Parameter]
     public bool AsCard { get; set; }
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass("flex", SetDefaultDisplay);
+        if (!cssBuilder.Contains("hidden") || cssBuilder.Contains("block"))
+        {
+            cssBuilder.AddClass("flex");
+        }
+
         cssBuilder.AddClass(Direction.ToTailwindCss());
         cssBuilder.AddClass(Justify.ToTailwindCss());
         cssBuilder.AddClass(AlignItems.ToTailwindCss());
@@ -42,7 +43,7 @@ public sealed class Stack : UiKitElementComponentBase
         cssBuilder.AddClass("rounded border border-dark-gray shadow", AsCard);
     }
 
-    protected override void OnBuildingRenderTree(RenderTreeBuilder builder, ref int seq)
+    protected override void OnElementRenderTree(RenderTreeBuilder builder, ref int seq)
     {
         builder.AddContent(seq++, ChildContent);
     }

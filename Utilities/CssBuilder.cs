@@ -19,7 +19,7 @@ public ref struct CssBuilder
     private ValueStringBuilder _stringBuilder;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly void Dispose() => _stringBuilder.Dispose();
+    public void Dispose() => _stringBuilder.Dispose();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override string ToString()
@@ -46,4 +46,8 @@ public ref struct CssBuilder
         _stringBuilder.Append(' ');
         _stringBuilder.Append(value);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly bool Contains
+        (ReadOnlySpan<char> value) => _stringBuilder.Contains(value);
 }
