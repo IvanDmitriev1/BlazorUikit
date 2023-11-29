@@ -1,10 +1,10 @@
 Blazor.addEventListener('enhancedload', () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 
-    AttachInputTextChangeEventListeners();
+    AttachInputTextChangeEventForAllInputs();
 });
 
-AttachInputTextChangeEventListeners();
+AttachInputTextChangeEventForAllInputs();
 
 class DOMCleanup {
     static #observers = new Map();
@@ -128,6 +128,7 @@ function RegisterNumericInputEvent(inputElement) {
     };
 
     inputElement.addEventListener('input', eventListener);
+    AttachInputTextChangeEventListener(inputElement);
 }
 
 function RegisterEnterKeyEvent(element, dotnetIdentifier) {
@@ -140,24 +141,38 @@ function RegisterEnterKeyEvent(element, dotnetIdentifier) {
     });
 }
 
-function AttachInputTextChangeEventListeners() {
+function AttachInputTextChangeEventForAllInputs() {
+    const inputs = document.querySelectorAll('input[type="text"]');
+    inputs.forEach(input => AttachInputTextChangeEventListener(input));
+}
+
+function AttachInputTextChangeEventListener(input) {
     const eventListener = (event) => {
-        if (event.target.value.trim() !== '') {
+        const isValueEmpty = event.target.value.trim() !== '';
+        const isDefaultValueEmpty = event.target.defaultValue.trim() !== '';
+
+        if (isValueEmpty || isDefaultValueEmpty) {
             event.target.classList.add("has-text");
         } else {
             event.target.classList.remove("has-text");
         }
     };
 
-    const inputs = document.querySelectorAll('input[type="text"]');
-    inputs.forEach(input => {
-        if (input.hasAttribute('data-event-added')) {
-            return;
-        }
+    if (input.hasAttribute('data-event-added')) {
+        return;
+    }
 
-        input.setAttribute('data-event-added', 'true');
-        addEventListener('input', eventListener);
-    });
+    const isValueEmpty = input.value.trim() !== '';
+    const isDefaultValueEmpty = input.defaultValue.trim() !== '';
+
+    if (isValueEmpty || isDefaultValueEmpty) {
+        input.classList.add("has-text");
+    } else {
+        input.classList.remove("has-text");
+    }
+
+    input.setAttribute('data-event-added', 'true');
+    addEventListener('input', eventListener);
 }
 
 function LockScroll() {
