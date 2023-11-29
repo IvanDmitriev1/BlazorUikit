@@ -1,6 +1,10 @@
 Blazor.addEventListener('enhancedload', () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+    AttachInputTextChangeEventListeners();
 });
+
+AttachInputTextChangeEventListeners();
 
 class DOMCleanup {
     static #observers = new Map();
@@ -136,7 +140,25 @@ function RegisterEnterKeyEvent(element, dotnetIdentifier) {
     });
 }
 
+function AttachInputTextChangeEventListeners() {
+    const eventListener = (event) => {
+        if (event.target.value.trim() !== '') {
+            event.target.classList.add("has-text");
+        } else {
+            event.target.classList.remove("has-text");
+        }
+    };
 
+    const inputs = document.querySelectorAll('input[type="text"]');
+    inputs.forEach(input => {
+        if (input.hasAttribute('data-event-added')) {
+            return;
+        }
+
+        input.setAttribute('data-event-added', 'true');
+        addEventListener('input', eventListener);
+    });
+}
 
 function LockScroll() {
     document.body.style.overflow = "hidden";

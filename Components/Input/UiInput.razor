@@ -5,7 +5,7 @@
 
 @if (Lines > 1)
 {
-    <textarea class="@ComponentCss @_inputCss"
+    <textarea class="@ComponentCss"
               @ref="ElementReference"
               @attributes="UserAttributes"
               type="@InputType.ToHtml()"
@@ -24,7 +24,7 @@
 }
 else
 {
-    <input class="@ComponentCss @_inputCss"
+    <input class="@ComponentCss"
            @ref="ElementReference"
            @attributes="UserAttributes"
            type="@InputType.ToHtml()"
@@ -57,7 +57,6 @@ else
     DotNetObjectReference<UiInput>? _objRef;
     string? _internalText;
     bool _isFocused;
-    string _inputCss = string.Empty;
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
@@ -90,8 +89,6 @@ else
 
         if (_internalText == Text)
             return;
-
-        UpdateInputCss();
 
         if (!OperatingSystem.IsBrowser() && !_isFocused)
         {
@@ -126,24 +123,5 @@ else
 
         if (!Immediate)
             CurrentText = obj.Value as string;
-    }
-
-    protected override void OnTextChanged()
-    {
-        UpdateInputCss();
-    }
-
-    private void UpdateInputCss()
-    {
-        if (string.IsNullOrEmpty(Text))
-        {
-            _inputCss = string.Empty;
-            AllowRender();
-        }
-        else if (string.IsNullOrEmpty(_inputCss))
-        {
-            _inputCss = "has-text";
-            AllowRender();
-        }
     }
 }
