@@ -1,43 +1,27 @@
 ﻿@namespace BlazorUiKit.Components
-@inherits TextInputBase<string>
+@inherits UIKitInputBase<string>
 
-<InputField Disabled="@Disabled"
-            FullWidth="@FullWidth"
-            Errors="@Errors"
-            Label="@Label"
-            AdornmentPlacement="@AdornmentPlacement"
-            ValidationCss="@ValidationCss"
-            Class="@Class">
+@inject IJSRuntime JsRuntime
+
+<InputField Label="@Label"
+            Class="@Class"
+            Disabled="@Disabled"
+            AdornmentPlacement="@AdornmentPlacement">
     <AdornmentRenderFragment>
         <InputAdornment Icon="@AdornmentIcon" Size="@AdornmentSize"  AdornmentPlacement="@AdornmentPlacement" AdornmentClick="@AdornmentClick" />
     </AdornmentRenderFragment>
     
     <InputRenderFragment>
-        <UiInput @ref="@_input"
-                 Class="p-3.5"
-                 Disabled="@Disabled"
-                 InputMode="@InputMode"
-                 ReadOnly="@ReadOnly"
-                 Placeholder="@Placeholder"
-                 MaxLength="@MaxLength"
-                 Lines="@Lines"
-                 InputType="@InputType"
-                 Immediate="@Immediate"
-                 DebounceInterval="@DebounceInterval"
-                 
-                 Text="@Text"
-                 TextChanged="text => CurrentText = text"/>
+        <input @attributes="@AdditionalAttributes"
+               @ref="_elementReference"
+               name="@NameAttributeValue"
+               value="@CurrentValue"
+               @onchange="OnChange"/>
     </InputRenderFragment>
 </InputField>
 
 @code
 {
-    /// <summary>
-    /// Gets or sets an expression that identifies the bound value.
-    /// </summary>
-    [Parameter]
-    public Expression<Func<string>>? TextExpression { get; set; }
-
     [Parameter]
     public bool FullWidth { get; set; }
 
@@ -71,32 +55,50 @@
         AdornmentPlacement.End   => "pl-3.5",
         _ => throw new ArgumentOutOfRangeException()
     };
-    
-    UiInput? _input;
 
-    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) { }
+    string? _internalText;
+    DotNetObjectReference<TextField>? _objRef;
+    ElementReference _elementReference;
+
+    protected override void Dispose(bool disposing)
+    {
+        _objRef?.Dispose();
+    }
 
     protected override void OnParametersSet()
     {
-        For = TextExpression;
-
-        base.OnParametersSet();
-
-        if (_input is null || _input.Text == Text)
-            return;
-
-        //_input.Text = Text;
-        AllowRender();
+        //AllowRender();
     }
 
-    protected override void OnTextChanged()
+    protected override Task OnAfterRenderAsync(bool firstRender)
     {
-        NotifyEditContext();
+        if (!firstRender || DebounceInterval == TimeSpan.Zero)
+        {
+            return Task.CompletedTask;
+        }
+
+        _objRef = DotNetObjectReference.Create(this);
+        return JsRuntime.InvokeVoidAsync("SetUpInputDebounceInterval", _elementReference, DebounceInterval.TotalMilliseconds, _objRef).AsTask();
     }
-    
+
     [JSInvokable]
     public void ChangeCurrentText(string newValue)
     {
-        CurrentText = newValue;
+        CurrentValue = newValue;
+    }
+
+    protected override bool TryParseValueFromString(string? value, out string result, [NotNullWhen(false)] out string? validationErrorMessage)
+    {
+        result = value ?? string.Empty;
+        validationErrorMessage = null;
+        return true;
+    }
+
+    private void OnChange(ChangeEventArgs obj)
+    {
+        _internalText = obj.Value as string;
+
+        if (!Immediate)
+            CurrentValue = obj.Value as string;
     }
 }

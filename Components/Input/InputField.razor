@@ -2,7 +2,7 @@
 @inherits UiKitComponentBase
 
 <div class="@ContainerBuilderCss()">
-    <div class="@ComponentCss @ValidationCss">
+    <div class="@ComponentCss">
         @if (AdornmentPlacement == AdornmentPlacement.Start)
         {
             @AdornmentRenderFragment
@@ -22,8 +22,6 @@
             @AdornmentRenderFragment
         }
     </div>
-
-    @DisplayValidationErrors.DisplayValidationErrorsFragment(Errors)
 </div>
 
 @code
@@ -35,22 +33,13 @@
     public RenderFragment? InputRenderFragment { get; set; }
     
     [Parameter, EditorRequired]
-    public string? ValidationCss { get; set; }
-    
-    [Parameter, EditorRequired]
     public bool Disabled { get; set; }
-
-    [Parameter, EditorRequired]
-    public bool FullWidth { get; set; }
 
     [Parameter, EditorRequired]
     public string Label { get; set; } = string.Empty;
 
     [Parameter]
     public bool ShowLabel { get; set; } = true;
-    
-    [Parameter, EditorRequired]
-    public IReadOnlyList<string> Errors { get; set; } = Array.Empty<string>();
     
     [Parameter, EditorRequired]
     public AdornmentPlacement AdornmentPlacement { get; set; }
@@ -74,14 +63,14 @@
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundHoverCss(Color.Primary), !Disabled);
         cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundDisabledCss);
         cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss);
-        cssBuilder.AddClass("w-full", FullWidth);
+        cssBuilder.AddClass("w-full");
     }
 
     private string ContainerBuilderCss()
     {
         using var cssBuilder = new CssBuilder(stackalloc char[55]);
 
-        cssBuilder.AddClass("w-full", FullWidth);
+        cssBuilder.AddClass("w-full");
         cssBuilder.AddClass("mt-3.5", !string.IsNullOrEmpty(Label));
         
         return cssBuilder.ToString();
