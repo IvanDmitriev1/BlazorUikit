@@ -6,17 +6,25 @@
 <InputField Label="@Label"
             Class="@Class"
             Disabled="@Disabled"
-            AdornmentPlacement="@AdornmentPlacement">
+            AdornmentPlacement="@AdornmentPlacement"
+            For="ValueExpression">
     <AdornmentRenderFragment>
         <InputAdornment Icon="@AdornmentIcon" Size="@AdornmentSize"  AdornmentPlacement="@AdornmentPlacement" AdornmentClick="@AdornmentClick" />
     </AdornmentRenderFragment>
     
     <InputRenderFragment>
-        <input @attributes="@AdditionalAttributes"
-               @ref="_elementReference"
-               name="@NameAttributeValue"
-               value="@CurrentValue"
-               @onchange="OnChange"/>
+        <UiTextInput @attributes="@AdditionalAttributes"
+                   @ref="_input"
+                   DebounceInterval="DebounceInterval"
+                   Immediate="Immediate"
+                   InputType="InputType"
+                   ReadOnly="ReadOnly"
+                   Disabled="Disabled"
+                   Placeholder="@Placeholder"
+
+                   Value="@Value"
+                   ValueChanged="text=> CurrentValue = text"
+                   ValueExpression="ValueExpression" />
     </InputRenderFragment>
 </InputField>
 
@@ -26,13 +34,13 @@
     public bool FullWidth { get; set; }
 
     [Parameter]
-    public InputType InputType { get; set; } = InputType.Text;
-    
-    [Parameter]
     public bool Immediate { get; set; }
 
     [Parameter]
     public TimeSpan DebounceInterval { get; set; }
+
+    [Parameter]
+    public InputType InputType { get; set; } = InputType.Text;
 
     
     [Parameter]
@@ -56,29 +64,15 @@
         _ => throw new ArgumentOutOfRangeException()
     };
 
-    string? _internalText;
-    DotNetObjectReference<TextField>? _objRef;
-    ElementReference _elementReference;
 
-    protected override void Dispose(bool disposing)
-    {
-        _objRef?.Dispose();
-    }
+    UiTextInput? _input;
 
     protected override void OnParametersSet()
     {
-        //AllowRender();
-    }
+        if (_input is null || _input.Value == Value)
+            return;
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender || DebounceInterval == TimeSpan.Zero)
-        {
-            return Task.CompletedTask;
-        }
-
-        _objRef = DotNetObjectReference.Create(this);
-        return JsRuntime.InvokeVoidAsync("SetUpInputDebounceInterval", _elementReference, DebounceInterval.TotalMilliseconds, _objRef).AsTask();
+        AllowRender();
     }
 
     [JSInvokable]
@@ -92,13 +86,5 @@
         result = value ?? string.Empty;
         validationErrorMessage = null;
         return true;
-    }
-
-    private void OnChange(ChangeEventArgs obj)
-    {
-        _internalText = obj.Value as string;
-
-        if (!Immediate)
-            CurrentValue = obj.Value as string;
     }
 }

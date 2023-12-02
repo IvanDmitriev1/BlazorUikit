@@ -1,0 +1,124 @@
+﻿@namespace BlazorUiKit.Components
+@inherits InputBase<string>
+
+@inject IJSRuntime JsRuntime
+
+@if (Lines > 1)
+{
+    <textarea @attributes="@AdditionalAttributes"
+           @ref="_elementReference"
+           name="@NameAttributeValue"
+           rows="@Lines"
+           disabled="@Disabled"
+           readonly="@ReadOnly"
+           placeholder="@Placeholder"
+           @oninput="OnInput"
+           @onchange="OnChange">
+        @_internalText
+    </textarea>
+}
+else
+{ 
+    <input @attributes="@AdditionalAttributes"
+           @ref="_elementReference"
+           name="@NameAttributeValue"
+           value="@_internalText"
+           disabled="@Disabled"
+           readonly="@ReadOnly"
+           placeholder="@Placeholder"
+           @oninput="OnInput"
+           @onchange="OnChange" />
+}
+
+@code
+{
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public bool ReadOnly { get; set; }
+
+    [Parameter]
+    public int Lines { get; set; } = 1;
+
+    [Parameter]
+    public bool Immediate { get; set; }
+
+    [Parameter]
+    public TimeSpan DebounceInterval { get; set; }
+
+    [Parameter]
+    public InputType InputType { get; set; } = InputType.Text;
+
+    static readonly string ComponentCss = BuildComponentCss();
+
+    string? _internalText;
+    DotNetObjectReference<UiTextInput>? _objRef;
+    ElementReference _elementReference;
+
+    private static string BuildComponentCss()
+    {
+        using var cssBuilder = new CssBuilder(stackalloc char[128]);
+
+        cssBuilder.AddClass("peer/input");
+        cssBuilder.AddClass("flex-auto");
+        cssBuilder.AddClass("py-4");
+
+        //cssBuilder.AddClass("resize-none outline-none", Lines > 1);
+
+        return cssBuilder.ToString();
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _objRef?.Dispose();
+    }
+
+    protected override void OnParametersSet()
+    {
+        _internalText = CurrentValue;
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender || DebounceInterval == TimeSpan.Zero)
+        {
+            return Task.CompletedTask;
+        }
+
+        _objRef = DotNetObjectReference.Create(this);
+        return JsRuntime.InvokeVoidAsync("SetUpInputDebounceInterval", _elementReference, DebounceInterval.TotalMilliseconds, _objRef).AsTask();
+    }
+
+    [JSInvokable]
+    public void ChangeCurrentText(string newValue)
+    {
+        CurrentValue = newValue;
+    }
+
+    protected override bool TryParseValueFromString(string? value, out string result, [NotNullWhen(false)] out string? validationErrorMessage)
+    {
+        result = value ?? string.Empty;
+        validationErrorMessage = null;
+        return true;
+    }
+
+    private void OnInput(ChangeEventArgs obj)
+    {
+        if (!Immediate)
+            return;
+
+        CurrentValue = obj.Value as string;
+    }
+
+    private void OnChange(ChangeEventArgs obj)
+    {
+        _internalText = obj.Value as string;
+
+        if (!Immediate)
+            CurrentValue = obj.Value as string;
+    }
+}

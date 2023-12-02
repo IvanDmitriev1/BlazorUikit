@@ -1,8 +1,9 @@
 ﻿@namespace BlazorUiKit.Components
+@typeparam TValue
 @inherits UiKitComponentBase
 
 <div class="@ContainerBuilderCss()">
-    <div class="@ComponentCss">
+    <span class="@ComponentCss">
         @if (AdornmentPlacement == AdornmentPlacement.Start)
         {
             @AdornmentRenderFragment
@@ -21,7 +22,12 @@
         {
             @AdornmentRenderFragment
         }
-    </div>
+    </span>
+    
+    @if (EditContext is not null)
+    {
+        <ValidationMessage For="For" />
+    }
 </div>
 
 @code
@@ -33,6 +39,9 @@
     public RenderFragment? InputRenderFragment { get; set; }
     
     [Parameter, EditorRequired]
+    public Expression<Func<TValue>>? For { get; set; }
+
+    [Parameter, EditorRequired]
     public bool Disabled { get; set; }
 
     [Parameter, EditorRequired]
@@ -41,11 +50,14 @@
     [Parameter]
     public bool ShowLabel { get; set; } = true;
     
-    [Parameter, EditorRequired]
+    [Parameter]
     public AdornmentPlacement AdornmentPlacement { get; set; }
     
     [Parameter]
     public RenderFragment? AdornmentRenderFragment { get; set; }
+
+    [CascadingParameter]
+    private EditContext? EditContext { get; set; }
 
     private static readonly string LabelClass = InputLabelCssBuilder();
 
