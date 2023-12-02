@@ -14,17 +14,17 @@
     
     <InputRenderFragment>
         <UiTextInput @attributes="@AdditionalAttributes"
-                   @ref="_input"
-                   DebounceInterval="DebounceInterval"
-                   Immediate="Immediate"
-                   InputType="InputType"
-                   ReadOnly="ReadOnly"
-                   Disabled="Disabled"
-                   Placeholder="@Placeholder"
+                     @ref="_input"
+                     NameAttributeValue="@NameAttributeValue"
+                     DebounceInterval="DebounceInterval"
+                     Immediate="Immediate"
+                     InputType="InputType"
+                     ReadOnly="ReadOnly"
+                     Disabled="Disabled"
+                     Placeholder="@Placeholder"
 
-                   Value="@Value"
-                   ValueChanged="text=> CurrentValue = text"
-                   ValueExpression="ValueExpression" />
+                     Text="@Value"
+                     TextChanged="text=> CurrentValue = text"/>
     </InputRenderFragment>
 </InputField>
 
@@ -69,7 +69,7 @@
 
     protected override void OnParametersSet()
     {
-        if (_input is null || _input.Value == Value)
+        if (_input is null || _input.Text == Value)
             return;
 
         AllowRender();

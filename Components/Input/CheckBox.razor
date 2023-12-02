@@ -1,71 +1,41 @@
 ﻿@namespace BlazorUiKit.Components
-@*
-@inherits ValidationComponentBase<bool>
+@inherits InputBase<bool>
 
 <div class="@Class">
     <label class="inline-flex items-center cursor-pointer">
-        <span class="@ComponentCss @ValidationCss">
-            <input type="checkbox"
-                   class="absolute opacity-0 cursor-pointer peer"
-                   @bind="CurrentChecked" />
+        <span class="@ComponentCss">
+            <input @attributes="@AdditionalAttributes"
+                   @bind="Value"
+                   type="checkbox"
+                   name="@NameAttributeValue"
+                   class="absolute opacity-0 cursor-pointer peer"/>
             <UiKitIcon Class="invisible peer-checked:visible" Icon="@TablerIcon.Check" />
         </span>
     
         <UiText Class="ml-2.5 select-none">@Label</UiText>
     </label>
-
-    @DisplayValidationErrors.DisplayValidationErrorsFragment(Errors)
+    
+    @if (EditContext is not null)
+    {
+        <ValidationMessage For="ValueExpression" />
+    }
 </div>
 
 @code
 {
-    [Parameter]
-    public bool Checked { get; set; }
 
     [Parameter]
-    public EventCallback<bool> CheckedChanged { get; set; }
-
-    /// <summary>
-    /// Gets or sets an expression that identifies the bound value.
-    /// </summary>
-    [Parameter]
-    public Expression<Func<bool>>? CheckedExpression { get; set; }
-
-    protected bool CurrentChecked
-    {
-        get => Checked;
-        set
-        {
-            var hasChanged = !EqualityComparer<bool>.Default.Equals(value, Checked);
-            if (!hasChanged)
-                return;
-
-            Checked = value;
-            _ = CheckedChanged.InvokeAsync(value);
-            NotifyEditContext();
-
-            AllowRender();
-        }
-    }
+    public string Class { get; set; } = string.Empty;
 
     [Parameter]
-    public string? Label { get; set; }
+    public string Label { get; set; } = string.Empty;
 
-    protected override void OnInitialized()
+    static readonly string ComponentCss = BuildComponentCss();
+
+    private static string BuildComponentCss()
     {
-        IncludeClassCss = false;
-        //CacheCss = true;
-    }
+        using var cssBuilder = new CssBuilder(stackalloc char[128]);
 
-    protected override void OnParametersSet()
-    {
-        For = CheckedExpression;
-
-        base.OnParametersSet();
-    }
-
-    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
-    {
         cssBuilder.AddClass("p-1.5");
         cssBuilder.AddClass("inline-flex relative");
         cssBuilder.AddClass("transition duration-300");
@@ -80,6 +50,10 @@
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextCss(Color.Primary));
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextHoverCss(Color.Primary));
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextActiveCss(Color.Primary));
+
+        return cssBuilder.ToString();
     }
+
+    protected override bool TryParseValueFromString(string? value, out bool result, out string? validationErrorMessage)
+        => throw new NotSupportedException($"This component does not parse string inputs. Bind to the '{nameof(CurrentValue)}' property, not '{nameof(CurrentValueAsString)}'.");
 }
-*@

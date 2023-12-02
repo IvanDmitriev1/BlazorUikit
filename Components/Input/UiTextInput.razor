@@ -1,12 +1,11 @@
 ﻿@namespace BlazorUiKit.Components
-@inherits InputBase<string>
-
+@implements IDisposable
 @inject IJSRuntime JsRuntime
 
 @if (Lines > 1)
 {
     <textarea @attributes="@AdditionalAttributes"
-           @ref="_elementReference"
+           @ref="ElementReference"
            name="@NameAttributeValue"
            rows="@Lines"
            disabled="@Disabled"
@@ -19,8 +18,8 @@
 }
 else
 { 
-    <input @attributes="@AdditionalAttributes"
-           @ref="_elementReference"
+    <input @attributes="AdditionalAttributes"
+           @ref="ElementReference"
            name="@NameAttributeValue"
            value="@_internalText"
            disabled="@Disabled"
@@ -32,6 +31,14 @@ else
 
 @code
 {
+    public ElementReference ElementReference { get; private set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
     [Parameter]
     public string? Placeholder { get; set; }
 
@@ -53,11 +60,33 @@ else
     [Parameter]
     public InputType InputType { get; set; } = InputType.Text;
 
+    [Parameter, EditorRequired]
+    public string? NameAttributeValue { get; set; }
+
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public EventCallback<string?> TextChanged { get; set; }
+
+    protected string? CurrentText
+    {
+        get => Text;
+        set
+        {
+            var hasChanged = !EqualityComparer<string>.Default.Equals(value, Text);
+            if (!hasChanged)
+                return;
+
+            Text = value;
+            _ = TextChanged.InvokeAsync(value);
+        }
+    }
+
     static readonly string ComponentCss = BuildComponentCss();
 
     string? _internalText;
     DotNetObjectReference<UiTextInput>? _objRef;
-    ElementReference _elementReference;
 
     private static string BuildComponentCss()
     {
@@ -72,14 +101,14 @@ else
         return cssBuilder.ToString();
     }
 
-    protected override void Dispose(bool disposing)
+    public void Dispose()
     {
         _objRef?.Dispose();
     }
 
     protected override void OnParametersSet()
     {
-        _internalText = CurrentValue;
+        _internalText = CurrentText;
     }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
@@ -90,20 +119,13 @@ else
         }
 
         _objRef = DotNetObjectReference.Create(this);
-        return JsRuntime.InvokeVoidAsync("SetUpInputDebounceInterval", _elementReference, DebounceInterval.TotalMilliseconds, _objRef).AsTask();
+        return JsRuntime.InvokeVoidAsync("SetUpInputDebounceInterval", ElementReference, DebounceInterval.TotalMilliseconds, _objRef).AsTask();
     }
 
     [JSInvokable]
     public void ChangeCurrentText(string newValue)
     {
-        CurrentValue = newValue;
-    }
-
-    protected override bool TryParseValueFromString(string? value, out string result, [NotNullWhen(false)] out string? validationErrorMessage)
-    {
-        result = value ?? string.Empty;
-        validationErrorMessage = null;
-        return true;
+        CurrentText = newValue;
     }
 
     private void OnInput(ChangeEventArgs obj)
@@ -111,7 +133,7 @@ else
         if (!Immediate)
             return;
 
-        CurrentValue = obj.Value as string;
+        CurrentText = obj.Value as string;
     }
 
     private void OnChange(ChangeEventArgs obj)
@@ -119,6 +141,6 @@ else
         _internalText = obj.Value as string;
 
         if (!Immediate)
-            CurrentValue = obj.Value as string;
+            CurrentText = obj.Value as string;
     }
 }
