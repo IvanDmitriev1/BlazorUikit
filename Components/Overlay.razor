@@ -25,6 +25,9 @@
     public bool LockScroll { get; set; } = true;
 
     [Parameter]
+    public ZIndex ZIndex { get; set; }
+
+    [Parameter]
     public EventCallback OnClick { get; set; }
 
     
@@ -35,6 +38,7 @@
         cssBuilder.AddClass("aria-hidden:hidden");
         cssBuilder.AddClass("w-full h-full");
         cssBuilder.AddClass("fixed top-0 left-0");
+        cssBuilder.AddClass(ZIndex.ToTailwindCss());
 
         cssBuilder.AddClass("bg-main-dark-background/60", !HiddenVariant);
     }

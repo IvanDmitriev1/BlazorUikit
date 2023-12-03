@@ -13,7 +13,7 @@
     <AdornmentRenderFragment>
         <InputAdornment Icon="@AdornmentIcon"
                         Size="@AdornmentSize"
-                        Class="z-20"
+                        Class="@ZIndex.ToTailwindCss()"
                         AdornmentPlacement="@AdornmentPlacement"
                         AdornmentClick="() => SearchAsync(_currentText)" />
     </AdornmentRenderFragment>
@@ -21,7 +21,7 @@
     <InputRenderFragment>
         <UiTextInput @attributes="@AdditionalAttributes"
                      @ref="_input"
-                     Class="z-20"
+                     Class="@ZIndex.ToTailwindCss()"
                      NameAttributeValue="@NameAttributeValue"
                      DebounceInterval="DebounceInterval"
                      Immediate="Immediate"
@@ -35,7 +35,10 @@
     </InputRenderFragment>
     
     <ChildContent>
-        <PopOver @bind-Open="IsOpen" Class="top-12 mt-2.5">
+        <PopOver @bind-Open="IsOpen"
+                 ContentZIndex="ZIndex"
+                 OverlayZIndex="ZIndex - 1"
+                 Class="top-12 mt-2.5">
             <CascadingValue TValue="IExplicitHideComponent" IsFixed="true" Value="this">
                 <div class="@ThemeManager.ThemeProvider.ToBackgroundCss(Color.Primary)">
                     @if (_isLoading && ProgressIndicatorInPopoverTemplate is not null)
@@ -132,6 +135,9 @@
     public RenderFragment? ProgressIndicatorInPopoverTemplate { get; set; }
 
     #endregion
+
+    [Parameter]
+    public ZIndex ZIndex { get; set; } = ZIndex.Ten;
 
     [Parameter]
     public int MaxItems { get; set; } = 10;

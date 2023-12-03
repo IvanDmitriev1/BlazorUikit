@@ -4,9 +4,9 @@
 @implements IExplicitHideComponent
 
 <InputField Disabled="false"
-            ShowLabel="@(_selectedListItem is not null)"
-            Label="@Label"
             AdornmentPlacement="AdornmentPlacement.End"
+            Label="@Label"
+            ShowLabel="@(_selectedListItem is not null)"
             Class="@Class"
             For="ValueExpression">
     <InputRenderFragment>
@@ -37,7 +37,10 @@
             </div>
         </Stack>
         
-        <PopOver @bind-Open="_isOpen" Class="top-12 mt-2.5">
+        <PopOver @bind-Open="_isOpen"
+                 ContentZIndex="ZIndex"
+                 OverlayZIndex="ZIndex - 1"
+                 Class="top-12 mt-2.5">
             <CascadingValue Value="this" IsFixed="true">
                 <UiList T="T"
                         Class="@ThemeManager.ThemeProvider.ToBackgroundCss(Color.Primary)"
@@ -68,6 +71,9 @@
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
     
+    [Parameter]
+    public ZIndex ZIndex { get; set; } = ZIndex.Ten;
+
     [Parameter]
     public IReadOnlyCollection<T>? Items { get; set; }
 

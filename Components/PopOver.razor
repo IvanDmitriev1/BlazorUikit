@@ -11,13 +11,19 @@
 
 @if (AutoHide)
 {
-    <Overlay Visible="Open" Class="z-10" HiddenVariant="true" LockScroll="false" OnClick="Hide"/>
+    <Overlay Visible="Open" ZIndex="OverlayZIndex" HiddenVariant="true" LockScroll="false" OnClick="Hide"/>
 }
 
 @code {
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public ZIndex ContentZIndex { get; set; } = ZIndex.Ten;
+
+    [Parameter]
+    public ZIndex OverlayZIndex { get; set; } = ZIndex.One;
 
     [Parameter]
     public bool AutoHide { get; set; } = true;
@@ -54,9 +60,9 @@
         cssBuilder.AddClass("absolute");
         cssBuilder.AddClass("drop-shadow-lg");
         cssBuilder.AddClass("select-none");
-        cssBuilder.AddClass("z-20");
         cssBuilder.AddClass("w-full max-h-[300px]");
         cssBuilder.AddClass("overflow-y-auto touch-pan-y");
+        cssBuilder.AddClass(ContentZIndex.ToTailwindCss());
 
         cssBuilder.AddClass(ThemeManager.ThemeProvider.PageBackgroundCss);
     }
