@@ -23,7 +23,7 @@
     
     <InputRenderFragment>
         <UiTextInput @attributes="@AdditionalAttributes"
-                     @ref="TextInput"
+                     @ref="_textInput"
                      AdornmentPlacement="AdornmentPlacement.End"
                      NameAttributeValue="@NameAttributeValue"
                      DebounceInterval="DebounceInterval"
@@ -68,9 +68,21 @@
     [Parameter]
     public string? InputCss { get; set; }
 
+    UiTextInput? _textInput;
+
     protected override void OnInitialized()
     {
         Value = T.Zero;
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (_textInput is null || _textInput.Text == CurrentValueAsString)
+            return;
+
+        AllowRender();
     }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
@@ -78,7 +90,7 @@
         if (!firstRender)
             return Task.CompletedTask;
 
-        return JsRuntime.InvokeVoidAsync("RegisterNumericInputEvent", TextInput!.ElementReference).AsTask();
+        return JsRuntime.InvokeVoidAsync("RegisterNumericInputEvent", _textInput!.ElementReference).AsTask();
     }
 
     private void OnUpButtonCallback()

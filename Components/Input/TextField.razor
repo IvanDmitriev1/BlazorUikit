@@ -15,7 +15,7 @@
     
     <InputRenderFragment>
         <UiTextInput @attributes="@AdditionalAttributes"
-                     @ref="TextInput"
+                     @ref="_textInput"
                      AdornmentPlacement="AdornmentPlacement"
                      NameAttributeValue="@NameAttributeValue"
                      DebounceInterval="DebounceInterval"
@@ -56,6 +56,18 @@
 
     [Parameter]
     public EventCallback AdornmentClick { get; set; }
+
+    UiTextInput? _textInput;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (_textInput is null || _textInput.Text == CurrentValueAsString)
+            return;
+
+        AllowRender();
+    }
 
     [JSInvokable]
     public void ChangeCurrentText(string newValue)

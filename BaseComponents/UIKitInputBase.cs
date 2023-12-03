@@ -19,8 +19,6 @@ public abstract class UiKitInputBase<T> : InputBase<T>
 	[Parameter]
 	public string? Placeholder { get; set; }
 
-	protected UiTextInput? TextInput { get; set; }
-
 	private bool _render;
 	private bool _firstRendered;
 	string _previousClassCss = string.Empty;
@@ -52,16 +50,10 @@ public abstract class UiKitInputBase<T> : InputBase<T>
 
 	protected override void OnParametersSet()
 	{
-		if (_previousClassCss != CssClass)
-		{
-			_previousClassCss = CssClass;
-			AllowRender();
-			return;
-		}
-
-		if (TextInput is null || TextInput.Text == CurrentValueAsString)
+		if (_previousClassCss == CssClass)
 			return;
 
+		_previousClassCss = CssClass;
 		AllowRender();
 	}
 }
