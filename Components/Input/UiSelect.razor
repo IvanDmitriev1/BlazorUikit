@@ -8,7 +8,8 @@
             Label="@Label"
             ShowLabel="@(_selectedListItem is not null)"
             Class="@Class"
-            For="ValueExpression">
+            For="ValueExpression"
+            IsInvalid="IsInvalid">
     <InputRenderFragment>
         <input @attributes="@AdditionalAttributes"
                @onchange="() => IsOpen = !IsOpen"
@@ -38,8 +39,8 @@
         </Stack>
         
         <PopOver @bind-Open="_isOpen"
-                 ContentZIndex="ZIndex"
-                 OverlayZIndex="ZIndex - 1"
+                 ContentZIndex="ZIndex.Ten"
+                 OverlayZIndex="ZIndex.Two"
                  Class="top-12 mt-2.5">
             <CascadingValue Value="this" IsFixed="true">
                 <UiList T="T"
@@ -70,9 +71,6 @@
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-    
-    [Parameter]
-    public ZIndex ZIndex { get; set; } = ZIndex.Ten;
 
     [Parameter]
     public IReadOnlyCollection<T>? Items { get; set; }

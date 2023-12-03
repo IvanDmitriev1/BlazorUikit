@@ -19,6 +19,8 @@ public abstract class UiKitInputBase<T> : InputBase<T>
 	[Parameter]
 	public string? Placeholder { get; set; }
 
+	protected bool IsInvalid => CssClass == "invalid";
+
 	private bool _render;
 	private bool _firstRendered;
 	string _previousClassCss = string.Empty;

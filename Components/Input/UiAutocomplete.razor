@@ -9,11 +9,12 @@
             Label="@Label"
             AdornmentPlacement="@AdornmentPlacement"
             Class="@ComponentCss"
-            For="ValueExpression">
+            For="ValueExpression"
+            IsInvalid="IsInvalid">
     <AdornmentRenderFragment>
         <InputAdornment Icon="@AdornmentIcon"
                         Size="@AdornmentSize"
-                        Class="@ZIndex.ToTailwindCss()"
+                        Class="@Zindex.ToTailwindCss()"
                         AdornmentPlacement="@AdornmentPlacement"
                         AdornmentClick="() => SearchAsync(_currentText)" />
     </AdornmentRenderFragment>
@@ -21,7 +22,7 @@
     <InputRenderFragment>
         <UiTextInput @attributes="@AdditionalAttributes"
                      @ref="_input"
-                     Class="@ZIndex.ToTailwindCss()"
+                     Class="@Zindex.ToTailwindCss()"
                      NameAttributeValue="@NameAttributeValue"
                      DebounceInterval="DebounceInterval"
                      Immediate="Immediate"
@@ -36,8 +37,8 @@
     
     <ChildContent>
         <PopOver @bind-Open="IsOpen"
-                 ContentZIndex="ZIndex"
-                 OverlayZIndex="ZIndex - 1"
+                 ContentZIndex="Zindex"
+                 OverlayZIndex="Zindex - 1"
                  Class="top-12 mt-2.5">
             <CascadingValue TValue="IExplicitHideComponent" IsFixed="true" Value="this">
                 <div class="@ThemeManager.ThemeProvider.ToBackgroundCss(Color.Primary)">
@@ -137,9 +138,6 @@
     #endregion
 
     [Parameter]
-    public ZIndex ZIndex { get; set; } = ZIndex.Ten;
-
-    [Parameter]
     public int MaxItems { get; set; } = 10;
 
     [Parameter]
@@ -170,6 +168,8 @@
     }
 
     protected string ComponentCss => _componentCss ??= CreateComponentCss();
+
+    private const ZIndex Zindex = ZIndex.Ten;
 
     UiTextInput? _input;
     DotNetObjectReference<UiAutocomplete<T>>? _objRef;
