@@ -83,6 +83,7 @@ module.exports = {
     extend: {
       aria: {
         currentPage: 'current="page"',
+        invalid: 'invalid="true"',
       },
       outlineWidth: {
         6: "6px",

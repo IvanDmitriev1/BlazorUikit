@@ -2,17 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-
-    .invalid {
-        @apply outline outline-2 outline-error;
-    }
-
-    .valid {
-        @apply outline outline-2 outline-successful;
-    }
-}
-
 @layer utilities {
     .icon {
         width: 1em;

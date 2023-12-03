@@ -1,9 +1,8 @@
-﻿using System.Linq.Expressions;
-using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Components.Forms;
 
 namespace BlazorUiKit.BaseComponents;
 
-public abstract class UIKitInputBase<T> : InputBase<T>
+public abstract class UiKitInputBase<T> : InputBase<T>
 {
 	[Parameter]
 	public string Class { get; set; } = string.Empty;
@@ -20,8 +19,11 @@ public abstract class UIKitInputBase<T> : InputBase<T>
 	[Parameter]
 	public string? Placeholder { get; set; }
 
+	protected UiTextInput? TextInput { get; set; }
+
 	private bool _render;
 	private bool _firstRendered;
+	string _previousClassCss = string.Empty;
 
 	protected override bool ShouldRender()
 	{
@@ -46,5 +48,20 @@ public abstract class UIKitInputBase<T> : InputBase<T>
 	protected void AllowRender()
 	{
 		_render = true;
+	}
+
+	protected override void OnParametersSet()
+	{
+		if (_previousClassCss != CssClass)
+		{
+			_previousClassCss = CssClass;
+			AllowRender();
+			return;
+		}
+
+		if (TextInput is null || TextInput.Text == CurrentValueAsString)
+			return;
+
+		AllowRender();
 	}
 }

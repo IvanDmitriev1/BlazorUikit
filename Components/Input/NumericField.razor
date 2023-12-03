@@ -1,7 +1,7 @@
 ﻿@namespace BlazorUiKit.Components
 @typeparam T where T : System.Numerics.INumber<T>, System.Numerics.IMinMaxValue<T>
 @using System.Globalization
-@inherits UIKitInputBase<T>
+@inherits UiKitInputBase<T>
 
 @inject IJSRuntime JsRuntime
 
@@ -9,7 +9,8 @@
             Label="@Label"
             AdornmentPlacement="AdornmentPlacement.End"
             For="ValueExpression"
-            Class="@Class">
+            Class="@Class"
+            IsInvalid="@(CssClass == "invalid")">
     <AdornmentRenderFragment>
         @if (ShowArrows)
         {
@@ -22,7 +23,8 @@
     
     <InputRenderFragment>
         <UiTextInput @attributes="@AdditionalAttributes"
-                     @ref="_input"
+                     @ref="TextInput"
+                     AdornmentPlacement="AdornmentPlacement.End"
                      NameAttributeValue="@NameAttributeValue"
                      DebounceInterval="DebounceInterval"
                      Immediate="Immediate"
@@ -66,19 +68,9 @@
     [Parameter]
     public string? InputCss { get; set; }
 
-    UiTextInput? _input;
-
     protected override void OnInitialized()
     {
         Value = T.Zero;
-    }
-
-    protected override void OnParametersSet()
-    {
-        if (_input is null || _input.Text == CurrentValueAsString)
-            return;
-
-        AllowRender();
     }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
@@ -86,7 +78,7 @@
         if (!firstRender)
             return Task.CompletedTask;
 
-        return JsRuntime.InvokeVoidAsync("RegisterNumericInputEvent", _input!.ElementReference).AsTask();
+        return JsRuntime.InvokeVoidAsync("RegisterNumericInputEvent", TextInput!.ElementReference).AsTask();
     }
 
     private void OnUpButtonCallback()
@@ -116,7 +108,7 @@
         if (string.IsNullOrWhiteSpace(value))
         {
             result = T.Zero;
-            AllowRender();
+            //AllowRender();
 
             return true;
         }
@@ -140,7 +132,7 @@
             result = convertedToValue;
         }
 
-        AllowRender();
+        //AllowRender();
         return true;
     }
 

@@ -1,5 +1,5 @@
 ﻿@namespace BlazorUiKit.Components
-@inherits UIKitInputBase<string>
+@inherits UiKitInputBase<string>
 
 @inject IJSRuntime JsRuntime
 
@@ -7,14 +7,16 @@
             Class="@Class"
             Disabled="@Disabled"
             AdornmentPlacement="@AdornmentPlacement"
-            For="ValueExpression">
+            For="ValueExpression"
+            IsInvalid="@(CssClass == "invalid")">
     <AdornmentRenderFragment>
         <InputAdornment Icon="@AdornmentIcon" Size="@AdornmentSize"  AdornmentPlacement="@AdornmentPlacement" AdornmentClick="@AdornmentClick" />
     </AdornmentRenderFragment>
     
     <InputRenderFragment>
         <UiTextInput @attributes="@AdditionalAttributes"
-                     @ref="_input"
+                     @ref="TextInput"
+                     AdornmentPlacement="AdornmentPlacement"
                      NameAttributeValue="@NameAttributeValue"
                      DebounceInterval="DebounceInterval"
                      Immediate="Immediate"
@@ -42,7 +44,7 @@
     [Parameter]
     public InputType InputType { get; set; } = InputType.Text;
 
-    
+
     [Parameter]
     public AdornmentPlacement AdornmentPlacement { get; set; }
 
@@ -54,26 +56,6 @@
 
     [Parameter]
     public EventCallback AdornmentClick { get; set; }
-    
-
-    string InputCss => AdornmentPlacement switch
-    {
-        AdornmentPlacement.None  => "px-3.5",
-        AdornmentPlacement.Start => "pr-3.5",
-        AdornmentPlacement.End   => "pl-3.5",
-        _ => throw new ArgumentOutOfRangeException()
-    };
-
-
-    UiTextInput? _input;
-
-    protected override void OnParametersSet()
-    {
-        if (_input is null || _input.Text == Value)
-            return;
-
-        AllowRender();
-    }
 
     [JSInvokable]
     public void ChangeCurrentText(string newValue)

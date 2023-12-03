@@ -3,22 +3,20 @@
 
 <div class="@Class">
     <label class="inline-flex items-center cursor-pointer">
-        <span class="@ComponentCss">
+        <span class="@InputContainerCss" aria-invalid="@((CssClass == "invalid").ToHtml())">
             <input @attributes="@AdditionalAttributes"
-                   @bind="Value"
+                   @onchange="() => CurrentValue = !CurrentValue"
+                   checked="@Value"
                    type="checkbox"
                    name="@NameAttributeValue"
-                   class="absolute opacity-0 cursor-pointer peer"/>
+                   class="@InputCss" />
             <UiKitIcon Class="invisible peer-checked:visible" Icon="@TablerIcon.Check" />
         </span>
     
         <UiText Class="ml-2.5 select-none">@Label</UiText>
     </label>
     
-    @if (EditContext is not null)
-    {
-        <ValidationMessage For="ValueExpression" />
-    }
+    <UiKitValidationMessage For="ValueExpression" />
 </div>
 
 @code
@@ -30,9 +28,10 @@
     [Parameter]
     public string Label { get; set; } = string.Empty;
 
-    static readonly string ComponentCss = BuildComponentCss();
+    static readonly string InputContainerCss = BuildInputContainerCss();
+    static readonly string InputCss = BuildInputCss();
 
-    private static string BuildComponentCss()
+    private static string BuildInputContainerCss()
     {
         using var cssBuilder = new CssBuilder(stackalloc char[128]);
 
@@ -51,6 +50,22 @@
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextHoverCss(Color.Primary));
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToTextActiveCss(Color.Primary));
         
+        cssBuilder.AddClass("aria-invalid:outline-error");
+        cssBuilder.AddClass("aria-invalid:outline");
+        cssBuilder.AddClass("aria-invalid:outline-2");
+
+        return cssBuilder.ToString();
+    }
+
+    private static string BuildInputCss()
+    {
+        using var cssBuilder = new CssBuilder(stackalloc char[128]);
+
+        cssBuilder.AddClass("peer");
+        cssBuilder.AddClass("absolute");
+        cssBuilder.AddClass("opacity-0");
+        cssBuilder.AddClass("cursor-pointer");
+
         return cssBuilder.ToString();
     }
 

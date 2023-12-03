@@ -3,7 +3,7 @@
 @inherits UiKitComponentBase
 
 <div class="@ContainerBuilderCss()">
-    <span class="@ComponentCss">
+    <span class="@ComponentCss" aria-invalid="@(IsInvalid.ToHtml())">
         @if (AdornmentPlacement == AdornmentPlacement.Start)
         {
             @AdornmentRenderFragment
@@ -24,10 +24,7 @@
         }
     </span>
     
-    @if (EditContext is not null)
-    {
-        <ValidationMessage For="For" />
-    }
+    <UiKitValidationMessage For="For"/>
 </div>
 
 @code
@@ -48,6 +45,9 @@
     public string Label { get; set; } = string.Empty;
 
     [Parameter]
+    public bool IsInvalid { get; set; }
+
+    [Parameter]
     public bool ShowLabel { get; set; } = true;
     
     [Parameter]
@@ -56,15 +56,21 @@
     [Parameter]
     public RenderFragment? AdornmentRenderFragment { get; set; }
 
-    [CascadingParameter]
-    private EditContext? EditContext { get; set; }
-
     private static readonly string LabelClass = InputLabelCssBuilder();
+
+    private string ContainerBuilderCss()
+    {
+        using var cssBuilder = new CssBuilder(stackalloc char[55]);
+
+        cssBuilder.AddClass("w-full");
+        cssBuilder.AddClass("mt-3.5", !string.IsNullOrEmpty(Label));
+
+        return cssBuilder.ToString();
+    }
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("inline-flex relative");
-        cssBuilder.AddClass("active:!outline-none");
         cssBuilder.AddClass("focus-within:ring");
         cssBuilder.AddClass("rounded border shadow-sm");
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBackgroundCss(Color.Primary));
@@ -76,16 +82,10 @@
         cssBuilder.AddClass(ThemeManager.ThemeProvider.BackgroundDisabledCss);
         cssBuilder.AddClass(ThemeManager.ThemeProvider.TextDisabledCss);
         cssBuilder.AddClass("w-full");
-    }
 
-    private string ContainerBuilderCss()
-    {
-        using var cssBuilder = new CssBuilder(stackalloc char[55]);
-
-        cssBuilder.AddClass("w-full");
-        cssBuilder.AddClass("mt-3.5", !string.IsNullOrEmpty(Label));
-        
-        return cssBuilder.ToString();
+        cssBuilder.AddClass("aria-invalid:outline-error");
+        cssBuilder.AddClass("aria-invalid:outline");
+        cssBuilder.AddClass("aria-invalid:outline-2");
     }
 
     private static string InputLabelCssBuilder()

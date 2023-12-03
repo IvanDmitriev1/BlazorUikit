@@ -36,7 +36,7 @@ else
     public ElementReference ElementReference { get; private set; }
 
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
     [Parameter]
     public string Class { get; set; } = string.Empty;
@@ -61,6 +61,9 @@ else
 
     [Parameter]
     public InputType InputType { get; set; } = InputType.Text;
+
+    [Parameter]
+    public AdornmentPlacement AdornmentPlacement { get; set; }
 
     [Parameter, EditorRequired]
     public string? NameAttributeValue { get; set; }
@@ -100,6 +103,14 @@ else
         cssBuilder.AddClass("peer/input");
         cssBuilder.AddClass("flex-auto");
         cssBuilder.AddClass("py-4");
+
+        cssBuilder.AddClass(AdornmentPlacement switch
+        {
+            AdornmentPlacement.None  => "px-3.5",
+            AdornmentPlacement.Start => "pr-3.5",
+            AdornmentPlacement.End   => "pl-3.5",
+            _                        => throw new ArgumentOutOfRangeException()
+        });
 
         //cssBuilder.AddClass("resize-none outline-none", Lines > 1);
 

@@ -1,6 +1,6 @@
 ﻿@namespace BlazorUiKit.Components
 @typeparam T where T : notnull
-@inherits UIKitInputBase<T>
+@inherits UiKitInputBase<T>
 @implements IExplicitHideComponent
 
 <InputField Disabled="false"
@@ -18,9 +18,9 @@
     </InputRenderFragment>
     
     <AdornmentRenderFragment>
-        <div class="@ChevronDownCss">
+        <span class="@ChevronDownCss">
             @UiKitIcon.IconRenderFragment((TablerIcon.ChevronDown, Size.Medium.ToIconSize()))
-        </div>
+        </span>
     </AdornmentRenderFragment>
     
     <ChildContent>
