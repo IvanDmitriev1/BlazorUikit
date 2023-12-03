@@ -1,6 +1,6 @@
 ﻿namespace BlazorUiKit.Interfaces;
 
-public interface IExplicitHide
+public interface IExplicitHideComponent
 {
     void ExplicitHide();
 }

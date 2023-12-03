@@ -1,12 +1,13 @@
 ﻿@namespace BlazorUiKit.Components
+@inherits UiKitRenderComponentBase
 
 @if (AdornmentClick.HasDelegate)
 {
-    <UiButton Class="@ComponentCss()" Icon="@Icon" Size="@Size" Variant="Variant.Text" @onclick="@AdornmentClick"/>
+    <UiButton Class="@ComponentCss" Icon="@Icon" Size="@Size" Variant="Variant.Text" @onclick="AdornmentClick"/>
 }
 else
 {
-    <UiKitIcon Class="@ComponentCss()" Icon="@Icon" Size="@Size" />
+    <UiKitIcon Class="@ComponentCss" Icon="@Icon" Size="@Size" />
 }
 
 @code
@@ -25,33 +26,15 @@ else
     
     private bool _firstRendered;
 
-    protected override bool ShouldRender()
+    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        if (!_firstRendered)
-            return true;
-
-        return false;
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-            _firstRendered = true;
-    }
-
-    private string ComponentCss()
-    {
-        using var cssBuilder = new CssBuilder(stackalloc char[55]);
-
         cssBuilder.AddClass("block");
         cssBuilder.AddClass("my-auto");
-        
+
         cssBuilder.AddClass("peer/adornment-left", AdornmentPlacement == AdornmentPlacement.Start);
         cssBuilder.AddClass("ml-3.5", AdornmentPlacement == AdornmentPlacement.Start);
-        
+
         cssBuilder.AddClass("mr-1.5", AdornmentPlacement == AdornmentPlacement.End && AdornmentClick.HasDelegate);
         cssBuilder.AddClass("mr-3.5", AdornmentPlacement == AdornmentPlacement.End && !AdornmentClick.HasDelegate);
-        
-        return cssBuilder.ToString();
     }
 }

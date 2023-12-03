@@ -7,7 +7,7 @@ public abstract class UiKitComponentBase : ComponentBase
 
     protected bool IsJsRuntimeAvailable { get; private set; }
     protected bool IncludeClassCss { get; set; } = true;
-    protected string ComponentCss => BuildComponentCss();
+    protected string ComponentCss => _componentCss??= BuildComponentCss();
 
     private string? _componentCss;
 
@@ -30,21 +30,14 @@ public abstract class UiKitComponentBase : ComponentBase
 
     private string BuildComponentCss()
     {
-        if (!string.IsNullOrWhiteSpace(_componentCss))
-        {
-            return _componentCss;
-        }
-
         var cssBuilder = new CssBuilder(stackalloc char[455]);
 
         try
         {
-            if (Class is not null && IncludeClassCss)
-                cssBuilder.AddClass(Class);
-
+            cssBuilder.AddClass(Class, IncludeClassCss);
             AddComponentCssClasses(ref cssBuilder);
 
-            return _componentCss = cssBuilder.ToString();
+            return cssBuilder.ToString();
         }
         finally
         {

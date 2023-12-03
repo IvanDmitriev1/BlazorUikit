@@ -6,6 +6,7 @@
 {
     <textarea @attributes="@AdditionalAttributes"
            @ref="ElementReference"
+           class="@ComponentCss"
            name="@NameAttributeValue"
            rows="@Lines"
            disabled="@Disabled"
@@ -20,11 +21,12 @@ else
 { 
     <input @attributes="AdditionalAttributes"
            @ref="ElementReference"
+           class="@ComponentCss"
            name="@NameAttributeValue"
-           value="@_internalText"
            disabled="@Disabled"
            readonly="@ReadOnly"
            placeholder="@Placeholder"
+           value="@_internalText"
            @oninput="OnInput"
            @onchange="OnChange" />
 }
@@ -83,14 +85,17 @@ else
         }
     }
 
-    static readonly string ComponentCss = BuildComponentCss();
+    protected string ComponentCss => _componentCss ??= BuildComponentCss();
 
+    string? _componentCss;
     string? _internalText;
     DotNetObjectReference<UiTextInput>? _objRef;
 
-    private static string BuildComponentCss()
+    private string BuildComponentCss()
     {
         using var cssBuilder = new CssBuilder(stackalloc char[128]);
+
+        cssBuilder.AddClass(Class);
 
         cssBuilder.AddClass("peer/input");
         cssBuilder.AddClass("flex-auto");

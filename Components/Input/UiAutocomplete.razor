@@ -1,45 +1,42 @@
 ﻿@namespace BlazorUiKit.Components
-@typeparam T where T : notnull
-@*@inherits ValueInputBase<T?>
-@implements IExplicitHide
+@typeparam T where T : IEquatable<T>
+@inherits UIKitInputBase<T>
+@implements IExplicitHideComponent
 
 @inject IJSRuntime JsRuntime
 
 <InputField Disabled="@Disabled"
-            FullWidth="true" 
-            Errors="@Errors"
             Label="@Label"
             AdornmentPlacement="@AdornmentPlacement"
-            ValidationCss="@ValidationCss"
-            Class="@ComponentCss">
+            Class="@ComponentCss"
+            For="ValueExpression">
     <AdornmentRenderFragment>
         <InputAdornment Icon="@AdornmentIcon"
                         Size="@AdornmentSize"
+                        Class="z-20"
                         AdornmentPlacement="@AdornmentPlacement"
-                        AdornmentClick="OnSearchAsync" />
+                        AdornmentClick="() => SearchAsync(_currentText)" />
     </AdornmentRenderFragment>
     
     <InputRenderFragment>
-        <UiInput @ref="@_input"
-                 UserAttributes="@UserAttributes"
-                 Class="p-3.5"
-                 Disabled="@Disabled"
-                 InputMode="@InputMode"
-                 ReadOnly="@ReadOnly"
-                 Placeholder="@Placeholder"
-                 MaxLength="@MaxLength"
-                 Lines="@Lines"
-                 InputType="@InputType.Text"
-                 DebounceInterval="@DebounceInterval"
-                 Immediate="@Immediate"
-                 
-                 Text="@Text"
-                 TextChanged="text => CurrentText = text"/>
+        <UiTextInput @attributes="@AdditionalAttributes"
+                     @ref="_input"
+                     Class="z-20"
+                     NameAttributeValue="@NameAttributeValue"
+                     DebounceInterval="DebounceInterval"
+                     Immediate="Immediate"
+                     InputType="InputType.Text"
+                     ReadOnly="ReadOnly"
+                     Disabled="Disabled"
+                     Placeholder="@Placeholder"
+
+                     Text="@_currentText"
+                     TextChanged="OnTextChanged" />
     </InputRenderFragment>
     
     <ChildContent>
         <PopOver @bind-Open="IsOpen" Class="top-12 mt-2.5">
-            <CascadingValue TValue="IExplicitHide" IsFixed="true" Value="this">
+            <CascadingValue TValue="IExplicitHideComponent" IsFixed="true" Value="this">
                 <div class="@ThemeManager.ThemeProvider.ToBackgroundCss(Color.Primary)">
                     @if (_isLoading && ProgressIndicatorInPopoverTemplate is not null)
                     {
@@ -76,7 +73,7 @@
                                 }
                             }
                             
-                            @if (_itemsReturned > MaxItems && MoreItemsTemplate is not null)
+                            @if (_itemsReturnedCount > MaxItems && MoreItemsTemplate is not null)
                             {
                                 @MoreItemsTemplate
                             }
@@ -118,80 +115,116 @@
 
     [Parameter]
     public RenderFragment<T>? ItemTemplate { get; set; }
-    
+
     [Parameter]
     public RenderFragment? NoItemsTemplate { get; set; }
-    
+
     [Parameter]
     public RenderFragment? MoreItemsTemplate { get; set; }
 
     [Parameter]
     public RenderFragment? BeforeItemsTemplate { get; set; }
-    
+
     [Parameter]
     public RenderFragment? AfterItemsTemplate { get; set; }
-    
+
     [Parameter]
     public RenderFragment? ProgressIndicatorInPopoverTemplate { get; set; }
 
     #endregion
-    
+
+    [Parameter]
+    public int MaxItems { get; set; } = 10;
+
     [Parameter]
     public bool Immediate { get; set; }
-    
+
     [Parameter]
     public TimeSpan DebounceInterval { get; set; }
-    
-    
+
+
     [Parameter]
     public required Func<string, CancellationToken, Task<IReadOnlyList<T>>> SearchFunc { get; set; }
-    
+
     [Parameter]
     public required Func<T?, string?> ToStringFunc { get; set; }
-    
-    
-    private bool IsOpen
+
+
+    protected bool IsOpen
     {
         get => _isOpen;
         set
         {
             if (_isOpen == value)
                 return;
-            
+
             _isOpen = value;
             AllowRender();
         }
     }
-        
-    private const int MaxItems = 10;
-    
-    UiInput? _input;
+
+    protected string ComponentCss => _componentCss ??= CreateComponentCss();
+
+    UiTextInput? _input;
     DotNetObjectReference<UiAutocomplete<T>>? _objRef;
-    private bool _isOpen;
-    private CancellationTokenSource _cancellationTokenSource = new();
+    private CancellationTokenSource _cts = new();
     private List<T> _items = new();
-    private int _itemsReturned;
+    private bool _isOpen;
+    private int _itemsReturnedCount;
     private bool _isLoading;
     private string _previousText = string.Empty;
-    private bool _isValueChanged;
-    
-    public UiAutocomplete() : base(default){}
+    private string _currentText = string.Empty;
+    private T? _previousValue = default;
+    private string? _componentCss;
 
-    protected override void OnDispose()
+    private string CreateComponentCss()
     {
-        _objRef?.Dispose();
-    }
-    
-    protected override async Task OnFirstRenderAsync()
-    {
-        _objRef = DotNetObjectReference.Create(this);
-        await JsRuntime.InvokeVoidAsync("RegisterEnterKeyEvent", _input!.ElementReference, _objRef);
-    }
+        using var cssBuilder = new CssBuilder(stackalloc char[128]);
 
-    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
-    {
+        cssBuilder.AddClass(Class);
+
         cssBuilder.AddClass("border-4");
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderCss(Color.Primary));
+
+        return cssBuilder.ToString();
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _objRef?.Dispose();
+        _cts.Dispose();
+    }
+
+    protected override void OnParametersSet()
+    {
+        CheckIfValueChanged();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return Task.CompletedTask;
+        }
+
+        return JsRuntime.InvokeVoidAsync("RegisterEnterKeyEvent", _input!.ElementReference, _objRef).AsTask();
+    }
+
+    protected override bool TryParseValueFromString(string? value, out T result, out string? validationErrorMessage) => throw new NotSupportedException();
+
+    protected override string? FormatValueAsString(T? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        if (value is string valueStr)
+        {
+            return valueStr;
+        }
+
+        return ToStringFunc(value);
     }
 
     public void ExplicitHide()
@@ -203,88 +236,64 @@
     [JSInvokable]
     public async Task OnEnterKey(string newText)
     {
-        if (CurrentText != newText)
+        await SearchAsync(newText);
+    }
+
+    private Task OnTextChanged(string? arg)
+    {
+        if (arg is null)
+            return Task.CompletedTask;
+
+        _currentText = arg;
+        return SearchAsync(_currentText);
+    }
+
+    private void CheckIfValueChanged()
+    {
+        if (string.IsNullOrEmpty(CurrentValueAsString) || _previousValue?.Equals(Value) == true)
         {
-            CurrentText = newText;
             return;
         }
 
-        await OnSearchAsync();
-        StateHasChanged();
-    }
+        _previousValue = Value;
+        _currentText = CurrentValueAsString;
 
-    protected override async void OnTextChanged()
-    {
-        if (_isValueChanged)
-        {
-            _isValueChanged = false;
-            return;
-        }
-        
-        await OnSearchAsync();
-    }
-    
-    protected override void OnValueChanged()
-    {
         IsOpen = false;
-        _isValueChanged = true;
     }
 
-    protected override void RefreshValueOrText() {}
-
-    protected override string? ConvertValueToString()
+    private async Task SearchAsync(string? arg)
     {
-        if (Value is string valueStr)
-        {
-            return valueStr;
-        }
+        arg = arg?.Trim();
 
-        return ToStringFunc(Value);
-    }
+        if (string.IsNullOrWhiteSpace(arg))
+            return;
 
-    private async ValueTask CancelTokenAsync()
-    {
-        try
-        {
-            await _cancellationTokenSource.CancelAsync();
-        }
-        finally
-        {
-            _cancellationTokenSource.Dispose();
-            _cancellationTokenSource = new CancellationTokenSource();
-        }
-    }
-    
-    private async Task OnSearchAsync()
-    {
-        if (_previousText == Text)
+        if (_previousText == arg)
         {
             IsOpen = true;
             return;
         }
-        
-        if (string.IsNullOrWhiteSpace(Text))
-            return;
-        
+
         IsOpen = true;
         _items.Clear();
-        _previousText = Text;
+        _previousText = arg;
         _isLoading = true;
+        AllowRender();
         StateHasChanged();
-        
+
         try
         {
             await CancelTokenAsync();
-            
-            var searchItems = await SearchFunc.Invoke(Text, _cancellationTokenSource.Token);
-            int maxItems = searchItems.Count <= MaxItems ? searchItems.Count : MaxItems;
-            
-            if (maxItems > _items.Capacity)
-                _items.Capacity = maxItems;
 
-            _itemsReturned = searchItems.Count;
+            var searchItems = await SearchFunc.Invoke(arg, _cts.Token);
+            int itemsLength = searchItems.Count <= MaxItems ? searchItems.Count : MaxItems;
 
-            for (int i = 0; i < maxItems; i++)
+            if (itemsLength > _items.Capacity)
+                _items.Capacity = itemsLength;
+
+            _itemsReturnedCount = searchItems.Count;
+
+            for (int i = 0; i < itemsLength; i++)
             {
                 _items.Add(searchItems[i]);
             }
@@ -302,8 +311,30 @@
             await DispatchExceptionAsync(ex);
             return;
         }
-        
+
         _isLoading = false;
-        StateHasChangedWithRendering();
+        AllowRender();
+        StateHasChanged();
     }
-}*@
+
+    private async ValueTask CancelTokenAsync()
+    {
+        try
+        {
+            await _cts.CancelAsync();
+        }
+        catch (TaskCanceledException)
+        {
+            
+        }
+        catch (OperationCanceledException)
+        {
+
+        }
+        finally
+        {
+            _cts.Dispose();
+            _cts = new CancellationTokenSource();
+        }
+    }
+}

@@ -1,21 +1,18 @@
 ﻿@namespace BlazorUiKit.Components
 @typeparam T where T : notnull
-@*
-@inherits ValueInputBase<T?>
-@implements IExplicitHide
+@inherits UIKitInputBase<T>
+@implements IExplicitHideComponent
 
 <InputField Disabled="false"
-            FullWidth="true"
-            Errors="@Errors"
             ShowLabel="@(_selectedListItem is not null)"
             Label="@Label"
             AdornmentPlacement="AdornmentPlacement.End"
-            ValidationCss="@ValidationCss"
-            Class="@Class">
+            Class="@Class"
+            For="ValueExpression">
     <InputRenderFragment>
-        <input @attributes="UserAttributes"
-               @ref="_element"
+        <input @attributes="@AdditionalAttributes"
                @onchange="() => IsOpen = !IsOpen"
+               name="@NameAttributeValue"
                type="checkbox"
                class="absolute opacity-0 cursor-pointer h-full w-full peer/input has-text"/>
     </InputRenderFragment>
@@ -97,28 +94,13 @@
 
     private bool _isOpen;
     private IUiListItem<T>? _selectedListItem;
-    private string _listCss = string.Empty;
-    private ElementReference _element;
 
-    public UiSelect() : base(default)
-    {
-        
-    }
-
-    protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) {}
-
-    protected override void OnValueChanged()
-    {
-        IsOpen = false;
-    }
-    
-    protected override void RefreshValueOrText() { }
-    protected override string ConvertValueToString() => string.Empty;
-    
     public void ExplicitHide()
     {
         IsOpen = false;
         StateHasChanged();
     }
+
+    protected override bool TryParseValueFromString(string? value, out T? result, out string? validationErrorMessage)
+        => throw new NotSupportedException($"This component does not parse string inputs. Bind to the '{nameof(CurrentValue)}' property, not '{nameof(CurrentValueAsString)}'.");
 }
-*@

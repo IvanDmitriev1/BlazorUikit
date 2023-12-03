@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using System.Linq.Expressions;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace BlazorUiKit.BaseComponents;
 
@@ -45,14 +46,5 @@ public abstract class UIKitInputBase<T> : InputBase<T>
 	protected void AllowRender()
 	{
 		_render = true;
-	}
-
-	protected void StateHasChangedWithRendering()
-	{
-		if (_render)
-			return;
-
-		AllowRender();
-		StateHasChanged();
 	}
 }

@@ -16,7 +16,7 @@ public abstract class UiListItemBase<T> : UiKitRenderComponentBase, IUiListItem<
     protected IUiList<T>? List { get; set; }
 
     [CascadingParameter]
-    protected IExplicitHide? ExplicitHide { get; set; }
+    protected IExplicitHideComponent? ExplicitHide { get; set; }
 
     protected bool Selected
     {
