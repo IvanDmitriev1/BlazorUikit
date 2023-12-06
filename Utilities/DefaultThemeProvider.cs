@@ -29,7 +29,7 @@ public class DefaultThemeProvider : IThemeProvider
     {
         Color.Custom => string.Empty,
         Color.Inherit => "hover:bg-inherit",
-        Color.Primary => "hover:bg-dark-10 dark:hover:bg-dark-gray-15",
+        Color.Primary => "hover:bg-dark-6 dark:hover:bg-dark-gray-15",
         Color.Secondary => "hover:bg-dark-90 dark:hover:bg-white",
         Color.Error => "hover:bg-error-light",
         Color.Successful => "hover:bg-successful-light",

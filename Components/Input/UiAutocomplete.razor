@@ -169,10 +169,10 @@
 
     protected string ComponentCss => _componentCss ??= CreateComponentCss();
 
-    private const ZIndex Zindex = ZIndex.Ten;
+    private const ZIndex Zindex = ZIndex.Two;
 
-    UiTextInput? _input;
-    DotNetObjectReference<UiAutocomplete<T>>? _objRef;
+    private UiTextInput? _input;
+    private DotNetObjectReference<UiAutocomplete<T>>? _objRef;
     private CancellationTokenSource _cts = new();
     private List<T> _items = new();
     private bool _isOpen;
