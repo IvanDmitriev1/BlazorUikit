@@ -101,7 +101,7 @@
         if (PageHrefTemplate is null)
             return null;
 
-        return $"{PageHrefTemplate}{page}";
+        return string.Format(PageHrefTemplate, page);
     }
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)

@@ -9,6 +9,7 @@ export function beforeWebStart() {
 export function afterWebStarted(blazor) {
     console.log("after");
 
+    window.previousPathName = window.location.pathname;
     blazor.addEventListener('enhancedload', onEnhancedLoad);
 
     var customScript = document.createElement('script');
@@ -18,11 +19,24 @@ export function afterWebStarted(blazor) {
 
 function onEnhancedLoad() {
 
+    moveScrollPositionIfPageNavigates();
     AttachInputTextChangeEventForAllInputs();
 
     try {
         ApplyTheme();
     } catch (e) {
 
-    } 
+    }
+
+    
+}
+
+function moveScrollPositionIfPageNavigates() {
+
+    const isChanged = window.location.pathname !== window.previousPathName;
+    window.previousPathName = window.location.pathname;
+
+    if (isChanged) {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
 }
