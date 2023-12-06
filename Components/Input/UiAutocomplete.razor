@@ -213,7 +213,8 @@
             return Task.CompletedTask;
         }
 
-        return JsRuntime.InvokeVoidAsync("RegisterEnterKeyEvent", _input!.ElementReference, _objRef).AsTask();
+        _objRef = DotNetObjectReference.Create(this);
+        return JsRuntime.RegisterEnterKeyEvent(_input!.ElementReference, _objRef).AsTask();
     }
 
     protected override bool TryParseValueFromString(string? value, out T result, out string? validationErrorMessage) => throw new NotSupportedException();

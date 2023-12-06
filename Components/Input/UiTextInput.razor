@@ -23,6 +23,7 @@ else
            @ref="ElementReference"
            class="@ComponentCss"
            name="@NameAttributeValue"
+           type="text"
            disabled="@Disabled"
            readonly="@ReadOnly"
            placeholder="@Placeholder"
@@ -85,9 +86,8 @@ else
         }
     }
 
-    protected string ComponentCss => _componentCss ??= BuildComponentCss();
+    protected string ComponentCss => BuildComponentCss();
 
-    string? _componentCss;
     string? _internalText;
     DotNetObjectReference<UiTextInput>? _objRef;
 
@@ -101,6 +101,7 @@ else
         cssBuilder.AddClass("flex-auto");
         cssBuilder.AddClass("py-4");
         cssBuilder.AddClass("px-3.5");
+        cssBuilder.AddClass("has-text", !string.IsNullOrEmpty(Text));
 
         //cssBuilder.AddClass("resize-none outline-none", Lines > 1);
 
@@ -120,12 +121,10 @@ else
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender || DebounceInterval == TimeSpan.Zero)
-        {
             return Task.CompletedTask;
-        }
 
         _objRef = DotNetObjectReference.Create(this);
-        return JsRuntime.InvokeVoidAsync("SetUpInputDebounceInterval", ElementReference, DebounceInterval.TotalMilliseconds, _objRef).AsTask();
+        return JsRuntime.SetUpInputDebounceInterval(ElementReference, DebounceInterval, _objRef).AsTask();
     }
 
     [JSInvokable]

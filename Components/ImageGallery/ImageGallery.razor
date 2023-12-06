@@ -94,13 +94,15 @@
         _selectedImageUrl = ImagesUrls[0];
     }
 
-    protected override Task OnFirstRenderAsync()
+    protected override async Task OnFirstRenderAsync()
     {
         if (AutoCycleTime == TimeSpan.Zero)
-            return Task.CompletedTask;
+            return;
         
         _objRef = DotNetObjectReference.Create(this);
-        return JsRuntime.InvokeVoidAsync("SetUpImageGalleryTimer", _rootElement!.ElementReference, AutoCycleTime.TotalMilliseconds, _objRef).AsTask();
+
+        var module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", $"{MyJsRuntimeExtensions.ComponentsPath}/ImageGallery/ImageGallery.razor.js");
+        await module.InvokeVoidAsync("SetUpTimer", _rootElement!.ElementReference, AutoCycleTime.TotalMilliseconds, _objRef);
     }
 
     [JSInvokable]
