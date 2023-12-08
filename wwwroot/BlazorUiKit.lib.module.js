@@ -1,20 +1,23 @@
 import { AttachInputTextChangeEventForAllInputs } from "./js/InputHasText.js"
+import { OpenModalDialog } from "./js/Dialog.js"
 
 export function beforeWebStart() {
-    console.log("before");
-
     AttachInputTextChangeEventForAllInputs();
+    openDialogsIfNeeded();
 }
 
 export function afterWebStarted(blazor) {
-    console.log("after");
-
     window.previousPathName = window.location.pathname;
     blazor.addEventListener('enhancedload', onEnhancedLoad);
 
-    var customScript = document.createElement('script');
+    const customScript = document.createElement('script');
     customScript.setAttribute('src', '_content/BlazorUiKit/js/ssr.js');
     document.body.appendChild(customScript);
+
+    const dialogModule = document.createElement('script');
+    dialogModule.setAttribute('type', 'module');
+    dialogModule.setAttribute('src', './_content/BlazorUiKit/js/Dialog.js');
+    document.body.appendChild(dialogModule);
 }
 
 function onEnhancedLoad() {
@@ -27,8 +30,6 @@ function onEnhancedLoad() {
     } catch (e) {
 
     }
-
-    
 }
 
 function moveScrollPositionIfPageNavigates() {
@@ -39,4 +40,9 @@ function moveScrollPositionIfPageNavigates() {
     if (isChanged) {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }
+}
+
+function openDialogsIfNeeded() {
+    const dialogs = document.querySelectorAll('dialog[data-open="true"]');
+    dialogs.forEach(dialog => OpenModalDialog(dialog, false));
 }

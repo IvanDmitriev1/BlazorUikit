@@ -1,0 +1,35 @@
+﻿@namespace BlazorUiKit.Components
+
+<dialog id="@Id"
+        class="@ComponentCss"
+        data-open="@ShouldBeOpened.ToHtml()">
+    @ChildContent
+</dialog>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public string Id { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public Breakpoint MaxWidthBreakpoint { get; set; } = Breakpoint.Sm;
+
+    [Parameter]
+    public bool ShouldBeOpened { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+    private string ComponentCss => BuildComponentCss();
+
+    private string BuildComponentCss()
+    {
+        using var cssBuilder = new CssBuilder(stackalloc char[256]);
+        var builder = cssBuilder;
+
+        builder.AddClass(MaxWidthBreakpoint.ToTailwindCssMaxWidth());
+        builder.AddDialogInstanceStyle();
+
+        return builder.ToString();
+    }
+}

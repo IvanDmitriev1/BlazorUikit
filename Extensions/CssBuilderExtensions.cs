@@ -1,38 +1,15 @@
-﻿using System.Numerics;
+﻿namespace BlazorUiKit.Extensions;
 
-namespace BlazorUiKit.Extensions;
-
-public static class CssBuilderExtensions
+internal static class CssBuilderExtensions
 {
-    public static void AddClassAndJoinNumber<TNum>(this ref CssBuilder cssBuilder, scoped ReadOnlySpan<char> firstValue, TNum number) where TNum : INumber<TNum>
+    public static void AddDialogInstanceStyle(this ref CssBuilder cssBuilder)
     {
-        Span<char> numberSpan = stackalloc char[4];
-
-        if (!number.TryFormat(numberSpan, out int charsWritten, default, default))
-        {
-            throw new InvalidOperationException("Failed to formant number");
-        }
-
-        numberSpan = numberSpan.Slice(0, charsWritten);
-
-        Span<char> newValue = stackalloc char[numberSpan.Length + firstValue.Length];
-        firstValue.CopyTo(newValue);
-
-        int j = 0;
-        for (int i = firstValue.Length; i < newValue.Length; i++)
-        {
-            newValue[i] = numberSpan[j];
-            j++;
-        }
-
-        cssBuilder.AddClass(newValue);
-    }
-
-    public static void AddClassAndJoinNumber<TNum>(this ref CssBuilder cssBuilder, scoped ReadOnlySpan<char> firstValue, TNum number, bool condition) where TNum : INumber<TNum>
-    {
-        if (condition)
-        {
-            cssBuilder.AddClassAndJoinNumber(firstValue, number);
-        }
+        cssBuilder.AddClass("container p-5");
+        cssBuilder.AddClass("cursor-default");
+        cssBuilder.AddClass("rounded border-2 drop-shadow-md");
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderCss(Color.Secondary));
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.PageBackgroundCss);
+        cssBuilder.AddClass(ThemeManager.ThemeProvider.PageTextCss);
+        cssBuilder.AddClass("backdrop:bg-main-dark-background/60"); //TODO
     }
 }

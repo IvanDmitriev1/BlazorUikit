@@ -34,15 +34,9 @@
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass("container p-5");
-        cssBuilder.AddClass("cursor-default animate-zoom");
-        cssBuilder.AddClass("rounded border-2 drop-shadow-md");
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderCss(Color.Secondary));
-        cssBuilder.AddClass(DialogReference.DisplayOptions.Breakpoint.ToTailwindCssMaxWidth());
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.PageBackgroundCss);
-        cssBuilder.AddClass(ThemeManager.ThemeProvider.PageTextCss);
-        
-        cssBuilder.AddClass("backdrop:bg-main-dark-background/60");
+        cssBuilder.AddDialogInstanceStyle();
+        cssBuilder.AddClass("animate-zoom");
+        cssBuilder.AddClass(DialogReference.DisplayOptions.MaxWidthBreakpoint.ToTailwindCssMaxWidth());
     }
 
     protected override Task OnFirstRenderAsync() => JsRuntime.InvokeVoidAsync("OpenModalDialog", _element, DialogReference.DisplayOptions.PreventDismissOnOverlayClick).AsTask();

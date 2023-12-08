@@ -1,3 +1,4 @@
+
 function LockScroll() {
     document.body.style.overflow = "hidden";
 }
@@ -42,28 +43,4 @@ function CloseDrawer(drawerRootId)
 
     const drawerElement = element.children[1];
     drawerElement.classList.add("translate-x-[-1000%]");
-}
-
-function OpenModalDialog(dialog, preventDismissOnOverlayClick)
-{
-    if (dialog.open)
-        return;
-
-    dialog.showModal();
-
-    if (preventDismissOnOverlayClick)
-        return;
-    
-    dialog.addEventListener("click", e => {
-        const dialogDimensions = dialog.getBoundingClientRect();
-
-        if (
-            e.clientX < dialogDimensions.left ||
-                e.clientX > dialogDimensions.right ||
-                e.clientY < dialogDimensions.top ||
-                e.clientY > dialogDimensions.bottom
-        ) {
-            dialog.close();
-        }
-    });
 }

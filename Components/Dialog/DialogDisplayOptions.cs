@@ -6,5 +6,5 @@ public sealed class DialogDisplayOptions
     public bool HeadLess { get; init; }
     public bool ShowDismiss { get; init; } = true;
     public string Title { get; init; } = string.Empty;
-    public Breakpoint Breakpoint { get; init; } = Breakpoint.Sm;
+    public Breakpoint MaxWidthBreakpoint { get; init; } = Breakpoint.Sm;
 }
