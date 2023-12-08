@@ -38,7 +38,7 @@ public class UiButton : UiKitElementComponentBase
 
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder)
     {
-        cssBuilder.AddClass("inline-flex justify-center items-center");
+        cssBuilder.AddClass("flex justify-center items-center");
         cssBuilder.AddClass("focus:ring focus:outline-none");
         cssBuilder.AddClass("transition duration-300");
         cssBuilder.AddClass("select-none rounded");
@@ -50,6 +50,15 @@ public class UiButton : UiKitElementComponentBase
             Size.Large => "py-5 px-6 font-bold text-header",
             _ => throw new ArgumentOutOfRangeException()
         }, IconPosition != ButtonIconPosition.Content || Icon == TablerIcon.None);
+
+
+        cssBuilder.AddClass(IconPosition switch
+        {
+            ButtonIconPosition.Content => null,
+            ButtonIconPosition.Left    => "gap-1.5",
+            ButtonIconPosition.Right   => "gap-1.5",
+            _                          => throw new ArgumentOutOfRangeException()
+        });
 
         cssBuilder.AddClass("p-1.5", Icon != TablerIcon.None && IconPosition == ButtonIconPosition.Content);
 
@@ -123,16 +132,7 @@ public class UiButton : UiKitElementComponentBase
     {
         int seq = 0;
 
-        var iconPositionCss = IconPosition switch
-        {
-            ButtonIconPosition.Content => null,
-            ButtonIconPosition.Left => "mr-2.5",
-            ButtonIconPosition.Right => "ml-2.5",
-            _ => throw new ArgumentOutOfRangeException()
-        };
-
         using var cssBuilder = new CssBuilder(stackalloc char[55]);
-        cssBuilder.AddClass(iconPositionCss);
         cssBuilder.AddClass(Size.ToIconSize());
 
         builder.OpenElement(seq++, "span");

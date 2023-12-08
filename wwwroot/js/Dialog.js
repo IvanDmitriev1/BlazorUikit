@@ -1,9 +1,18 @@
+export function LockScroll() {
+    document.body.style.overflow = "hidden";
+}
+
+export function UnlockScroll() {
+    document.body.style.overflow = "auto";
+}
+
 export function OpenModalDialog(dialog, preventDismissOnOverlayClick)
 {
     if (dialog.open)
         return;
 
     dialog.showModal();
+    LockScroll();
 
     if (preventDismissOnOverlayClick)
         return;
@@ -18,6 +27,7 @@ export function OpenModalDialog(dialog, preventDismissOnOverlayClick)
                     e.clientY < dialogDimensions.top ||
                     e.clientY > dialogDimensions.bottom
             ) {
+                UnlockScroll();
                 dialog.close();
             }
         });

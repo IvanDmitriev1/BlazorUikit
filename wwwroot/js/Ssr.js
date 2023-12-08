@@ -1,13 +1,4 @@
 
-function LockScroll() {
-    document.body.style.overflow = "hidden";
-}
-
-function UnlockScroll() {
-    document.body.style.overflow = "auto";
-}
-
-
 function DisplayDrawer(drawerRootId)
 {
     const element = document.getElementById(drawerRootId);
