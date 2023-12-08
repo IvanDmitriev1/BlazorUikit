@@ -1,5 +1,4 @@
-
-function DisplayDrawer(drawerRootId)
+﻿export function DisplayDrawer(drawerRootId)
 {
     const element = document.getElementById(drawerRootId);
     
@@ -19,8 +18,7 @@ function DisplayDrawer(drawerRootId)
     drawerElement.classList.remove("translate-x-[-1000%]");
 }
 
-
-function CloseDrawer(drawerRootId)
+export function CloseDrawer(drawerRootId)
 {
     const element = document.getElementById(drawerRootId);
 
@@ -35,3 +33,6 @@ function CloseDrawer(drawerRootId)
     const drawerElement = element.children[1];
     drawerElement.classList.add("translate-x-[-1000%]");
 }
+
+window.DisplayDrawer = DisplayDrawer;
+window.CloseDrawer = CloseDrawer;

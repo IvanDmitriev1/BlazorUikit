@@ -10,14 +10,17 @@ export function afterWebStarted(blazor) {
     window.previousPathName = window.location.pathname;
     blazor.addEventListener('enhancedload', onEnhancedLoad);
 
-    const customScript = document.createElement('script');
-    customScript.setAttribute('src', '_content/BlazorUiKit/js/ssr.js');
-    document.body.appendChild(customScript);
+    loadModule('Dialog.js');
+    loadModule('Drawer.js');
+}
 
-    const dialogModule = document.createElement('script');
-    dialogModule.setAttribute('type', 'module');
-    dialogModule.setAttribute('src', './_content/BlazorUiKit/js/Dialog.js');
-    document.body.appendChild(dialogModule);
+function loadModule(fileName) {
+    const basePath = './_content/BlazorUiKit/js';
+
+    const module = document.createElement('script');
+    module.setAttribute('type', 'module');
+    module.setAttribute('src', `${basePath}/${fileName}`);
+    document.body.appendChild(module);
 }
 
 function onEnhancedLoad() {

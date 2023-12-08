@@ -83,6 +83,9 @@ module.exports = {
       none: 'none',
     },
     extend: {
+      screens: {
+        'xs': '375px',
+      },
       aria: {
         currentPage: 'current="page"',
         invalid: 'invalid="true"',

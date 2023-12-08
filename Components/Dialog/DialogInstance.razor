@@ -3,7 +3,10 @@
 
 @inject IJSRuntime JsRuntime
 
-<dialog @ref="_element" class="@ComponentCss" @onclose="DialogReference.Cancel">
+<dialog @ref="_element"
+        id="@DialogReference.Id"
+        class="@ComponentCss"
+        @onclose="DialogReference.Cancel">
     <CascadingValue IsFixed="true" Value="DialogReference">
         @if (DialogReference.DisplayOptions.HeadLess)
         {

@@ -38,4 +38,6 @@ export function OpenModalDialogById(dialogId) {
     OpenModalDialog(dialog, false);
 }
 
+window.LockScroll = LockScroll;
+window.UnlockScroll = UnlockScroll;
 window.OpenModalDialogById = OpenModalDialogById;

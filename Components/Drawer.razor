@@ -1,13 +1,16 @@
 ﻿@namespace BlazorUiKit.Components
 @inherits UiKitComponentBase
 
-<div id="MainDrawerRoot">
-    <Overlay Class="@OverlayClass" LockScroll="false" />
+<div id="@Id">
+    <Overlay Class="@OverlayClass" />
     
     <aside class="@ComponentCss" @onclick:stopPropagation="true">
-        <Stack Direction="Direction.Row" Class="mb-6">
-            <UiButton Icon="TablerIcon.X" Size="Size.Large" onclick="CloseDrawer('MainDrawerRoot')"/>
+        <Stack Direction="Direction.Row"
+               AlignItems="AlignItems.Center"
+               Class="mb-6">
+            @LogoPlaceholder
             <div class="grow"></div>
+            <UiButton Icon="TablerIcon.X" Size="Size.Large" onclick="CloseDrawer('MainDrawerRoot')"/>
         </Stack>
     
         @ChildContent
@@ -20,7 +23,10 @@
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
-    public RenderFragment? TopMenu { get; set; }
+    public RenderFragment? LogoPlaceholder { get; set; }
+
+    [Parameter, EditorRequired]
+    public string Id { get; set; } = string.Empty;
 
     private static readonly string OverlayClass = OverlayCssBuilder();
 

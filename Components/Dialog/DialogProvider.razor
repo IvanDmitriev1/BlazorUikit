@@ -1,8 +1,6 @@
 ﻿@namespace BlazorUiKit.Components
 @inherits UiKitRenderComponentBase
 
-@inject IJSRuntime JsRuntime
-
 @foreach (var (key, dialogReference) in _dialogsById)
 {
     <DialogInstance DialogReference="dialogReference"/>
@@ -32,10 +30,9 @@
 
     public void RemoveDialog(Guid id)
     {
-        if (!_dialogsById.TryGetValue(id, out _))
+        if (!_dialogsById.Remove(id))
             return;
 
-        _dialogsById.Remove(id);
         StateHasChangedWithRendering();
     }
 }
