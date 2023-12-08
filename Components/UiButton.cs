@@ -55,8 +55,8 @@ public class UiButton : UiKitElementComponentBase
         cssBuilder.AddClass(IconPosition switch
         {
             ButtonIconPosition.Content => null,
-            ButtonIconPosition.Left    => "gap-1.5",
-            ButtonIconPosition.Right   => "gap-1.5",
+            ButtonIconPosition.Left    => "gap-x-1.5",
+            ButtonIconPosition.Right   => "gap-x-1.5",
             _                          => throw new ArgumentOutOfRangeException()
         });
 
