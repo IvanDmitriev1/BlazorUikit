@@ -3,7 +3,7 @@
 public interface IDialogService
 {
     void SetDialogProvider(DialogProvider dialogProvider);
-    void RemoveDialog(Guid id);
+    void RemoveDialog(string id);
 
     IDialogReference Show
         (DialogDisplayOptions options, RenderFragment renderFragment);

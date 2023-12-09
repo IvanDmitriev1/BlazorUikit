@@ -3,7 +3,16 @@
 <dialog id="@Id"
         class="@ComponentCss"
         data-open="@ShouldBeOpened.ToHtml()">
-    @ChildContent
+    @if (DisplayOptions.HeadLess)
+    {
+        @ChildContent
+    }
+    else
+    {
+        <DialogHeader Options="DisplayOptions" Id="@Id" />
+
+        @ChildContent
+    }
 </dialog>
 
 @code {
@@ -12,7 +21,7 @@
     public string Id { get; set; } = string.Empty;
 
     [Parameter, EditorRequired]
-    public Breakpoint MaxWidthBreakpoint { get; set; } = Breakpoint.Sm;
+    public DialogDisplayOptions DisplayOptions { get; set; } = null!;
 
     [Parameter]
     public bool ShouldBeOpened { get; set; }
@@ -27,7 +36,7 @@
         using var cssBuilder = new CssBuilder(stackalloc char[256]);
         var builder = cssBuilder;
 
-        builder.AddClass(MaxWidthBreakpoint.ToTailwindCssMaxWidth());
+        builder.AddClass(DisplayOptions.MaxWidthBreakpoint.ToTailwindCssMaxWidth());
         builder.AddDialogInstanceStyle();
 
         return builder.ToString();

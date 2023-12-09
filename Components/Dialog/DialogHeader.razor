@@ -1,0 +1,19 @@
+﻿@namespace BlazorUiKit.Components
+
+<Stack Direction="Direction.Row" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-6">
+    <h1 class="text-center">@Options.Title</h1>
+
+    @if (Options.ShowDismiss)
+    {
+        <UiButton Icon="TablerIcon.X" Size="Size.Medium" onclick="@($"CloseModalDialog('{Id}')")" />
+    }
+</Stack>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public DialogDisplayOptions Options { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public string Id { get; set; } = string.Empty;
+}

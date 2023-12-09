@@ -2,7 +2,7 @@
 
 public interface IDialogReferenceBase
 {
-    Guid Id { get; }
+    public string Id { get; }
     IDictionary<string, object> Parameters { get; init; }
     DialogDisplayOptions DisplayOptions { get; init; }
     int DialogPosition { get; init; }

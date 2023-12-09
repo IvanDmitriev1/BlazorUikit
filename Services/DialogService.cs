@@ -10,7 +10,7 @@ internal class DialogService : IDialogService
         _dialogProvider = dialogProvider;
     }
 
-    public void RemoveDialog(Guid id)
+    public void RemoveDialog(string id)
     {
         _dialogProvider?.RemoveDialog(id);
     }

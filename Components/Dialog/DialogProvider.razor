@@ -13,7 +13,7 @@
 
     public int DisplayedDialogs => _dialogsById.Count;
     
-    private readonly Dictionary<Guid, IDialogReferenceBase> _dialogsById = new();
+    private readonly Dictionary<string, IDialogReferenceBase> _dialogsById = new();
     
     protected override void AddComponentCssClasses(ref CssBuilder cssBuilder) { }
     
@@ -28,7 +28,7 @@
         StateHasChangedWithRendering();
     }
 
-    public void RemoveDialog(Guid id)
+    public void RemoveDialog(string id)
     {
         if (!_dialogsById.Remove(id))
             return;

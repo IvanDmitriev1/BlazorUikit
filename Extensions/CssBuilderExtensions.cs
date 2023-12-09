@@ -5,7 +5,6 @@ internal static class CssBuilderExtensions
     public static void AddDialogInstanceStyle(this ref CssBuilder cssBuilder)
     {
         cssBuilder.AddClass("container p-5");
-        cssBuilder.AddClass("cursor-default");
         cssBuilder.AddClass("rounded border-2 drop-shadow-md");
         cssBuilder.AddClass(ThemeManager.ThemeProvider.ToBorderCss(Color.Secondary));
         cssBuilder.AddClass(ThemeManager.ThemeProvider.PageBackgroundCss);

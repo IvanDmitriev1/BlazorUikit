@@ -14,14 +14,7 @@
         }
         else
         {
-            <Stack Direction="Direction.Row" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-6">
-                <h3 class="text-center">@DialogReference.DisplayOptions.Title</h3>
-                
-                @if (DialogReference.DisplayOptions.ShowDismiss)
-                {
-                    <UiButton Icon="TablerIcon.X" Size="Size.Medium" @onclick="DialogReference.Cancel"></UiButton>
-                }
-            </Stack>
+            <DialogHeader Options="DialogReference.DisplayOptions" Id="@DialogReference.Id.ToString()"/>
             
             @DialogReference.DialogContent
         }

@@ -2,7 +2,7 @@
 
 internal abstract class DialogReferenceBase : IDialogReferenceBase
 {
-    public Guid Id { get; } = Guid.NewGuid();
+    public string Id { get; } = Guid.NewGuid().ToString();
     public required DialogDisplayOptions DisplayOptions { get; init; }
     public required int DialogPosition { get; init; }
     public required IDictionary<string, object> Parameters { get; init; }
