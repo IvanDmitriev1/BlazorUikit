@@ -18,9 +18,6 @@ public class UiButton : UiKitElementComponentBase
     public bool Disabled { get; set; }
 
     [Parameter]
-    public ButtonType Type { get; set; } = ButtonType.Button;
-
-    [Parameter]
     public Color Color { get; set; } = Color.Primary;
 
     [Parameter]
@@ -95,7 +92,6 @@ public class UiButton : UiKitElementComponentBase
     protected override void OnElementRenderTree(RenderTreeBuilder builder, ref int seq)
     {
         builder.AddMultipleAttributes(seq++, UserAttributes);
-        builder.AddAttribute(seq++, "type", Type.ToHtml());
         builder.AddAttribute(seq++, "href", Href);
         builder.AddAttribute(seq++, "target", HrefTarget.ToHtml());
         builder.AddAttribute(seq++, "disabled", Disabled);
